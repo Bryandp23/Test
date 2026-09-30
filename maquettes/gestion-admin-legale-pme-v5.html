@@ -1,0 +1,985 @@
+<div class="ephec-fc-adminlegal-2027-v5">
+
+  <style>
+
+    /* ==================================================
+       VARIABLES / ISOLATION DRUPAL
+       Base : version v3 (styles validés dans Drupal).
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 {
+      --al-primary: #007965;
+      --al-primary-hover: #005f50;
+      --al-primary-dark: #004c40;
+
+      --al-primary-soft: rgba(0, 121, 101, 0.07);
+      --al-primary-border: rgba(0, 121, 101, 0.18);
+      --al-line: #dbe6e2;
+
+      --al-dark: #10231f;
+      --al-text: #44544f;
+      --al-muted: #62726d;
+
+      --al-radius: 18px;
+      --al-radius-small: 12px;
+
+      width: 100%;
+      max-width: 100%;
+
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      margin-top: 24px;
+
+      color: var(--al-text);
+      background: transparent;
+
+      font-family: inherit !important;
+
+      overflow-x: hidden;
+    }
+
+    .ephec-fc-adminlegal-2027-v5,
+    .ephec-fc-adminlegal-2027-v5 * {
+      box-sizing: border-box;
+      min-width: 0;
+      font-family: inherit !important;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 p,
+    .ephec-fc-adminlegal-2027-v5 h3,
+    .ephec-fc-adminlegal-2027-v5 h4,
+    .ephec-fc-adminlegal-2027-v5 ul {
+      margin: 0;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-section {
+      scroll-margin-top: 120px;
+    }
+
+
+    /* ==================================================
+       CARTES DE SECTION
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-card {
+      padding: 32px;
+
+      border-radius: var(--al-radius);
+
+      background: #ffffff;
+
+      border: 1px solid var(--al-line);
+    }
+
+
+    /* ==================================================
+       EN-TÊTE
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-hero {
+      padding: 36px;
+
+      background: #f3f9f7;
+
+      border-color: var(--al-primary-border);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-kicker {
+      margin-bottom: 14px;
+
+      color: var(--al-primary-hover);
+
+      font-size: .78rem;
+      line-height: 1.3;
+      font-weight: 700;
+
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-hero-title {
+      max-width: 820px;
+
+      margin-bottom: 14px;
+
+      color: var(--al-dark);
+
+      font-size: 1.75rem;
+      line-height: 1.22;
+      font-weight: 800;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-lead {
+      max-width: 720px;
+
+      color: var(--al-text);
+
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+
+    /* FICHE CLÉ (dates, horaire, format, prix) */
+
+    .ephec-fc-adminlegal-2027-v5 .al-facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+
+      margin-top: 26px;
+
+      border-radius: var(--al-radius-small);
+
+      background: #ffffff;
+
+      border: 1px solid var(--al-primary-border);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-fact {
+      padding: 16px 18px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-fact + .al-fact {
+      border-left: 1px solid var(--al-line);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-fact-label {
+      margin-bottom: 4px;
+
+      color: var(--al-muted);
+
+      font-size: .72rem;
+      line-height: 1.3;
+      font-weight: 700;
+
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-fact-value {
+      color: var(--al-dark);
+
+      font-size: 1rem;
+      line-height: 1.35;
+      font-weight: 700;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-fact-sub {
+      margin-top: 2px;
+
+      color: var(--al-muted);
+
+      font-size: .86rem;
+      line-height: 1.4;
+    }
+
+
+    /* BOUTONS */
+
+    .ephec-fc-adminlegal-2027-v5 .al-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      gap: 12px 22px;
+
+      margin-top: 24px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-btn,
+    .ephec-fc-adminlegal-2027-v5 .al-btn:visited {
+      display: inline-block;
+
+      padding: 13px 24px;
+
+      border-radius: 999px;
+
+      background: var(--al-primary);
+
+      color: #ffffff !important;
+
+      font-size: .95rem;
+      line-height: 1.2;
+      font-weight: 700;
+
+      text-decoration: none !important;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-btn:hover {
+      background: var(--al-primary-dark);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-link {
+      color: var(--al-primary-hover) !important;
+
+      font-weight: 700;
+
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 a:focus-visible {
+      outline: 3px solid var(--al-dark);
+      outline-offset: 3px;
+    }
+
+
+    /* ==================================================
+       TITRES DE SECTION
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-section-title {
+      margin-bottom: 18px;
+
+      color: var(--al-dark);
+
+      font-size: 1.35rem;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-section-intro {
+      max-width: 720px;
+
+      margin: -8px 0 20px;
+
+      color: var(--al-muted);
+
+      font-size: .95rem;
+      line-height: 1.6;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-text {
+      max-width: 760px;
+
+      color: var(--al-text);
+
+      font-size: .98rem;
+      line-height: 1.7;
+    }
+
+
+    /* ==================================================
+       POUR QUI
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 16px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-box {
+      padding: 20px;
+
+      border-radius: var(--al-radius-small);
+
+      background: #f7faf9;
+
+      border: 1px solid var(--al-line);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-box-title {
+      margin-bottom: 8px;
+
+      color: var(--al-dark);
+
+      font-size: 1.02rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-box-text {
+      color: var(--al-text);
+
+      font-size: .93rem;
+      line-height: 1.62;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-risks {
+      margin-top: 20px;
+
+      padding: 18px 20px;
+
+      border-radius: var(--al-radius-small);
+
+      background: var(--al-primary-soft);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-tags {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+      margin-top: 12px !important;
+      padding: 0 !important;
+
+      list-style: none !important;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-tags li {
+      margin: 0 !important;
+      padding: 6px 12px;
+
+      border-radius: 999px;
+
+      background: #ffffff;
+
+      border: 1px solid var(--al-primary-border);
+
+      color: var(--al-dark);
+
+      font-size: .86rem;
+      line-height: 1.3;
+      font-weight: 600;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-tags li::before {
+      content: none !important;
+    }
+
+
+    /* ==================================================
+       PROGRAMME
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-program-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 16px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-program-card {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+
+      padding: 22px;
+
+      border-radius: var(--al-radius-small);
+
+      background: #ffffff;
+
+      border: 1px solid var(--al-line);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-program-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+
+      gap: 10px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-date-pill {
+      display: inline-flex;
+      align-items: center;
+
+      padding: 7px 12px;
+
+      border-radius: 999px;
+
+      background: var(--al-primary);
+
+      color: #ffffff;
+
+      font-size: .8rem;
+      line-height: 1;
+      font-weight: 700;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-program-label {
+      color: var(--al-primary-hover);
+
+      font-size: .74rem;
+      line-height: 1.35;
+      font-weight: 700;
+
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-program-title {
+      color: var(--al-dark);
+
+      font-size: 1.06rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+
+    /* LISTES */
+
+    .ephec-fc-adminlegal-2027-v5 .al-list {
+      display: grid;
+
+      gap: 6px;
+
+      margin: 0 !important;
+      padding: 0 !important;
+
+      list-style: none !important;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-list-item {
+      position: relative;
+
+      margin: 0 !important;
+      padding-left: 18px;
+
+      color: var(--al-text);
+
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-list-item::before {
+      content: "";
+
+      position: absolute;
+
+      left: 2px;
+      top: .62em;
+
+      width: 6px;
+      height: 6px;
+
+      border-radius: 999px;
+
+      background: var(--al-primary);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-list-2col {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      column-gap: 28px;
+    }
+
+
+    /* ==================================================
+       TARIFS
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-price-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 16px;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-price-card {
+      padding: 22px;
+
+      border-radius: var(--al-radius-small);
+
+      background: #ffffff;
+
+      border: 1px solid var(--al-line);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-price-card.is-main {
+      border: 2px solid var(--al-primary);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      gap: 4px 12px;
+
+      padding: 12px 0;
+
+      border-top: 1px solid var(--al-line);
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-price-who {
+      color: var(--al-text);
+
+      font-size: .93rem;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-price {
+      color: var(--al-dark);
+
+      font-size: 1.3rem;
+      line-height: 1.2;
+      font-weight: 800;
+
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-saving {
+      width: 100%;
+
+      color: var(--al-primary-hover);
+
+      font-size: .84rem;
+      font-weight: 600;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-small {
+      margin-top: 18px !important;
+
+      color: var(--al-muted);
+
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+
+    /* ==================================================
+       INSCRIPTION
+       ================================================== */
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      gap: 18px 28px;
+
+      padding: 30px 32px;
+
+      border-radius: var(--al-radius);
+
+      background: var(--al-primary);
+
+      color: #ffffff;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta-title {
+      color: #ffffff;
+
+      font-size: 1.3rem;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta-text {
+      margin-top: 4px !important;
+
+      color: rgba(255, 255, 255, .88);
+
+      font-size: .95rem;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta .al-btn,
+    .ephec-fc-adminlegal-2027-v5 .al-cta .al-btn:visited {
+      background: #ffffff;
+
+      color: var(--al-primary-dark) !important;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta .al-btn:hover {
+      background: #e6f2ee;
+    }
+
+    .ephec-fc-adminlegal-2027-v5 .al-cta a:focus-visible {
+      outline-color: #ffffff;
+    }
+
+
+    /* ==================================================
+       RESPONSIVE
+       ================================================== */
+
+    @media (max-width: 900px) {
+
+      .ephec-fc-adminlegal-2027-v5 .al-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-fact:nth-child(3) {
+        border-left: 0;
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-fact:nth-child(n + 3) {
+        border-top: 1px solid var(--al-line);
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-program-grid,
+      .ephec-fc-adminlegal-2027-v5 .al-list-2col {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 620px) {
+
+      .ephec-fc-adminlegal-2027-v5 {
+        gap: 18px;
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-card,
+      .ephec-fc-adminlegal-2027-v5 .al-hero,
+      .ephec-fc-adminlegal-2027-v5 .al-cta {
+        padding: 24px 18px;
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-hero-title {
+        font-size: 1.4rem;
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-facts,
+      .ephec-fc-adminlegal-2027-v5 .al-two-col,
+      .ephec-fc-adminlegal-2027-v5 .al-price-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ephec-fc-adminlegal-2027-v5 .al-fact + .al-fact {
+        border-left: 0;
+        border-top: 1px solid var(--al-line);
+      }
+
+    }
+
+    @media (forced-colors: active) {
+
+      .ephec-fc-adminlegal-2027-v5 .al-card,
+      .ephec-fc-adminlegal-2027-v5 .al-box,
+      .ephec-fc-adminlegal-2027-v5 .al-program-card,
+      .ephec-fc-adminlegal-2027-v5 .al-price-card,
+      .ephec-fc-adminlegal-2027-v5 .al-cta {
+        border: 1px solid CanvasText;
+      }
+
+    }
+
+  </style>
+
+
+  <!-- ==================================================
+       EN-TÊTE
+       ================================================== -->
+
+  <section class="al-section al-card al-hero" aria-labelledby="al-main-title">
+
+    <p class="al-kicker">Formation continue · Business · PME-TPE</p>
+
+    <h3 id="al-main-title" class="al-hero-title">
+      Gestion administrative et légale de PME-TPE
+    </h3>
+
+    <p class="al-lead">
+      Huit soirées pour mettre en ordre les obligations légales, comptables, fiscales, TVA et sociales d’une petite entreprise, avec des cas concrets et des outils à réutiliser dès le lendemain.
+    </p>
+
+    <div class="al-facts">
+
+      <div class="al-fact">
+        <p class="al-fact-label">Dates</p>
+        <p class="al-fact-value">5 janv. → 23 févr. 2027</p>
+        <p class="al-fact-sub">8 mardis consécutifs</p>
+      </div>
+
+      <div class="al-fact">
+        <p class="al-fact-label">Horaire</p>
+        <p class="al-fact-value">19h30 – 21h30</p>
+        <p class="al-fact-sub">2 h par séance</p>
+      </div>
+
+      <div class="al-fact">
+        <p class="al-fact-label">Format</p>
+        <p class="al-fact-value">En ligne</p>
+        <p class="al-fact-sub">Zoom ou Teams</p>
+      </div>
+
+      <div class="al-fact">
+        <p class="al-fact-label">Prix</p>
+        <p class="al-fact-value">499 € TTC le cycle</p>
+        <p class="al-fact-sub">ou 75 € la séance</p>
+      </div>
+
+    </div>
+
+    <div class="al-actions">
+      <!-- TODO : remplacer # par l’URL du formulaire d’inscription. -->
+      <a class="al-btn" href="#">S’inscrire</a>
+      <a class="al-link" href="#al-program-title">Voir les 8 séances</a>
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       POUR QUI
+       ================================================== -->
+
+  <section class="al-section al-card" aria-labelledby="al-public-title">
+
+    <h3 id="al-public-title" class="al-section-title">
+      À qui s’adresse la formation
+    </h3>
+
+    <div class="al-two-col">
+
+      <article class="al-box">
+        <h4 class="al-box-title">Assistants de direction et responsables internes</h4>
+        <p class="al-box-text">
+          Vous gérez l’administratif, le juridique ou la comptabilité d’une PME et voulez savoir précisément ce qui relève de votre fonction, et jusqu’où va votre responsabilité.
+        </p>
+      </article>
+
+      <article class="al-box">
+        <h4 class="al-box-title">Dirigeants et entrepreneurs</h4>
+        <p class="al-box-text">
+          Vous dirigez une petite ou moyenne entreprise et voulez sécuriser vos assemblées générales, vos dépôts, votre TVA et vos obligations d’employeur.
+        </p>
+      </article>
+
+    </div>
+
+    <div class="al-risks">
+      <p class="al-text">
+        Aucun prérequis : la formation est ouverte à tous les secteurs, quelle que soit votre formation de base. Une formalité oubliée peut entraîner :
+      </p>
+      <ul class="al-tags">
+        <li>des amendes et pénalités</li>
+        <li>la mise en cause du dirigeant ou du responsable</li>
+        <li>un litige avec l’administration</li>
+      </ul>
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       PROGRAMME
+       ================================================== -->
+
+  <section class="al-section al-card" aria-labelledby="al-program-title">
+
+    <h3 id="al-program-title" class="al-section-title">
+      Programme : 8 mardis, de 19h30 à 21h30
+    </h3>
+
+    <p class="al-section-intro">
+      Chaque séance peut être suivie seule ou dans le cadre du cycle complet.
+    </p>
+
+    <!--
+      IMPORTANT : le document source donne 8 modules et 8 dates sans
+      les associer explicitement. L’association suit leur ordre respectif.
+    -->
+
+    <div class="al-program-grid">
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 5 janv.</span>
+          <span class="al-program-label">Séance 1 · Agenda légal</span>
+        </div>
+        <h4 class="al-program-title">Tenir l’agenda légal de l’entreprise</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Les obligations légales qui rythment l’année d’une PME, et celles qui vous concernent</li>
+          <li class="al-list-item">Organiser assemblées générales et conseils d’administration</li>
+          <li class="al-list-item">Préparer et déposer les documents obligatoires</li>
+          <li class="al-list-item">Construire votre calendrier administratif et fiscal</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 12 janv.</span>
+          <span class="al-program-label">Séance 2 · Gouvernance</span>
+        </div>
+        <h4 class="al-program-title">Qui décide, qui est responsable</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Le fonctionnement réel des organes de gestion d’une société</li>
+          <li class="al-list-item">Les rapports et formalités légales obligatoires</li>
+          <li class="al-list-item">Limiter la responsabilité des administrateurs, dirigeants et responsables internes</li>
+          <li class="al-list-item">Repérer les situations à risque avant qu’elles ne dégénèrent</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 19 janv.</span>
+          <span class="al-program-label">Séance 3 · Comptabilité</span>
+        </div>
+        <h4 class="al-program-title">Les bases comptables, pour qui n’est pas comptable</h4>
+        <ul class="al-list">
+          <li class="al-list-item">L’organisation comptable d’une PME</li>
+          <li class="al-list-item">Les nouvelles exigences de la facturation électronique</li>
+          <li class="al-list-item">Les mécanismes comptables utiles à votre fonction</li>
+          <li class="al-list-item">Archivage et conservation des documents</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 26 janv.</span>
+          <span class="al-program-label">Séance 4 · Fiscalité</span>
+        </div>
+        <h4 class="al-program-title">Réduire la charge fiscale, légalement</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Les dépenses fiscalement déductibles</li>
+          <li class="al-list-item">Les avantages de toute nature et leur impact</li>
+          <li class="al-list-item">Les principes de la fiscalité des entreprises</li>
+          <li class="al-list-item">Répondre à un contrôle ou à une demande de l’administration</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 2 févr.</span>
+          <span class="al-program-label">Séance 5 · TVA</span>
+        </div>
+        <h4 class="al-program-title">Vos obligations et vos droits en matière de TVA</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Les régimes et mécanismes de la TVA belge</li>
+          <li class="al-list-item">Les opérations intracommunautaires et les cas qui posent problème</li>
+          <li class="al-list-item">Déclarations, paiements et contrôles : les bonnes pratiques</li>
+          <li class="al-list-item">Les droits et recours de l’assujetti</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 9 févr.</span>
+          <span class="al-program-label">Séance 6 · Droit social</span>
+        </div>
+        <h4 class="al-program-title">Les règles sociales indispensables à l’employeur</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Embauche et fin de collaboration</li>
+          <li class="al-list-item">Les obligations de l’employeur</li>
+          <li class="al-list-item">Cotisations et formalités sociales</li>
+          <li class="al-list-item">Les possibilités actuelles d’optimisation salariale</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 16 févr.</span>
+          <span class="al-program-label">Séance 7 · Risques</span>
+        </div>
+        <h4 class="al-program-title">Anticiper les risques de l’activité</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Les risques les plus fréquents dans les PME</li>
+          <li class="al-list-item">Les sanctions possibles et comment s’en prémunir</li>
+          <li class="al-list-item">Limiter la responsabilité des dirigeants et de leurs proches collaborateurs</li>
+          <li class="al-list-item">Les alternatives aux procédures judiciaires classiques</li>
+        </ul>
+      </article>
+
+      <article class="al-program-card">
+        <div class="al-program-meta">
+          <span class="al-date-pill">Mar. 23 févr.</span>
+          <span class="al-program-label">Séance 8 · Outils numériques</span>
+        </div>
+        <h4 class="al-program-title">Les outils qui font gagner du temps</h4>
+        <ul class="al-list">
+          <li class="al-list-item">Les plateformes administratives, fiscales et sociales</li>
+          <li class="al-list-item">Les outils numériques utiles à une PME</li>
+          <li class="al-list-item">Ce qui vaut la peine d’être automatisé</li>
+          <li class="al-list-item">Simplifier vos processus administratifs</li>
+        </ul>
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       DÉROULEMENT
+       ================================================== -->
+
+  <section class="al-section al-card" aria-labelledby="al-method-title">
+
+    <h3 id="al-method-title" class="al-section-title">
+      Déroulement des séances
+    </h3>
+
+    <ul class="al-list al-list-2col">
+      <li class="al-list-item">Des cas réels issus de PME</li>
+      <li class="al-list-item">Des check-lists à appliquer telles quelles</li>
+      <li class="al-list-item">Des formateurs qui accompagnent des entreprises au quotidien</li>
+      <li class="al-list-item">Du temps pour poser vos propres questions</li>
+    </ul>
+
+  </section>
+
+
+  <!-- ==================================================
+       TARIFS + ATTESTATION
+       ================================================== -->
+
+  <section class="al-section al-card" aria-labelledby="al-price-title">
+
+    <h3 id="al-price-title" class="al-section-title">
+      Tarifs
+    </h3>
+
+    <div class="al-price-grid">
+
+      <article class="al-price-card is-main">
+        <h4 class="al-box-title">Cycle complet · 8 séances</h4>
+
+        <div class="al-price-row">
+          <span class="al-price-who">Tarif général</span>
+          <span class="al-price">499 € TTC</span>
+          <span class="al-saving">au lieu de 600 € en séances séparées</span>
+        </div>
+
+        <div class="al-price-row">
+          <span class="al-price-who">Alumni EPHEC</span>
+          <span class="al-price">350 € TTC</span>
+          <span class="al-saving">au lieu de 440 € en séances séparées</span>
+        </div>
+      </article>
+
+      <article class="al-price-card">
+        <h4 class="al-box-title">À la séance</h4>
+
+        <div class="al-price-row">
+          <span class="al-price-who">Tarif général</span>
+          <span class="al-price">75 €</span>
+        </div>
+
+        <div class="al-price-row">
+          <span class="al-price-who">Alumni EPHEC</span>
+          <span class="al-price">55 €</span>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="al-small">
+      Désistement au moins 15 jours ouvrables avant la séance : remboursement intégral. Au-delà : remboursement de 70 %.
+    </p>
+
+    <p class="al-small">
+      <strong>Attestation de réussite en gestion administrative et légale de PME-TPE</strong> : délivrée aux participants ayant suivi au moins 80 % des séances (soit 7 sur 8) et réussi le test QCM de fin de cycle.
+    </p>
+
+  </section>
+
+
+  <!-- ==================================================
+       INSCRIPTION
+       ================================================== -->
+
+  <section class="al-section al-cta" aria-labelledby="al-cta-title">
+    <div>
+      <h3 id="al-cta-title" class="al-cta-title">Première séance le mardi 5 janvier 2027</h3>
+      <p class="al-cta-text">Inscription au cycle complet ou à une séance isolée.</p>
+    </div>
+    <!-- TODO : remplacer # par l’URL du formulaire d’inscription. -->
+    <a class="al-btn" href="#">S’inscrire</a>
+  </section>
+
+</div>
