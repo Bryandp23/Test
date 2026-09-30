@@ -1,0 +1,1178 @@
+<div class="ephec-fc-al6">
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=Poppins:wght@400;500&display=swap");
+
+    /* ==================================================
+       DA EPHEC (nouvelle page d'accueil)
+       Grands titres légers avec un mot en turquoise,
+       blocs noirs avec diagonales turquoise, carte menthe,
+       boutons en pilule avec flèche.
+       ================================================== */
+
+    .ephec-fc-al6 {
+      --ep-turquoise: #4cc6b8;
+      --ep-turquoise-text: #1f9b8c;
+      --ep-mint: #b3ecdf;
+      --ep-mint-light: #e4f8f3;
+      --ep-black: #1d1d1d;
+      --ep-ink: #1d1d1d;
+      --ep-text: #4d4d4d;
+      --ep-muted: #767676;
+      --ep-grey: #f6f6f6;
+      --ep-line: #e3e3e3;
+      --ep-white: #ffffff;
+
+      --ep-title: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+      --ep-body: "Poppins", "Helvetica Neue", Arial, sans-serif;
+
+      --ep-radius: 26px;
+
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+
+      width: 100%;
+      margin-top: 24px;
+
+      color: var(--ep-text);
+      font-family: var(--ep-body) !important;
+      font-size: 16px;
+      line-height: 1.65;
+
+      overflow-x: hidden;
+    }
+
+    .ephec-fc-al6 *,
+    .ephec-fc-al6 *::before,
+    .ephec-fc-al6 *::after {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .ephec-fc-al6 p,
+    .ephec-fc-al6 h3,
+    .ephec-fc-al6 h4,
+    .ephec-fc-al6 ul {
+      margin: 0;
+    }
+
+    .ephec-fc-al6 h3,
+    .ephec-fc-al6 h4,
+    .ephec-fc-al6 .ep-title-font {
+      font-family: var(--ep-title) !important;
+      letter-spacing: -.01em;
+    }
+
+    .ephec-fc-al6 .ep-accent {
+      color: var(--ep-turquoise-text);
+    }
+
+    .ephec-fc-al6 .ep-on-dark .ep-accent {
+      color: var(--ep-turquoise);
+    }
+
+
+    /* ---------- Titres de section ---------- */
+
+    .ephec-fc-al6 .ep-h {
+      max-width: 16em;
+
+      color: var(--ep-ink);
+
+      font-size: clamp(2rem, 1.4rem + 2.2vw, 3rem);
+      line-height: 1.08;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-intro {
+      max-width: 36em;
+      margin-top: 14px;
+
+      color: var(--ep-muted);
+
+      font-size: .95rem;
+    }
+
+    .ephec-fc-al6 .ep-dash {
+      display: block;
+
+      width: 34px;
+      height: 5px;
+
+      margin-bottom: 22px;
+
+      border-radius: 2px;
+
+      background: var(--ep-turquoise);
+    }
+
+
+    /* ---------- Boutons pilule ---------- */
+
+    .ephec-fc-al6 .ep-btn,
+    .ephec-fc-al6 .ep-btn:visited {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 14px 28px;
+
+      border-radius: 999px;
+      border: 1.5px solid transparent;
+
+      font-family: var(--ep-title) !important;
+      font-size: 1rem;
+      line-height: 1.2;
+      font-weight: 500;
+
+      text-decoration: none !important;
+
+      transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+
+    .ephec-fc-al6 .ep-btn::after {
+      content: "→";
+      font-size: 1.05em;
+    }
+
+    .ephec-fc-al6 .ep-btn-turquoise,
+    .ephec-fc-al6 .ep-btn-turquoise:visited {
+      background: var(--ep-turquoise);
+      color: var(--ep-black) !important;
+    }
+
+    .ephec-fc-al6 .ep-btn-turquoise:hover {
+      background: #3bb1a4;
+    }
+
+    .ephec-fc-al6 .ep-btn-outline-light,
+    .ephec-fc-al6 .ep-btn-outline-light:visited {
+      border-color: var(--ep-white);
+      color: var(--ep-white) !important;
+    }
+
+    .ephec-fc-al6 .ep-btn-outline-light:hover {
+      background: var(--ep-white);
+      color: var(--ep-black) !important;
+    }
+
+    .ephec-fc-al6 .ep-btn-black,
+    .ephec-fc-al6 .ep-btn-black:visited {
+      background: var(--ep-black);
+      color: var(--ep-white) !important;
+    }
+
+    .ephec-fc-al6 .ep-btn-black:hover {
+      background: #000000;
+    }
+
+    .ephec-fc-al6 a:focus-visible {
+      outline: 3px solid var(--ep-turquoise);
+      outline-offset: 3px;
+    }
+
+
+    /* ---------- Icône en pastille ronde ---------- */
+
+    .ephec-fc-al6 .ep-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+
+      border-radius: 999px;
+
+      background: var(--ep-black);
+      color: var(--ep-turquoise);
+    }
+
+    .ephec-fc-al6 .ep-on-dark .ep-icon {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .28);
+    }
+
+    .ephec-fc-al6 .ep-icon svg {
+      display: block;
+      width: 24px;
+      height: 24px;
+    }
+
+
+    /* ==================================================
+       1. EN-TÊTE (bloc noir à diagonales)
+       ================================================== */
+
+    .ephec-fc-al6 .ep-hero {
+      position: relative;
+
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 40px;
+
+      padding: 56px;
+
+      overflow: hidden;
+
+      border-radius: var(--ep-radius);
+
+      background: var(--ep-black);
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .ephec-fc-al6 .ep-hero::before,
+    .ephec-fc-al6 .ep-hero::after {
+      content: "";
+
+      position: absolute;
+      z-index: 0;
+
+      pointer-events: none;
+    }
+
+    .ephec-fc-al6 .ep-hero::before {
+      left: -12%;
+      top: 18%;
+
+      width: 70%;
+      height: 34%;
+
+      background: linear-gradient(90deg, rgba(76, 198, 184, .30), rgba(76, 198, 184, 0));
+
+      transform: rotate(-24deg);
+    }
+
+    .ephec-fc-al6 .ep-hero::after {
+      left: 8%;
+      bottom: -30%;
+
+      width: 60%;
+      height: 42%;
+
+      background: linear-gradient(90deg, rgba(76, 198, 184, .22), rgba(76, 198, 184, 0));
+
+      transform: rotate(38deg);
+    }
+
+    .ephec-fc-al6 .ep-hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ephec-fc-al6 .ep-hero-kicker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      margin-bottom: 28px;
+
+      color: var(--ep-white);
+
+      font-family: var(--ep-title) !important;
+      font-size: 1rem;
+    }
+
+    .ephec-fc-al6 .ep-hero-title {
+      color: var(--ep-white);
+
+      font-size: clamp(2.2rem, 1.5rem + 2.8vw, 3.6rem);
+      line-height: 1.04;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-hero-lead {
+      max-width: 34em;
+      margin-top: 22px;
+
+      font-size: .98rem;
+    }
+
+    .ephec-fc-al6 .ep-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      margin-top: 32px;
+    }
+
+
+    /* Fiche pratique (verre dépoli, comme la carte actu de l'accueil) */
+
+    .ephec-fc-al6 .ep-facts {
+      align-self: end;
+
+      display: grid;
+      gap: 0;
+
+      padding: 8px 26px;
+
+      border-radius: 22px;
+
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .14);
+    }
+
+    .ephec-fc-al6 .ep-fact {
+      display: grid;
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      gap: 12px;
+
+      padding: 16px 0;
+    }
+
+    .ephec-fc-al6 .ep-fact + .ep-fact {
+      border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .ephec-fc-al6 .ep-fact-label {
+      color: rgba(255, 255, 255, .55);
+      font-size: .85rem;
+    }
+
+    .ephec-fc-al6 .ep-fact-value {
+      color: var(--ep-white);
+
+      font-family: var(--ep-title) !important;
+      font-size: 1.05rem;
+      line-height: 1.35;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-fc-al6 .ep-fact-value small {
+      display: block;
+
+      color: rgba(255, 255, 255, .6);
+
+      font-family: var(--ep-body) !important;
+      font-size: .82rem;
+    }
+
+
+    /* ==================================================
+       2. POUR QUI (carte menthe + carte noire)
+       ================================================== */
+
+    .ephec-fc-al6 .ep-audience {
+      position: relative;
+
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+
+      padding: 48px 0 8px;
+    }
+
+    .ephec-fc-al6 .ep-audience-head {
+      grid-column: 1 / -1;
+    }
+
+    /* Diagonales grises du logo, en fond */
+    .ephec-fc-al6 .ep-audience::before {
+      content: "";
+
+      position: absolute;
+      z-index: 0;
+      right: 0;
+      top: 0;
+
+      width: 46%;
+      height: 220px;
+
+      background: repeating-linear-gradient(
+        -65deg,
+        transparent 0 38px,
+        #f0f0f0 38px 64px
+      );
+
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%);
+      mask-image: linear-gradient(90deg, transparent, #000 40%);
+
+      pointer-events: none;
+    }
+
+    .ephec-fc-al6 .ep-audience > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ephec-fc-al6 .ep-tile {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+
+      padding: 44px;
+
+      border-radius: var(--ep-radius);
+    }
+
+    .ephec-fc-al6 .ep-tile-mint {
+      background: linear-gradient(180deg, var(--ep-mint) 0%, var(--ep-mint-light) 100%);
+      color: var(--ep-ink);
+    }
+
+    .ephec-fc-al6 .ep-tile-dark {
+      background: var(--ep-black);
+      color: rgba(255, 255, 255, .78);
+    }
+
+    .ephec-fc-al6 .ep-tile-title {
+      font-size: 1.85rem;
+      line-height: 1.12;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-tile-mint .ep-tile-title {
+      color: var(--ep-ink);
+    }
+
+    .ephec-fc-al6 .ep-tile-dark .ep-tile-title {
+      color: var(--ep-white);
+    }
+
+    .ephec-fc-al6 .ep-tile p {
+      max-width: 30em;
+      font-size: .95rem;
+    }
+
+    .ephec-fc-al6 .ep-note {
+      grid-column: 1 / -1;
+
+      max-width: 48em;
+
+      color: var(--ep-muted);
+      font-size: .92rem;
+    }
+
+
+    /* ==================================================
+       3. PROGRAMME (fond gris, cartes blanches)
+       ================================================== */
+
+    .ephec-fc-al6 .ep-program {
+      padding: 56px 48px;
+
+      border-radius: var(--ep-radius);
+
+      background: var(--ep-grey);
+    }
+
+    .ephec-fc-al6 .ep-program-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px 40px;
+
+      margin-bottom: 36px;
+    }
+
+    .ephec-fc-al6 .ep-program-count {
+      color: var(--ep-muted);
+
+      font-family: var(--ep-title) !important;
+      font-size: 1rem;
+    }
+
+    .ephec-fc-al6 .ep-program-count strong {
+      display: block;
+
+      color: var(--ep-ink);
+
+      font-size: 3rem;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-sessions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .ephec-fc-al6 .ep-session {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      padding: 32px 34px;
+
+      border-radius: 24px;
+
+      background: var(--ep-white);
+
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .05);
+    }
+
+    .ephec-fc-al6 .ep-session-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ephec-fc-al6 .ep-num {
+      color: var(--ep-turquoise-text);
+
+      font-family: var(--ep-title) !important;
+      font-size: 2.4rem;
+      line-height: 1;
+      font-weight: 300;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-fc-al6 .ep-tag {
+      display: inline-block;
+
+      padding: 4px 12px;
+
+      border-radius: 999px;
+
+      background: var(--ep-turquoise);
+      color: var(--ep-black);
+
+      font-size: .8rem;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .ephec-fc-al6 .ep-session-title {
+      color: var(--ep-ink);
+
+      font-size: 1.35rem;
+      line-height: 1.22;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-date {
+      color: var(--ep-muted);
+
+      font-size: .82rem;
+
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-fc-al6 .ep-list {
+      display: grid;
+      gap: 6px;
+
+      margin: 4px 0 0 !important;
+      padding: 0 !important;
+
+      list-style: none !important;
+    }
+
+    .ephec-fc-al6 .ep-list li {
+      position: relative;
+
+      margin: 0 !important;
+      padding-left: 20px;
+
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+
+    .ephec-fc-al6 .ep-list li::before {
+      content: "";
+
+      position: absolute;
+      left: 0;
+      top: .72em;
+
+      width: 10px;
+      height: 2px;
+
+      background: var(--ep-turquoise);
+    }
+
+    .ephec-fc-al6 .ep-chip {
+      align-self: flex-start;
+
+      margin-top: auto;
+      padding: 3px 10px;
+
+      border-radius: 999px;
+      border: 1px solid #cfcfcf;
+
+      color: var(--ep-ink);
+
+      font-size: .78rem;
+    }
+
+
+    /* ==================================================
+       4. TARIFS (bloc noir, filigrane €)
+       ================================================== */
+
+    .ephec-fc-al6 .ep-prices {
+      position: relative;
+
+      padding: 56px;
+
+      overflow: hidden;
+
+      border-radius: var(--ep-radius);
+
+      background: #111111;
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .ephec-fc-al6 .ep-prices::before {
+      content: "€";
+
+      position: absolute;
+      right: -2%;
+      top: -18%;
+
+      color: #1f1f1f;
+
+      font-family: var(--ep-title) !important;
+      font-size: 26rem;
+      line-height: 1;
+      font-weight: 700;
+      font-style: italic;
+
+      pointer-events: none;
+    }
+
+    .ephec-fc-al6 .ep-prices > * {
+      position: relative;
+    }
+
+    .ephec-fc-al6 .ep-prices .ep-h {
+      color: var(--ep-white);
+    }
+
+    .ephec-fc-al6 .ep-price-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+
+      margin-top: 36px;
+    }
+
+    .ephec-fc-al6 .ep-price-card {
+      padding: 28px 30px;
+
+      border-radius: 22px;
+
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .14);
+    }
+
+    .ephec-fc-al6 .ep-price-card.is-main {
+      border-color: var(--ep-turquoise);
+    }
+
+    .ephec-fc-al6 .ep-price-name {
+      color: var(--ep-white);
+
+      font-size: 1.3rem;
+      line-height: 1.25;
+      font-weight: 400;
+    }
+
+    .ephec-fc-al6 .ep-price-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px 16px;
+
+      padding: 14px 0;
+
+      border-bottom: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .ephec-fc-al6 .ep-price-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .ephec-fc-al6 .ep-price-who {
+      font-size: .9rem;
+    }
+
+    .ephec-fc-al6 .ep-price {
+      color: var(--ep-white);
+
+      font-family: var(--ep-title) !important;
+      font-size: 2rem;
+      line-height: 1.1;
+      font-weight: 400;
+
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .ephec-fc-al6 .ep-price small {
+      font-size: .5em;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    .ephec-fc-al6 .ep-saving {
+      width: 100%;
+
+      color: var(--ep-turquoise);
+
+      font-size: .82rem;
+    }
+
+    .ephec-fc-al6 .ep-fine {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+
+      margin-top: 32px;
+      padding-top: 24px;
+
+      border-top: 1px solid rgba(255, 255, 255, .12);
+
+      font-size: .88rem;
+    }
+
+    .ephec-fc-al6 .ep-fine strong {
+      display: block;
+      margin-bottom: 4px;
+
+      color: var(--ep-white);
+
+      font-family: var(--ep-title) !important;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+
+    /* ==================================================
+       5. INSCRIPTION (carte menthe)
+       ================================================== */
+
+    .ephec-fc-al6 .ep-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px 40px;
+
+      padding: 48px 56px;
+
+      border-radius: var(--ep-radius);
+
+      background: linear-gradient(120deg, var(--ep-mint) 0%, var(--ep-mint-light) 100%);
+    }
+
+    .ephec-fc-al6 .ep-cta .ep-h {
+      font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.5rem);
+    }
+
+    .ephec-fc-al6 .ep-cta p {
+      margin-top: 8px;
+      color: var(--ep-ink);
+    }
+
+
+    /* ==================================================
+       RESPONSIVE
+       ================================================== */
+
+    @media (max-width: 960px) {
+
+      .ephec-fc-al6 .ep-hero {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 44px 36px;
+      }
+
+      .ephec-fc-al6 .ep-sessions {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+    }
+
+    @media (max-width: 720px) {
+
+      .ephec-fc-al6 .ep-audience,
+      .ephec-fc-al6 .ep-price-grid,
+      .ephec-fc-al6 .ep-fine {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ephec-fc-al6 .ep-audience::before {
+        width: 80%;
+        height: 140px;
+      }
+
+      .ephec-fc-al6 .ep-hero,
+      .ephec-fc-al6 .ep-prices,
+      .ephec-fc-al6 .ep-cta {
+        padding: 36px 22px;
+      }
+
+      .ephec-fc-al6 .ep-program {
+        padding: 40px 16px;
+      }
+
+      .ephec-fc-al6 .ep-tile {
+        padding: 32px 24px;
+      }
+
+      .ephec-fc-al6 .ep-session {
+        padding: 26px 22px;
+      }
+
+      .ephec-fc-al6 .ep-fact {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2px;
+      }
+
+      .ephec-fc-al6 .ep-prices::before {
+        font-size: 16rem;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ephec-fc-al6 .ep-btn {
+        transition: none;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .ephec-fc-al6 .ep-hero,
+      .ephec-fc-al6 .ep-tile,
+      .ephec-fc-al6 .ep-session,
+      .ephec-fc-al6 .ep-prices,
+      .ephec-fc-al6 .ep-cta,
+      .ephec-fc-al6 .ep-btn {
+        border: 1px solid CanvasText;
+      }
+    }
+  </style>
+
+
+  <!-- ==================================================
+       1. EN-TÊTE
+       ================================================== -->
+
+  <section class="ep-hero ep-on-dark" aria-labelledby="ep-main-title">
+
+    <div>
+      <div class="ep-hero-kicker">
+        <span class="ep-icon" aria-hidden="true">
+          <!-- Icône « Formation continue » (livre) du site EPHEC -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+            <path d="M4 17a2 2 0 0 1 2-2h13"></path>
+            <path d="M10 3v6l2-1.4L14 9V3"></path>
+          </svg>
+        </span>
+        Formation continue · PME-TPE
+      </div>
+
+      <h3 id="ep-main-title" class="ep-hero-title">
+        Gestion administrative et <span class="ep-accent">légale</span> de PME-TPE
+      </h3>
+
+      <p class="ep-hero-lead">
+        Huit soirées en ligne pour maîtriser les obligations légales, comptables, fiscales, TVA et sociales d’une petite entreprise, avec des cas réels et des check-lists à réutiliser dès le lendemain.
+      </p>
+
+      <div class="ep-hero-actions">
+        <!-- TODO : remplacer # par l’URL du formulaire d’inscription. -->
+        <a class="ep-btn ep-btn-turquoise" href="#">S’inscrire</a>
+        <a class="ep-btn ep-btn-outline-light" href="#ep-program-title">Voir le programme</a>
+      </div>
+    </div>
+
+    <div class="ep-facts">
+      <div class="ep-fact">
+        <span class="ep-fact-label">Dates</span>
+        <span class="ep-fact-value">05.01 → 23.02.2027<small>8 mardis consécutifs</small></span>
+      </div>
+      <div class="ep-fact">
+        <span class="ep-fact-label">Horaire</span>
+        <span class="ep-fact-value">19h30 – 21h30</span>
+      </div>
+      <div class="ep-fact">
+        <span class="ep-fact-label">Format</span>
+        <span class="ep-fact-value">100 % en ligne<small>Zoom ou Teams</small></span>
+      </div>
+      <div class="ep-fact">
+        <span class="ep-fact-label">Prix</span>
+        <span class="ep-fact-value">499 € TTC le cycle<small>ou 75 € la séance</small></span>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       2. POUR QUI
+       ================================================== -->
+
+  <section class="ep-audience" aria-labelledby="ep-audience-title">
+
+    <div class="ep-audience-head">
+      <h3 id="ep-audience-title" class="ep-h">
+        Une formation <span class="ep-accent">pour vous</span> si…
+      </h3>
+      <p class="ep-intro">
+        Aucun prérequis : la formation est ouverte à tous les secteurs, quelle que soit votre formation de base.
+      </p>
+    </div>
+
+    <article class="ep-tile ep-tile-mint">
+      <span class="ep-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+          <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+          <path d="M8 8h8M8 12h8M8 16h5"></path>
+        </svg>
+      </span>
+      <h4 class="ep-tile-title">Vous gérez l’administratif d’une PME</h4>
+      <p>
+        Assistant·e de direction, responsable administratif, juridique ou comptable : vous voulez savoir précisément ce qui relève de votre fonction, et jusqu’où va votre responsabilité.
+      </p>
+    </article>
+
+    <article class="ep-tile ep-tile-dark ep-on-dark">
+      <span class="ep-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+          <path d="M3 21h18"></path>
+          <path d="M5 21V8l7-5 7 5v13"></path>
+          <path d="M10 21v-6h4v6"></path>
+        </svg>
+      </span>
+      <h4 class="ep-tile-title">Vous dirigez une petite entreprise</h4>
+      <p>
+        Entrepreneur·e ou dirigeant·e de PME, vous voulez sécuriser vos assemblées générales, vos dépôts, votre TVA et vos obligations d’employeur, et éviter amendes et litiges avec l’administration.
+      </p>
+    </article>
+
+  </section>
+
+
+  <!-- ==================================================
+       3. PROGRAMME
+       ================================================== -->
+
+  <section class="ep-program" aria-labelledby="ep-program-title">
+
+    <div class="ep-program-head">
+      <div>
+        <h3 id="ep-program-title" class="ep-h">
+          Le <span class="ep-accent">programme</span>, séance par séance
+        </h3>
+        <p class="ep-intro">
+          Chaque séance peut être suivie seule ou dans le cadre du cycle complet.
+        </p>
+      </div>
+      <p class="ep-program-count"><strong>8 × 2 h</strong>les mardis, de 19h30 à 21h30</p>
+    </div>
+
+    <!--
+      IMPORTANT : le document source donne 8 modules et 8 dates sans
+      les associer explicitement. L’association suit leur ordre respectif.
+    -->
+
+    <div class="ep-sessions">
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">01</span>
+          <span class="ep-tag">05.01.2027</span>
+        </div>
+        <h4 class="ep-session-title">Tenir l’agenda légal de l’entreprise</h4>
+        <ul class="ep-list">
+          <li>Les obligations légales qui rythment l’année d’une PME, et celles qui vous concernent</li>
+          <li>Organiser assemblées générales et conseils d’administration</li>
+          <li>Préparer et déposer les documents obligatoires</li>
+          <li>Construire votre calendrier administratif et fiscal</li>
+        </ul>
+        <span class="ep-chip">Agenda légal</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">02</span>
+          <span class="ep-tag">12.01.2027</span>
+        </div>
+        <h4 class="ep-session-title">Qui décide, qui est responsable</h4>
+        <ul class="ep-list">
+          <li>Le fonctionnement réel des organes de gestion d’une société</li>
+          <li>Les rapports et formalités légales obligatoires</li>
+          <li>Limiter la responsabilité des administrateurs, dirigeants et responsables internes</li>
+          <li>Repérer les situations à risque avant qu’elles ne dégénèrent</li>
+        </ul>
+        <span class="ep-chip">Gouvernance</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">03</span>
+          <span class="ep-tag">19.01.2027</span>
+        </div>
+        <h4 class="ep-session-title">Les bases comptables, pour qui n’est pas comptable</h4>
+        <ul class="ep-list">
+          <li>L’organisation comptable d’une PME</li>
+          <li>Les nouvelles exigences de la facturation électronique</li>
+          <li>Les mécanismes comptables utiles à votre fonction</li>
+          <li>Archivage et conservation des documents</li>
+        </ul>
+        <span class="ep-chip">Comptabilité</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">04</span>
+          <span class="ep-tag">26.01.2027</span>
+        </div>
+        <h4 class="ep-session-title">Réduire la charge fiscale, légalement</h4>
+        <ul class="ep-list">
+          <li>Les dépenses fiscalement déductibles</li>
+          <li>Les avantages de toute nature et leur impact</li>
+          <li>Les principes de la fiscalité des entreprises</li>
+          <li>Répondre à un contrôle ou à une demande de l’administration</li>
+        </ul>
+        <span class="ep-chip">Fiscalité</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">05</span>
+          <span class="ep-tag">02.02.2027</span>
+        </div>
+        <h4 class="ep-session-title">Vos obligations et vos droits en matière de TVA</h4>
+        <ul class="ep-list">
+          <li>Les régimes et mécanismes de la TVA belge</li>
+          <li>Les opérations intracommunautaires et les cas qui posent problème</li>
+          <li>Déclarations, paiements et contrôles : les bonnes pratiques</li>
+          <li>Les droits et recours de l’assujetti</li>
+        </ul>
+        <span class="ep-chip">TVA</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">06</span>
+          <span class="ep-tag">09.02.2027</span>
+        </div>
+        <h4 class="ep-session-title">Les règles sociales indispensables à l’employeur</h4>
+        <ul class="ep-list">
+          <li>Embauche et fin de collaboration</li>
+          <li>Les obligations de l’employeur</li>
+          <li>Cotisations et formalités sociales</li>
+          <li>Les possibilités actuelles d’optimisation salariale</li>
+        </ul>
+        <span class="ep-chip">Droit social</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">07</span>
+          <span class="ep-tag">16.02.2027</span>
+        </div>
+        <h4 class="ep-session-title">Anticiper les risques de l’activité</h4>
+        <ul class="ep-list">
+          <li>Les risques les plus fréquents dans les PME</li>
+          <li>Les sanctions possibles et comment s’en prémunir</li>
+          <li>Limiter la responsabilité des dirigeants et de leurs proches collaborateurs</li>
+          <li>Les alternatives aux procédures judiciaires classiques</li>
+        </ul>
+        <span class="ep-chip">Gestion des risques</span>
+      </article>
+
+      <article class="ep-session">
+        <div class="ep-session-top">
+          <span class="ep-num">08</span>
+          <span class="ep-tag">23.02.2027</span>
+        </div>
+        <h4 class="ep-session-title">Les outils numériques qui font gagner du temps</h4>
+        <ul class="ep-list">
+          <li>Les plateformes administratives, fiscales et sociales</li>
+          <li>Les outils numériques utiles à une PME</li>
+          <li>Ce qui vaut la peine d’être automatisé</li>
+          <li>Simplifier vos processus administratifs</li>
+        </ul>
+        <span class="ep-chip">Outils digitaux</span>
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       4. TARIFS + CONDITIONS
+       ================================================== -->
+
+  <section class="ep-prices ep-on-dark" aria-labelledby="ep-price-title">
+
+    <span class="ep-dash" aria-hidden="true"></span>
+
+    <h3 id="ep-price-title" class="ep-h">
+      Le cycle complet ou <span class="ep-accent">à la carte</span>
+    </h3>
+
+    <div class="ep-price-grid">
+
+      <article class="ep-price-card is-main">
+        <h4 class="ep-price-name">Cycle complet · 8 séances</h4>
+        <div class="ep-price-row">
+          <span class="ep-price-who">Tarif général</span>
+          <span class="ep-price">499 € <small>TTC</small></span>
+          <span class="ep-saving">au lieu de 600 € en séances séparées</span>
+        </div>
+        <div class="ep-price-row">
+          <span class="ep-price-who">Alumni EPHEC</span>
+          <span class="ep-price">350 € <small>TTC</small></span>
+          <span class="ep-saving">au lieu de 440 € en séances séparées</span>
+        </div>
+      </article>
+
+      <article class="ep-price-card">
+        <h4 class="ep-price-name">À la séance</h4>
+        <div class="ep-price-row">
+          <span class="ep-price-who">Tarif général</span>
+          <span class="ep-price">75 €</span>
+        </div>
+        <div class="ep-price-row">
+          <span class="ep-price-who">Alumni EPHEC</span>
+          <span class="ep-price">55 €</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="ep-fine">
+      <p>
+        <strong>Attestation de réussite</strong>
+        Délivrée aux participants ayant suivi au moins 80 % des séances (soit 7 sur 8) et réussi le test QCM de fin de cycle.
+      </p>
+      <p>
+        <strong>Désistement</strong>
+        Remboursement intégral jusqu’à 15 jours ouvrables avant la séance, puis remboursement de 70 %.
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- ==================================================
+       5. INSCRIPTION
+       ================================================== -->
+
+  <section class="ep-cta" aria-labelledby="ep-cta-title">
+    <div>
+      <h3 id="ep-cta-title" class="ep-h">
+        Première séance le 05.01.2027
+      </h3>
+      <p>Inscription au cycle complet ou à une séance isolée.</p>
+    </div>
+    <!-- TODO : remplacer # par l’URL du formulaire d’inscription. -->
+    <a class="ep-btn ep-btn-black" href="#">S’inscrire</a>
+  </section>
+
+</div>
