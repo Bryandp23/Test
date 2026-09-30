@@ -1,0 +1,858 @@
+<div class="ephec-al4">
+
+  <style>
+    /* Mise en page : une fiche de formation lue comme un échéancier.
+       Pas de cartes empilées : des sections séparées par des filets,
+       une seule zone colorée (l'inscription), le programme en lignes datées. */
+
+    .ephec-al4 {
+      --al4-brand: #007965;
+      --al4-brand-deep: #00564a;
+      --al4-ink: #10231f;
+      --al4-text: #3b4b47;
+      --al4-muted: #5f6f6a;
+      --al4-line: #d3dfdb;
+      --al4-tint: #eef5f2;
+      --al4-paper: #ffffff;
+
+      --al4-fs-title: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+      --al4-fs-h2: 1.3rem;
+      --al4-fs-h3: 1.06rem;
+      --al4-fs-body: 1rem;
+      --al4-fs-small: .9rem;
+      --al4-fs-label: .75rem;
+
+      display: grid;
+      gap: 56px;
+      max-width: 60rem;
+      margin-top: 24px;
+      color: var(--al4-text);
+      font-family: inherit;
+      font-size: var(--al4-fs-body);
+      line-height: 1.6;
+    }
+
+    .ephec-al4 *,
+    .ephec-al4 *::before,
+    .ephec-al4 *::after {
+      box-sizing: border-box;
+    }
+
+    .ephec-al4 > section {
+      min-width: 0;
+      scroll-margin-top: 120px;
+    }
+
+    .ephec-al4 h2,
+    .ephec-al4 h3,
+    .ephec-al4 p,
+    .ephec-al4 ul,
+    .ephec-al4 ol,
+    .ephec-al4 dl,
+    .ephec-al4 dd {
+      margin: 0;
+    }
+
+    .ephec-al4 h2,
+    .ephec-al4 h3 {
+      color: var(--al4-ink);
+      line-height: 1.3;
+      text-wrap: balance;
+    }
+
+    .ephec-al4 h2 {
+      font-size: var(--al4-fs-h2);
+      font-weight: 700;
+    }
+
+    .ephec-al4 h3 {
+      font-size: var(--al4-fs-h3);
+      font-weight: 700;
+    }
+
+    .ephec-al4 .al4-label {
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-label);
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .ephec-al4 .al4-section-head {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 20px;
+      padding-top: 18px;
+      border-top: 2px solid var(--al4-ink);
+    }
+
+    .ephec-al4 .al4-prose {
+      max-width: 65ch;
+    }
+
+    .ephec-al4 a:focus-visible {
+      outline: 3px solid var(--al4-ink);
+      outline-offset: 3px;
+    }
+
+
+    /* ---------- En-tête ---------- */
+
+    .ephec-al4 .al4-intro {
+      display: grid;
+      gap: 16px;
+    }
+
+    .ephec-al4 .al4-title {
+      max-width: 22em;
+      color: var(--al4-ink);
+      font-size: var(--al4-fs-title);
+      font-weight: 700;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    .ephec-al4 .al4-lead {
+      max-width: 60ch;
+      font-size: 1.08rem;
+    }
+
+    .ephec-al4 .al4-facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 12px;
+      border-top: 1px solid var(--al4-line);
+      border-bottom: 1px solid var(--al4-line);
+    }
+
+    .ephec-al4 .al4-facts > div {
+      display: grid;
+      align-content: start;
+      gap: 4px;
+      padding: 14px 16px 14px 0;
+    }
+
+    .ephec-al4 .al4-facts > div + div {
+      padding-left: 16px;
+      border-left: 1px solid var(--al4-line);
+    }
+
+    .ephec-al4 .al4-facts dd {
+      color: var(--al4-ink);
+      font-weight: 600;
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-al4 .al4-facts dd small {
+      display: block;
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+      font-weight: 400;
+    }
+
+    .ephec-al4 .al4-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 24px;
+      margin-top: 8px;
+    }
+
+    .ephec-al4 .al4-btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 4px;
+      background: var(--al4-brand);
+      color: var(--al4-paper);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .ephec-al4 .al4-btn:hover {
+      background: var(--al4-brand-deep);
+    }
+
+    .ephec-al4 .al4-link {
+      color: var(--al4-brand-deep);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+
+    /* ---------- Pourquoi / Pour qui ---------- */
+
+    .ephec-al4 .al4-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px;
+    }
+
+    .ephec-al4 .al4-two-col > div {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .ephec-al4 .al4-note {
+      display: grid;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .ephec-al4 .al4-risks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ephec-al4 .al4-risks li {
+      padding: 4px 10px;
+      border: 1px solid var(--al4-line);
+      border-radius: 4px;
+      color: var(--al4-ink);
+      font-size: var(--al4-fs-small);
+    }
+
+
+    /* ---------- Calendrier (rail des 8 mardis) ---------- */
+
+    .ephec-al4 .al4-rail {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 4px;
+      margin-bottom: 8px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ephec-al4 .al4-rail a {
+      display: grid;
+      gap: 2px;
+      padding: 8px 6px;
+      border-top: 3px solid var(--al4-brand);
+      background: var(--al4-tint);
+      color: var(--al4-ink);
+      text-align: center;
+      text-decoration: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-al4 .al4-rail a:hover {
+      background: var(--al4-line);
+    }
+
+    .ephec-al4 .al4-rail .al4-rail-day {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .ephec-al4 .al4-rail .al4-rail-month {
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-label);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .ephec-al4 .al4-rail-note {
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+    }
+
+
+    /* ---------- Programme (lignes datées) ---------- */
+
+    .ephec-al4 .al4-sessions {
+      margin-top: 20px;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--al4-line);
+    }
+
+    .ephec-al4 .al4-session {
+      display: grid;
+      grid-template-columns: 7.5rem minmax(0, 1fr);
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--al4-line);
+      scroll-margin-top: 120px;
+    }
+
+    .ephec-al4 .al4-when {
+      display: grid;
+      align-content: start;
+      gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-al4 .al4-when time {
+      color: var(--al4-ink);
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .ephec-al4 .al4-when span {
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+    }
+
+    .ephec-al4 .al4-what {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .ephec-al4 .al4-what .al4-label {
+      color: var(--al4-brand-deep);
+    }
+
+    .ephec-al4 .al4-points {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px 28px;
+      margin-top: 4px;
+      padding-left: 1.1em;
+      font-size: var(--al4-fs-small);
+    }
+
+    .ephec-al4 .al4-points li::marker {
+      color: var(--al4-brand);
+    }
+
+    .ephec-al4 .al4-outcome {
+      max-width: 65ch;
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+    }
+
+    .ephec-al4 .al4-outcome strong {
+      color: var(--al4-ink);
+      font-weight: 600;
+    }
+
+
+    /* ---------- Méthode ---------- */
+
+    .ephec-al4 .al4-method {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 32px;
+      padding-left: 1.1em;
+    }
+
+    .ephec-al4 .al4-method li::marker {
+      color: var(--al4-brand);
+    }
+
+
+    /* ---------- Tarifs ---------- */
+
+    .ephec-al4 .al4-table-wrap {
+      overflow-x: auto;
+    }
+
+    .ephec-al4 .al4-prices {
+      width: 100%;
+      min-width: 30rem;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ephec-al4 .al4-prices th,
+    .ephec-al4 .al4-prices td {
+      padding: 12px 16px 12px 0;
+      border-bottom: 1px solid var(--al4-line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .ephec-al4 .al4-prices thead th {
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-label);
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .ephec-al4 .al4-prices tbody th {
+      color: var(--al4-ink);
+      font-weight: 600;
+    }
+
+    .ephec-al4 .al4-prices tbody th small {
+      display: block;
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+      font-weight: 400;
+    }
+
+    .ephec-al4 .al4-prices td {
+      color: var(--al4-ink);
+      font-size: 1.1rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ephec-al4 .al4-prices td small {
+      display: block;
+      color: var(--al4-brand-deep);
+      font-size: var(--al4-fs-small);
+      font-weight: 600;
+    }
+
+    .ephec-al4 .al4-fineprint {
+      display: grid;
+      gap: 4px;
+      margin-top: 16px;
+      padding-left: 1.1em;
+      color: var(--al4-muted);
+      font-size: var(--al4-fs-small);
+    }
+
+
+    /* ---------- Inscription (seule zone colorée) ---------- */
+
+    .ephec-al4 .al4-signup {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 20px 32px;
+      padding: 28px 32px;
+      border-radius: 6px;
+      background: var(--al4-brand);
+      color: var(--al4-paper);
+    }
+
+    .ephec-al4 .al4-signup h2 {
+      color: var(--al4-paper);
+    }
+
+    .ephec-al4 .al4-signup p {
+      margin-top: 6px;
+      max-width: 55ch;
+    }
+
+    .ephec-al4 .al4-signup .al4-btn {
+      background: var(--al4-paper);
+      color: var(--al4-brand-deep);
+    }
+
+    .ephec-al4 .al4-signup .al4-btn:hover {
+      background: var(--al4-tint);
+    }
+
+    .ephec-al4 .al4-signup a:focus-visible {
+      outline-color: var(--al4-paper);
+    }
+
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 860px) {
+      .ephec-al4 .al4-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ephec-al4 .al4-facts > div:nth-child(3) {
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .ephec-al4 .al4-facts > div:nth-child(n + 3) {
+        border-top: 1px solid var(--al4-line);
+      }
+
+      .ephec-al4 .al4-rail {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .ephec-al4 .al4-points,
+      .ephec-al4 .al4-method {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ephec-al4 {
+        gap: 44px;
+      }
+
+      .ephec-al4 .al4-facts,
+      .ephec-al4 .al4-two-col,
+      .ephec-al4 .al4-signup {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ephec-al4 .al4-facts > div,
+      .ephec-al4 .al4-facts > div + div {
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .ephec-al4 .al4-facts > div + div {
+        border-top: 1px solid var(--al4-line);
+      }
+
+      .ephec-al4 .al4-session {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .ephec-al4 .al4-when {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 4px 10px;
+      }
+
+      .ephec-al4 .al4-signup {
+        padding: 24px 20px;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .ephec-al4 .al4-btn,
+      .ephec-al4 .al4-signup {
+        border: 1px solid CanvasText;
+      }
+    }
+  </style>
+
+
+  <!-- ================= EN-TÊTE ================= -->
+
+  <section class="al4-intro" aria-labelledby="al4-title">
+
+    <p class="al4-label">Formation continue · Business · PME-TPE</p>
+
+    <h2 id="al4-title" class="al4-title">
+      Gestion administrative et légale de PME-TPE
+    </h2>
+
+    <p class="al4-lead">
+      Huit soirées pour mettre en ordre les obligations légales, comptables, fiscales, TVA et sociales d’une petite entreprise, avec des cas concrets et des outils à réutiliser dès le lendemain.
+    </p>
+
+    <dl class="al4-facts">
+      <div>
+        <dt class="al4-label">Dates</dt>
+        <dd>5 janv. → 23 févr. 2027<small>8 mardis consécutifs</small></dd>
+      </div>
+      <div>
+        <dt class="al4-label">Horaire</dt>
+        <dd>19h30 – 21h30<small>2 h par séance</small></dd>
+      </div>
+      <div>
+        <dt class="al4-label">Format</dt>
+        <dd>En ligne<small>Zoom ou Teams</small></dd>
+      </div>
+      <div>
+        <dt class="al4-label">Prix</dt>
+        <dd>499 € TTC le cycle<small>ou 75 € la séance</small></dd>
+      </div>
+    </dl>
+
+    <div class="al4-actions">
+      <!-- TODO : remplacer par l’URL réelle du formulaire d’inscription. -->
+      <a class="al4-btn" href="#al4-signup">S’inscrire</a>
+      <a class="al4-link" href="#al4-program">Voir les 8 séances</a>
+    </div>
+
+  </section>
+
+
+  <!-- ================= POURQUOI / POUR QUI ================= -->
+
+  <section aria-labelledby="al4-why">
+
+    <div class="al4-section-head">
+      <h2 id="al4-why">À qui s’adresse la formation</h2>
+    </div>
+
+    <div class="al4-two-col">
+
+      <div>
+        <h3>Assistants de direction et responsables internes</h3>
+        <p>Vous gérez l’administratif, le juridique ou la comptabilité d’une PME et voulez savoir précisément ce qui relève de votre fonction, et jusqu’où va votre responsabilité.</p>
+      </div>
+
+      <div>
+        <h3>Dirigeants et entrepreneurs</h3>
+        <p>Vous dirigez une petite ou moyenne entreprise et voulez sécuriser vos assemblées générales, vos dépôts, votre TVA et vos obligations d’employeur sans dépendre entièrement de votre comptable.</p>
+      </div>
+
+    </div>
+
+    <div class="al4-prose al4-note">
+      <p>Aucun prérequis : la formation est ouverte à tous les secteurs, quelle que soit votre formation de base. Une formalité oubliée peut entraîner :</p>
+      <ul class="al4-risks">
+        <li>des amendes et pénalités</li>
+        <li>la mise en cause du dirigeant ou du responsable</li>
+        <li>un litige avec l’administration</li>
+      </ul>
+    </div>
+
+  </section>
+
+
+  <!-- ================= PROGRAMME ================= -->
+
+  <section id="al4-program" aria-labelledby="al4-program-title">
+
+    <div class="al4-section-head">
+      <h2 id="al4-program-title">Programme</h2>
+      <p class="al4-rail-note">Chaque séance peut être suivie seule ou dans le cadre du cycle complet.</p>
+    </div>
+
+    <!--
+      IMPORTANT : le document source donne 8 modules et 8 dates sans
+      les associer explicitement. L’association suit leur ordre respectif :
+      à faire valider avant publication.
+    -->
+
+    <ol class="al4-rail" aria-label="Dates des séances">
+      <li><a href="#al4-s1"><span class="al4-rail-day">5</span><span class="al4-rail-month">janv.</span></a></li>
+      <li><a href="#al4-s2"><span class="al4-rail-day">12</span><span class="al4-rail-month">janv.</span></a></li>
+      <li><a href="#al4-s3"><span class="al4-rail-day">19</span><span class="al4-rail-month">janv.</span></a></li>
+      <li><a href="#al4-s4"><span class="al4-rail-day">26</span><span class="al4-rail-month">janv.</span></a></li>
+      <li><a href="#al4-s5"><span class="al4-rail-day">2</span><span class="al4-rail-month">févr.</span></a></li>
+      <li><a href="#al4-s6"><span class="al4-rail-day">9</span><span class="al4-rail-month">févr.</span></a></li>
+      <li><a href="#al4-s7"><span class="al4-rail-day">16</span><span class="al4-rail-month">févr.</span></a></li>
+      <li><a href="#al4-s8"><span class="al4-rail-day">23</span><span class="al4-rail-month">févr.</span></a></li>
+    </ol>
+
+    <ol class="al4-sessions">
+
+      <li class="al4-session" id="al4-s1">
+        <div class="al4-when">
+          <time datetime="2027-01-05T19:30">Mar. 5 janv.</time>
+          <span>Séance 1 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Agenda légal</p>
+          <h3>Tenir l’agenda légal de l’entreprise</h3>
+          <ul class="al4-points">
+            <li>Les obligations légales qui rythment l’année d’une PME, et celles qui vous concernent</li>
+            <li>Organiser assemblées générales et conseils d’administration</li>
+            <li>Préparer et déposer les documents obligatoires</li>
+            <li>Construire votre calendrier administratif et fiscal</li>
+          </ul>
+          <p class="al4-outcome"><strong>Vous repartez avec</strong> un calendrier des échéances adapté à votre société.</p>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s2">
+        <div class="al4-when">
+          <time datetime="2027-01-12T19:30">Mar. 12 janv.</time>
+          <span>Séance 2 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Gouvernance</p>
+          <h3>Qui décide, qui est responsable</h3>
+          <ul class="al4-points">
+            <li>Le fonctionnement réel des organes de gestion d’une société</li>
+            <li>Les rapports et formalités légales obligatoires</li>
+            <li>Limiter la responsabilité des administrateurs, dirigeants et responsables internes</li>
+            <li>Repérer les situations à risque avant qu’elles ne dégénèrent</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s3">
+        <div class="al4-when">
+          <time datetime="2027-01-19T19:30">Mar. 19 janv.</time>
+          <span>Séance 3 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Comptabilité</p>
+          <h3>Les bases comptables, pour qui n’est pas comptable</h3>
+          <ul class="al4-points">
+            <li>L’organisation comptable d’une PME</li>
+            <li>Les nouvelles exigences de la facturation électronique</li>
+            <li>Les mécanismes comptables utiles à votre fonction</li>
+            <li>Archivage et durée de conservation des documents</li>
+          </ul>
+          <p class="al4-outcome"><strong>Vous repartez avec</strong> les notions nécessaires pour dialoguer d’égal à égal avec votre comptable.</p>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s4">
+        <div class="al4-when">
+          <time datetime="2027-01-26T19:30">Mar. 26 janv.</time>
+          <span>Séance 4 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Fiscalité</p>
+          <h3>Réduire la charge fiscale, légalement</h3>
+          <ul class="al4-points">
+            <li>Les dépenses fiscalement déductibles</li>
+            <li>Les avantages de toute nature et leur impact</li>
+            <li>Les principes de la fiscalité des entreprises</li>
+            <li>Répondre à un contrôle ou à une demande de l’administration</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s5">
+        <div class="al4-when">
+          <time datetime="2027-02-02T19:30">Mar. 2 févr.</time>
+          <span>Séance 5 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">TVA</p>
+          <h3>Vos obligations et vos droits en matière de TVA</h3>
+          <ul class="al4-points">
+            <li>Les régimes et mécanismes de la TVA belge</li>
+            <li>Les opérations intracommunautaires et les cas qui posent problème</li>
+            <li>Déclarations, paiements et contrôles : les bonnes pratiques</li>
+            <li>Les droits et recours de l’assujetti</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s6">
+        <div class="al4-when">
+          <time datetime="2027-02-09T19:30">Mar. 9 févr.</time>
+          <span>Séance 6 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Droit social</p>
+          <h3>Les règles sociales indispensables à l’employeur</h3>
+          <ul class="al4-points">
+            <li>Embauche et fin de collaboration</li>
+            <li>Les obligations de l’employeur</li>
+            <li>Cotisations et formalités sociales</li>
+            <li>Les possibilités actuelles d’optimisation salariale</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s7">
+        <div class="al4-when">
+          <time datetime="2027-02-16T19:30">Mar. 16 févr.</time>
+          <span>Séance 7 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Gestion des risques</p>
+          <h3>Anticiper les risques de l’activité</h3>
+          <ul class="al4-points">
+            <li>Les risques les plus fréquents dans les PME</li>
+            <li>Les sanctions possibles et comment s’en prémunir</li>
+            <li>Limiter la responsabilité des dirigeants et de leurs proches collaborateurs</li>
+            <li>Les alternatives aux procédures judiciaires classiques</li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="al4-session" id="al4-s8">
+        <div class="al4-when">
+          <time datetime="2027-02-23T19:30">Mar. 23 févr.</time>
+          <span>Séance 8 sur 8</span>
+        </div>
+        <div class="al4-what">
+          <p class="al4-label">Outils numériques</p>
+          <h3>Les outils qui font gagner du temps</h3>
+          <ul class="al4-points">
+            <li>Les plateformes administratives, fiscales et sociales</li>
+            <li>Les outils numériques utiles à une PME</li>
+            <li>Ce qui vaut la peine d’être automatisé</li>
+            <li>Simplifier vos processus administratifs</li>
+          </ul>
+        </div>
+      </li>
+
+    </ol>
+
+  </section>
+
+
+  <!-- ================= MÉTHODE ================= -->
+
+  <section aria-labelledby="al4-method-title">
+
+    <div class="al4-section-head">
+      <h2 id="al4-method-title">Déroulement des séances</h2>
+    </div>
+
+    <ul class="al4-method">
+      <li>Des cas réels issus de PME</li>
+      <li>Des check-lists à appliquer telles quelles</li>
+      <li>Des formateurs qui accompagnent des entreprises au quotidien</li>
+      <li>Du temps pour poser vos propres questions</li>
+    </ul>
+
+  </section>
+
+
+  <!-- ================= TARIFS ================= -->
+
+  <section aria-labelledby="al4-price-title">
+
+    <div class="al4-section-head">
+      <h2 id="al4-price-title">Tarifs</h2>
+    </div>
+
+    <div class="al4-table-wrap">
+      <table class="al4-prices">
+        <thead>
+          <tr>
+            <th scope="col">Formule</th>
+            <th scope="col">Tarif général</th>
+            <th scope="col">Alumni EPHEC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Cycle complet<small>les 8 séances</small></th>
+            <td>499 € TTC<small>au lieu de 600 € à la séance</small></td>
+            <td>350 € TTC<small>au lieu de 440 € à la séance</small></td>
+          </tr>
+          <tr>
+            <th scope="row">À la séance<small>séances au choix</small></th>
+            <td>75 €</td>
+            <td>55 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="al4-fineprint">
+      <li>Désistement au moins 15 jours ouvrables avant la séance : remboursement intégral.</li>
+      <li>Désistement plus tardif : remboursement de 70 %.</li>
+    </ul>
+
+  </section>
+
+
+  <!-- ================= ATTESTATION ================= -->
+
+  <section aria-labelledby="al4-cert-title">
+
+    <div class="al4-section-head">
+      <h2 id="al4-cert-title">Attestation de réussite</h2>
+    </div>
+
+    <p class="al4-prose">
+      Les participants au cycle complet reçoivent l’<strong>Attestation de réussite en gestion administrative et légale de PME-TPE</strong> s’ils ont suivi au moins 80 % des séances (soit 7 sur 8) et réussi le test QCM de fin de cycle.
+    </p>
+
+  </section>
+
+
+  <!-- ================= INSCRIPTION ================= -->
+
+  <section id="al4-signup" class="al4-signup" aria-labelledby="al4-signup-title">
+    <div>
+      <h2 id="al4-signup-title">Première séance le mardi 5 janvier 2027</h2>
+      <p>Inscription au cycle complet ou à une séance isolée.</p>
+    </div>
+    <!-- TODO : remplacer par l’URL réelle du formulaire d’inscription. -->
+    <a class="al4-btn" href="#">S’inscrire</a>
+  </section>
+
+</div>
