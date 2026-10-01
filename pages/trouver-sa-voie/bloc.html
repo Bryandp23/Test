@@ -1,0 +1,363 @@
+<div class="ep-voie">
+<style>
+.ep-voie {
+  --sector: #4cc6b8; /* Institutionnel EPHEC */
+  --sector-dark: color-mix(in srgb, var(--sector) 78%, #000);
+  --sector-soft: color-mix(in srgb, var(--sector) 8%, #fff);
+  --sector-tint: color-mix(in srgb, var(--sector) 22%, #fff);
+  --sector-on-dark: color-mix(in srgb, var(--sector) 45%, #fff);
+  /* Turquoise trop clair pour du texte sur blanc : nuance foncée réservée au texte */
+  --sector-ink: color-mix(in srgb, var(--sector) 58%, #000);
+  --ink: #1d1d1d;
+  --text: rgba(29, 29, 29, .75);
+  --grey: #f6f6f6;
+  --white: #fff;
+  --ep-voie-sticky-top: 0px; /* hauteur du menu Drupal collant */
+  font-family: inherit !important;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0 48px;
+  overflow-wrap: break-word;
+}
+.ep-voie * { font-family: inherit !important; box-sizing: border-box; }
+.ep-voie ul, .ep-voie li { margin: 0; padding: 0; list-style: none; }
+.ep-voie p { margin: 0 0 1em; color: var(--text); }
+.ep-voie p:last-child { margin-bottom: 0; }
+.ep-voie h2, .ep-voie h3, .ep-voie h4 { margin: 0; color: var(--ink); font-weight: 400; letter-spacing: -.01em; }
+.ep-voie h2 { font-size: clamp(2.2rem, 5vw, 3.9rem); line-height: 1.05; }
+.ep-voie h3 { font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.08; margin-bottom: 18px; }
+.ep-voie h4 { font-size: 1.2rem; line-height: 1.2; margin-bottom: 8px; }
+.ep-voie strong { font-weight: 600; color: var(--ink); }
+.ep-voie-accent { color: var(--sector-ink); }
+.ep-voie-dash { display: block; width: 34px; height: 5px; border-radius: 3px; background: var(--sector); margin-bottom: 18px; }
+.ep-voie a:focus-visible, .ep-voie button:focus-visible { outline: 3px solid var(--sector-ink); outline-offset: 3px; border-radius: 999px; }
+.ep-voie-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ep-voie-todo { background: repeating-linear-gradient(-45deg, #fff6d6 0 10px, #fff1c2 10px 20px); border-radius: 6px; padding: 0 .3em; color: #6b5300; }
+
+/* Boutons pilule */
+.ep-voie-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 13px 14px 13px 24px; border-radius: 999px;
+  font-size: 1rem; line-height: 1.2; font-weight: 500;
+  text-decoration: none !important; border: 2px solid transparent; cursor: pointer;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.ep-voie-btn span[aria-hidden] {
+  display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  font-size: 1rem; transition: transform .2s;
+}
+.ep-voie-btn:hover span[aria-hidden] { transform: translateX(3px); }
+.ep-voie-btn--down:hover span[aria-hidden] { transform: translateY(3px); }
+.ep-voie-btn--fill { background: var(--sector); color: var(--ink) !important; }
+.ep-voie-btn--fill span[aria-hidden] { background: var(--ink); color: var(--white); }
+.ep-voie-btn--fill:hover { background: var(--sector-dark); color: var(--white) !important; }
+.ep-voie-btn--dark { background: var(--ink); color: var(--white) !important; }
+.ep-voie-btn--dark span[aria-hidden] { background: var(--sector); color: var(--ink); }
+.ep-voie-btn--dark:hover { background: #000; }
+.ep-voie-btn--outline { border-color: var(--white); color: var(--white) !important; background: transparent; }
+.ep-voie-btn--outline span[aria-hidden] { background: var(--white); color: var(--ink); }
+.ep-voie-btn--outline:hover { background: var(--white); color: var(--ink) !important; }
+.ep-voie-btn--outline:hover span[aria-hidden] { background: var(--sector); }
+
+/* En-tête */
+.ep-voie-hero {
+  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 48px;
+  align-items: end; padding: 32px 0 44px;
+}
+.ep-voie-lead { font-size: 1.2rem; line-height: 1.55; max-width: 62ch; margin-top: 22px !important; }
+.ep-voie-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.ep-voie-key { background: var(--grey); border-radius: 26px; padding: 28px; }
+.ep-voie-key h3 { font-size: 1.15rem; margin-bottom: 14px; }
+.ep-voie-key li { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-top: 1px solid rgba(29,29,29,.08); color: var(--text); }
+.ep-voie-key li:first-child { border-top: 0; padding-top: 0; }
+
+/* Pastilles d'icône */
+.ep-voie-pill-icon {
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--sector-tint); color: var(--sector-ink);
+}
+.ep-voie-pill-icon svg { width: 22px; height: 22px; }
+
+/* Sommaire collant */
+.ep-voie-toc {
+  position: sticky; top: var(--ep-voie-sticky-top); z-index: 5;
+  background: rgba(255,255,255,.94); backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(29,29,29,.08); border-bottom: 1px solid rgba(29,29,29,.08);
+  margin-bottom: 56px;
+}
+.ep-voie-toc ul { display: flex; gap: 6px; overflow-x: auto; padding: 10px 2px; scrollbar-width: thin; }
+.ep-voie-toc a {
+  display: block; white-space: nowrap; padding: 8px 16px; border-radius: 999px;
+  color: var(--text) !important; text-decoration: none !important; font-size: .95rem;
+  transition: background-color .2s, color .2s;
+}
+.ep-voie-toc a:hover { background: var(--grey); color: var(--ink) !important; }
+.ep-voie-toc a[aria-current="true"] { background: var(--ink); color: var(--white) !important; }
+
+/* Sections */
+.ep-voie-section { scroll-margin-top: calc(var(--ep-voie-sticky-top) + 80px); margin-bottom: 72px; }
+.ep-voie-split { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.ep-voie-prose { max-width: 68ch; }
+.ep-voie-panel { background: var(--grey); border-radius: 26px; padding: 30px; }
+.ep-voie-mint { background: var(--sector-soft); border-radius: 26px; padding: 32px; }
+
+/* Cartes blanches */
+.ep-voie-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+.ep-voie-card { background: var(--white); border-radius: 20px; padding: 26px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05); }
+.ep-voie-card .ep-voie-pill-icon { margin-bottom: 18px; }
+
+/* Bloc noir Tilt */
+.ep-voie-dark {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: var(--ink); color: var(--white); border-radius: 28px; padding: 56px;
+}
+.ep-voie-dark::before, .ep-voie-dark::after {
+  content: ""; position: absolute; z-index: -1; width: 70%; height: 220%;
+  top: -60%; transform: rotate(32deg); pointer-events: none;
+}
+.ep-voie-dark::before { right: -32%; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sector) 38%, transparent)); }
+.ep-voie-dark::after { right: -48%; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--sector) 60%, transparent)); }
+.ep-voie-dark h3 { color: var(--white); }
+.ep-voie-dark p { color: rgba(255,255,255,.78); }
+.ep-voie-dark .ep-voie-accent { color: var(--sector-on-dark); }
+.ep-voie-tilt-head { display: grid; grid-template-columns: minmax(0, 1.3fr) auto; gap: 32px; align-items: end; margin-bottom: 32px; }
+.ep-voie-tilt-frame {
+  position: relative; background: var(--white); border-radius: 20px; overflow: hidden;
+  min-height: 220px; display: grid; place-items: center;
+}
+.ep-voie-tilt-frame iframe { display: block; width: 100%; height: min(78vh, 760px); border: 0; }
+.ep-voie-tilt-start { text-align: center; padding: 40px 24px; }
+.ep-voie-tilt-start p { color: var(--text); max-width: 46ch; margin: 0 auto 20px; }
+.ep-voie-tilt-note { font-size: .9rem; margin-top: 16px !important; }
+.ep-voie-tilt-note a { color: var(--sector-on-dark) !important; }
+
+/* Liens et documents */
+.ep-voie-links { border-top: 1px solid rgba(29,29,29,.1); }
+.ep-voie-links li { border-bottom: 1px solid rgba(29,29,29,.1); }
+.ep-voie-links a {
+  display: flex; align-items: center; gap: 18px; padding: 20px 4px;
+  color: var(--ink) !important; text-decoration: none !important; font-size: 1.1rem;
+}
+.ep-voie-links a > span:first-child { flex: 1; }
+.ep-voie-links small { display: block; color: var(--text); font-size: .9rem; margin-top: 2px; }
+.ep-voie-badge { flex: none; font-size: .72rem; font-weight: 600; letter-spacing: .06em; padding: 4px 9px; border-radius: 999px; background: var(--grey); color: var(--ink); }
+.ep-voie-round {
+  flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--ink); color: var(--white); font-size: 1.05rem; transition: background-color .2s, color .2s;
+}
+.ep-voie-links a:hover .ep-voie-round { background: var(--sector); color: var(--ink); }
+.ep-voie-links a:hover > span:first-child { text-decoration: underline; text-underline-offset: 4px; }
+
+/* Contact */
+.ep-voie-contact { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; }
+
+@media (max-width: 1000px) {
+  .ep-voie-hero, .ep-voie-split { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .ep-voie-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ep-voie-dark { padding: 40px; }
+  .ep-voie-tilt-head { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .ep-voie-cards { grid-template-columns: minmax(0, 1fr); }
+  .ep-voie-dark { padding: 28px 20px; border-radius: 22px; }
+  .ep-voie-panel, .ep-voie-mint, .ep-voie-key { padding: 24px; }
+  .ep-voie-contact { grid-template-columns: minmax(0, 1fr); }
+  .ep-voie-section { margin-bottom: 56px; }
+  .ep-voie-tilt-frame iframe { height: 80vh; }
+}
+@media (max-width: 420px) {
+  .ep-voie-btn { width: 100%; justify-content: space-between; }
+  .ep-voie-dark { padding: 24px 16px; }
+  .ep-voie-links a { gap: 12px; font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ep-voie *, .ep-voie *::before, .ep-voie *::after { transition: none !important; scroll-behavior: auto !important; }
+}
+@media (forced-colors: active) {
+  .ep-voie-btn, .ep-voie-key, .ep-voie-panel, .ep-voie-mint, .ep-voie-card, .ep-voie-dark, .ep-voie-tilt-frame { border: 1px solid CanvasText; }
+  .ep-voie-dash, .ep-voie-round { forced-color-adjust: none; background: CanvasText; color: Canvas; }
+  .ep-voie-toc a[aria-current="true"] { outline: 2px solid Highlight; }
+}
+</style>
+
+<!-- En-tête -->
+<section class="ep-voie-hero" aria-labelledby="ep-voie-title">
+  <div>
+    <span class="ep-voie-dash" aria-hidden="true"></span>
+    <!-- TODO : titre de la page source, un mot clé dans <span class="ep-voie-accent"> -->
+    <h2 id="ep-voie-title"><span class="ep-voie-todo">[Titre de la page]</span> <span class="ep-voie-accent">[mot clé]</span></h2>
+    <!-- TODO : chapô (premier paragraphe de la page source) -->
+    <p class="ep-voie-lead"><span class="ep-voie-todo">[Chapô : premier paragraphe de la page source, sans modification.]</span></p>
+    <div class="ep-voie-actions">
+      <!-- Ajout d'interface : accès direct au test Tilt plus bas dans la page -->
+      <a class="ep-voie-btn ep-voie-btn--fill ep-voie-btn--down" href="#ep-voie-tilt">Faire le test Tilt <span aria-hidden="true">↓</span></a>
+      <!-- TODO : action principale de la page source (lien et libellé) -->
+      <a class="ep-voie-btn ep-voie-btn--dark" href="#">[Action principale] <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <aside class="ep-voie-key" aria-labelledby="ep-voie-key-title">
+    <!-- TODO : informations clés reprises de la page source (aucune invention) -->
+    <h3 id="ep-voie-key-title"><span class="ep-voie-todo">[Titre de l'encadré clé]</span></h3>
+    <ul>
+      <li><span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span><span class="ep-voie-todo">[Information clé 1]</span></li>
+      <li><span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5-9 5z"/><path d="M7 11.5V16c0 1.5 2.5 3 5 3s5-1.5 5-3v-4.5"/></svg></span><span class="ep-voie-todo">[Information clé 2]</span></li>
+      <li><span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="ep-voie-todo">[Information clé 3]</span></li>
+    </ul>
+  </aside>
+</section>
+
+<!-- Ajout d'interface : sommaire collant, section active surlignée par le script -->
+<nav class="ep-voie-toc" aria-label="Sommaire de la page">
+  <ul>
+    <li><a href="#ep-voie-s1">[Intertitre 1]</a></li>
+    <li><a href="#ep-voie-s2">[Intertitre 2]</a></li>
+    <li><a href="#ep-voie-tilt">Test Tilt</a></li>
+    <li><a href="#ep-voie-s3">[Intertitre 3]</a></li>
+    <li><a href="#ep-voie-ressources">[Liens utiles]</a></li>
+    <li><a href="#ep-voie-contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Section texte + panneau gris -->
+<section class="ep-voie-section" id="ep-voie-s1" aria-labelledby="ep-voie-s1-title">
+  <div class="ep-voie-split">
+    <div class="ep-voie-prose">
+      <span class="ep-voie-dash" aria-hidden="true"></span>
+      <!-- TODO : intertitre et paragraphes de la page source -->
+      <h3 id="ep-voie-s1-title"><span class="ep-voie-todo">[Intertitre 1]</span></h3>
+      <p><span class="ep-voie-todo">[Paragraphe de la page source.]</span></p>
+      <p><span class="ep-voie-todo">[Paragraphe de la page source.]</span></p>
+    </div>
+    <aside class="ep-voie-panel" aria-label="À retenir">
+      <!-- TODO : un passage de la page source qui mérite d'être isolé (ou supprimer ce panneau) -->
+      <h4><span class="ep-voie-todo">[Titre du panneau]</span></h4>
+      <p><span class="ep-voie-todo">[Texte du panneau.]</span></p>
+    </aside>
+  </div>
+</section>
+
+<!-- Section cartes blanches (critères, pistes, conseils…) -->
+<section class="ep-voie-section" id="ep-voie-s2" aria-labelledby="ep-voie-s2-title">
+  <span class="ep-voie-dash" aria-hidden="true"></span>
+  <!-- TODO : intertitre et éléments de liste de la page source -->
+  <h3 id="ep-voie-s2-title"><span class="ep-voie-todo">[Intertitre 2]</span></h3>
+  <p class="ep-voie-prose"><span class="ep-voie-todo">[Introduction de la section.]</span></p>
+  <ul class="ep-voie-cards">
+    <li class="ep-voie-card">
+      <span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>
+      <h4><span class="ep-voie-todo">[Élément 1]</span></h4>
+      <p><span class="ep-voie-todo">[Texte de l'élément.]</span></p>
+    </li>
+    <li class="ep-voie-card">
+      <span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
+      <h4><span class="ep-voie-todo">[Élément 2]</span></h4>
+      <p><span class="ep-voie-todo">[Texte de l'élément.]</span></p>
+    </li>
+    <li class="ep-voie-card">
+      <span class="ep-voie-pill-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7M3 12.5h18"/></svg></span>
+      <h4><span class="ep-voie-todo">[Élément 3]</span></h4>
+      <p><span class="ep-voie-todo">[Texte de l'élément.]</span></p>
+    </li>
+  </ul>
+</section>
+
+<!-- Ajout demandé : test d'orientation Tilt (zone forte de la page) -->
+<section class="ep-voie-section ep-voie-dark" id="ep-voie-tilt" aria-labelledby="ep-voie-tilt-title">
+  <div class="ep-voie-tilt-head">
+    <div>
+      <span class="ep-voie-dash" aria-hidden="true"></span>
+      <!-- TODO : titre et phrase d'introduction de Tilt à valider par l'EPHEC -->
+      <h3 id="ep-voie-tilt-title">Faire le test <span class="ep-voie-accent">Tilt</span></h3>
+      <p><span class="ep-voie-todo">[Une phrase qui présente Tilt, à rédiger ou valider.]</span></p>
+    </div>
+    <a class="ep-voie-btn ep-voie-btn--outline" href="https://trouve-ta-voie-ephec.bryandp.chatgpt.site/" target="_blank" rel="noopener">Ouvrir Tilt en plein écran <span aria-hidden="true">↗</span><span class="ep-voie-sr">(nouvel onglet)</span></a>
+  </div>
+  <div class="ep-voie-tilt-frame" data-ep-voie-tilt data-src="https://trouve-ta-voie-ephec.bryandp.chatgpt.site/">
+    <div class="ep-voie-tilt-start">
+      <p>Le test s'ouvre ici, dans la page.</p>
+      <!-- Sans JavaScript, ce lien ouvre Tilt dans un nouvel onglet ; avec JavaScript, il charge Tilt dans le cadre -->
+      <a class="ep-voie-btn ep-voie-btn--dark" href="https://trouve-ta-voie-ephec.bryandp.chatgpt.site/" target="_blank" rel="noopener" data-ep-voie-tilt-load>Lancer le test <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <p class="ep-voie-tilt-note">Le cadre ne s'affiche pas ? <a href="https://trouve-ta-voie-ephec.bryandp.chatgpt.site/" target="_blank" rel="noopener">Ouvrir Tilt dans un nouvel onglet</a>.</p>
+</section>
+
+<!-- Encadré important (carte menthe) -->
+<section class="ep-voie-section" id="ep-voie-s3" aria-labelledby="ep-voie-s3-title">
+  <div class="ep-voie-mint">
+    <span class="ep-voie-dash" aria-hidden="true"></span>
+    <!-- TODO : intertitre et texte de la page source -->
+    <h3 id="ep-voie-s3-title"><span class="ep-voie-todo">[Intertitre 3]</span></h3>
+    <p class="ep-voie-prose"><span class="ep-voie-todo">[Paragraphe de la page source.]</span></p>
+  </div>
+</section>
+
+<!-- Liens et documents -->
+<section class="ep-voie-section" id="ep-voie-ressources" aria-labelledby="ep-voie-res-title">
+  <span class="ep-voie-dash" aria-hidden="true"></span>
+  <!-- TODO : liens présents dans la page source (texte et URL exacts) -->
+  <h3 id="ep-voie-res-title"><span class="ep-voie-todo">[Liens utiles]</span></h3>
+  <ul class="ep-voie-links">
+    <li><a href="#"><span><span class="ep-voie-todo">[Lien interne]</span><small><span class="ep-voie-todo">[précision facultative]</span></small></span><span class="ep-voie-round" aria-hidden="true">→</span></a></li>
+    <li><a href="#"><span><span class="ep-voie-todo">[Document PDF]</span></span><span class="ep-voie-badge">PDF</span><span class="ep-voie-round" aria-hidden="true">↓</span></a></li>
+    <li><a href="#" target="_blank" rel="noopener"><span><span class="ep-voie-todo">[Site externe]</span></span><span class="ep-voie-round" aria-hidden="true">↗</span></a></li>
+  </ul>
+</section>
+
+<!-- Contact -->
+<section class="ep-voie-section ep-voie-panel ep-voie-contact" id="ep-voie-contact" aria-labelledby="ep-voie-contact-title">
+  <div>
+    <h3 id="ep-voie-contact-title">Contact</h3>
+    <!-- TODO : coordonnées du service concerné (service d'orientation ?) -->
+    <p><span class="ep-voie-todo">[Service, adresse e-mail, téléphone.]</span></p>
+  </div>
+  <a class="ep-voie-btn ep-voie-btn--dark" href="#">[Nous contacter] <span aria-hidden="true">→</span></a>
+</section>
+
+<script>
+(function () {
+  var root = document.currentScript && document.currentScript.closest('.ep-voie');
+  if (!root) root = document.querySelector('.ep-voie');
+  if (!root) return;
+
+  /* Tilt : chargement du cadre au clic seulement */
+  var frame = root.querySelector('[data-ep-voie-tilt]');
+  var trigger = root.querySelector('[data-ep-voie-tilt-load]');
+  if (frame && trigger) {
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      var iframe = document.createElement('iframe');
+      iframe.src = frame.getAttribute('data-src');
+      iframe.title = 'Test d\'orientation Tilt';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.innerHTML = '';
+      frame.appendChild(iframe);
+      iframe.focus();
+    });
+  }
+
+  /* Sommaire : section active */
+  var links = Array.prototype.slice.call(root.querySelectorAll('.ep-voie-toc a'));
+  if (!('IntersectionObserver' in window) || !links.length) return;
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var visible = {};
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { visible[en.target.id] = en.isIntersecting; });
+    var current = null;
+    links.forEach(function (a) { var id = a.getAttribute('href').slice(1); if (!current && visible[id]) current = id; });
+    if (!current) return;
+    links.forEach(function (a) {
+      var on = a.getAttribute('href').slice(1) === current;
+      if (on) { a.setAttribute('aria-current', 'true'); var list = a.parentNode.parentNode; if (list.scrollWidth > list.clientWidth) list.scrollLeft = a.parentNode.offsetLeft - 16; }
+      else a.removeAttribute('aria-current');
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  Object.keys(map).forEach(function (id) { var s = root.querySelector('#' + id); if (s) io.observe(s); });
+})();
+</script>
+</div>
