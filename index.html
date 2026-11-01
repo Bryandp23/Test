@@ -88,6 +88,38 @@
   .az-row:hover { background: #fff; }
   .az-row .en { display: block; }
   @media (max-width: 640px) { .az-row { grid-template-columns: 1fr; gap: 4px; } }
+  .item { position: relative; }
+  .item.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .pick { position: absolute; top: 10px; right: 10px; z-index: 3; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+  .pick:hover { border-color: var(--accent); color: var(--accent); }
+  .item.sel .pick { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .az-row .pick { position: static; align-self: center; }
+  .az-row { grid-template-columns: minmax(180px, 260px) 1fr auto !important; }
+  .panel.wide { max-width: 1150px; }
+  .b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  @media (max-width: 860px) { .b-grid { grid-template-columns: 1fr; } }
+  .b-group { margin-bottom: 10px; }
+  .b-gtitle { font-weight: 700; font-size: .85rem; margin: 6px 0; }
+  .b-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px; background: #f7f6f2; border-radius: 8px; margin-bottom: 4px; font-size: .9rem; }
+  .b-row .en { display: inline; font-size: .75rem; }
+  .b-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .b-btns button { width: 28px; height: 28px; border: 1px solid var(--line); background: #fff; border-radius: 6px; cursor: pointer; }
+  .b-btns button:disabled { opacity: .3; cursor: default; }
+  .recipes button { border: 1px solid var(--line); background: #fff; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: .85rem; }
+  .recipes button:hover { border-color: var(--accent); color: var(--accent); }
+  .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 520px) { .f-grid { grid-template-columns: 1fr; } }
+  .f { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; color: var(--muted); font-weight: 600; }
+  .f select, .f input { font: inherit; font-weight: 400; color: var(--ink); padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .f.check { flex-direction: row; align-items: center; grid-column: 1 / -1; }
+  .plan { border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; }
+  .plan-row { padding: 9px 12px; font-size: .85rem; font-weight: 600; border-bottom: 1px dashed #bbb; background: #fff; }
+  .plan-row:last-child { border-bottom: none; }
+  .plan-navbar, .plan-hamburger, .plan-footer { background: #1f2937; color: #fff; }
+  .plan-hero, .plan-carousel { background: #e0e7ff; padding: 20px 12px; }
+  #out { max-height: 380px; overflow: auto; }
+  .tok { float: right; text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--accent); }
+  .btn:disabled { opacity: .4; cursor: default; }
   .shimmer { background: linear-gradient(90deg, #eee 25%, #f7f7f7 50%, #eee 75%); background-size: 200% 100%; animation: sh 1.4s infinite; border-radius: 6px; }
   @keyframes sh { to { background-position: -200% 0; } }
 </style>
@@ -107,6 +139,8 @@
       <button data-try="adresse du site">adresse du site</button>·
       <button data-try="ça ne marche pas">ça ne marche pas</button>
     </div>
+    <div class="hint" style="margin-top:14px">🧱 <b>Nouveau :</b> clique sur <b>＋</b> sur les éléments que tu veux sur ton site, puis sur « Construire ma page » pour obtenir un prompt complet.
+      <button id="startBuilder">Ou pars d'un modèle de site</button></div>
   </div>
 </header>
 
@@ -119,17 +153,18 @@
 
 <div class="overlay" id="overlay"><div class="panel" id="panel"></div></div>
 
-<div class="basket" id="basket">
-  <div><strong>🧺 Mon projet</strong> <span class="list" id="basketList"></span></div>
+<div class="basket" id="bar">
+  <div><strong>🧱 Ma page : <span id="barCount"></span></strong> <span class="list" id="barList"></span></div>
   <div class="actions" style="margin:0">
-    <button class="btn ghost" id="clearBasket">Vider</button>
-    <button class="btn primary" id="buildPrompt">Générer le prompt complet</button>
+    <button class="btn ghost" id="clearSel">Vider</button>
+    <button class="btn primary" id="openBuilder">Construire ma page →</button>
   </div>
 </div>
 
 <div class="toast" id="toast">Copié ✔</div>
 
 <script src="data.js"></script>
+<script src="builder.js"></script>
 <script>
 
 
@@ -137,7 +172,6 @@ const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "
 const $ = s => document.querySelector(s);
 let cat = "all";
 let view = "cards";
-const basket = new Set();
 
 function score(item, q) {
   if (!q) return 1;
@@ -159,7 +193,8 @@ function render() {
   if (view === "az" && list.length) return renderAZ(list);
   $("#grid").className = "grid";
   $("#grid").innerHTML = list.length ? list.map(i => `
-    <div class="item" data-id="${i.id}">
+    <div class="item ${isSel(i.id) ? "sel" : ""}" data-id="${i.id}">
+      <button class="pick" data-pick="${i.id}">${isSel(i.id) ? "✓ Choisi" : "＋ Choisir"}</button>
       <div class="preview">${i.visual}</div>
       <div class="body">
         <div class="name">${i.name}</div>
@@ -179,6 +214,7 @@ function renderAZ(list) {
     <div class="az-row item" data-id="${i.id}" style="transform:none;box-shadow:none;border:none;background:transparent">
       <div><span class="name">${i.name}</span><span class="en">🇬🇧 ${i.en}</span></div>
       <div class="simple">${i.simple}</div>
+      <button class="pick" data-pick="${i.id}">${isSel(i.id) ? "✓ Choisi" : "＋ Choisir"}</button>
     </div>`).join("")).join("");
 }
 
@@ -200,53 +236,19 @@ function open(id) {
       <div class="prompt">${i.prompt}</div>
       <div class="actions">
         <button class="btn primary" id="cp">📋 Copier</button>
-        <button class="btn ghost" id="add">${basket.has(i.id) ? "✔ Dans mon projet" : "➕ Ajouter à mon projet"}</button>
+        <button class="btn ghost" id="add">${isSel(i.id) ? "✓ Sur ma page" : "＋ Ajouter à ma page"}</button>
       </div>
     </div>`;
   $("#overlay").classList.add("show");
   $("#x").onclick = close;
   $("#cp").onclick = () => copy(i.prompt);
-  $("#add").onclick = e => { basket.has(i.id) ? basket.delete(i.id) : basket.add(i.id); e.target.textContent = basket.has(i.id) ? "✔ Dans mon projet" : "➕ Ajouter à mon projet"; updateBasket(); };
+  $("#add").onclick = e => { toggleSel(i.id); e.target.textContent = isSel(i.id) ? "✓ Sur ma page" : "＋ Ajouter à ma page"; };
 }
-function close() { $("#overlay").classList.remove("show"); }
-
-function updateBasket() {
-  $("#basket").classList.toggle("show", basket.size > 0);
-  $("#basketList").textContent = [...basket].map(id => DICO.find(x => x.id === id).name).join(" · ");
-}
-
-function buildPrompt() {
-  const items = [...basket].map(id => DICO.find(x => x.id === id));
-  $("#panel").innerHTML = `
-    <div class="content" style="position:relative">
-      <button class="close" id="x">✕</button>
-      <h2>🧺 Prompt complet pour ton projet</h2>
-      <p class="desc">Décris ton projet en une phrase : l'IA comprendra mieux le contexte.</p>
-      <textarea id="ctx" placeholder="Ex. : Site vitrine pour mon restaurant italien à Lyon, ambiance chaleureuse, couleurs vert et crème."></textarea>
-      <div class="label">Prompt généré</div>
-      <div class="prompt" id="out"></div>
-      <div class="actions"><button class="btn primary" id="cp">📋 Copier le prompt</button></div>
-      <p class="desc" style="margin-top:14px">💡 Tout demander en un seul message bien structuré évite les allers-retours avec l'IA, et donc les tokens perdus.</p>
-    </div>`;
-  const gen = () => {
-    const ctx = $("#ctx").value.trim();
-    return (ctx ? `Contexte : ${ctx}\n\n` : "") +
-      `Voici les éléments à intégrer :\n\n` +
-      items.map((i, n) => `${n + 1}. ${i.name} (${i.en})\n   ${i.prompt}`).join("\n\n") +
-      `\n\nContraintes : design responsive (mobile + ordinateur), code propre et commenté. Si une information te manque, pose-moi tes questions avant de commencer.`;
-  };
-  const refresh = () => $("#out").textContent = gen();
-  $("#ctx").oninput = refresh; refresh();
-  $("#x").onclick = close;
-  $("#cp").onclick = () => copy(gen());
-  $("#overlay").classList.add("show");
-}
+function close() { $("#overlay").classList.remove("show"); $("#panel").classList.remove("wide"); }
 
 function copy(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    $("#toast").style.display = "block";
-    setTimeout(() => $("#toast").style.display = "none", 1500);
-  });
+  const done = msg => { $("#toast").textContent = msg; $("#toast").style.display = "block"; setTimeout(() => $("#toast").style.display = "none", 1800); };
+  navigator.clipboard.writeText(text).then(() => done("Copié ✔"), () => done("Copie impossible : sélectionne le texte à la main"));
 }
 
 $("#filters").innerHTML = `<button data-view="az">🔤 Glossaire A–Z</button>` + [["all", "Tout"], ...Object.entries(C)].map(([k, v]) => `<button data-cat="${k}" class="${k === "all" ? "on" : ""}">${v}</button>`).join("");
@@ -259,11 +261,15 @@ $("#filters").onclick = e => {
 };
 $("#q").oninput = render;
 document.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { $("#q").value = b.dataset.try; render(); });
-$("#grid").onclick = e => { const c = e.target.closest(".item"); if (c) open(c.dataset.id); };
+$("#grid").onclick = e => {
+  const pk = e.target.closest("[data-pick]");
+  if (pk) return toggleSel(pk.dataset.pick);
+  const c = e.target.closest(".item"); if (c) open(c.dataset.id);
+};
 $("#overlay").onclick = e => { if (e.target.id === "overlay") close(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
-$("#clearBasket").onclick = () => { basket.clear(); updateBasket(); };
-$("#buildPrompt").onclick = buildPrompt;
+$("#startBuilder").onclick = openBuilder;
+initBuilder();
 render();
 </script>
 </body>
