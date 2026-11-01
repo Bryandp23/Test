@@ -117,6 +117,35 @@
   .bridge span { opacity: .85; font-size: .93rem; }
   .bridge .btn { background: #fff; color: var(--accent); }
 
+  /* ---------- Plan de page cliquable (zones) ---------- */
+  .anatomy { max-width: 1180px; margin: 34px auto 0; padding: 0 20px; display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: center; }
+  @media (max-width: 760px) { .anatomy { grid-template-columns: 1fr; } }
+  .anat-txt h2 { margin: 0 0 6px; font-size: 1.3rem; }
+  .anat-txt p { margin: 0; color: var(--muted); font-size: .92rem; }
+  .anat-page { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--sh); padding: 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+  .anat-col { display: flex; flex-direction: column; gap: 6px; }
+  .zone-btn { border: 2px dashed #d5d8e6; background: #fafbfe; border-radius: 12px; cursor: pointer; text-align: left; padding: 10px 14px; display: flex; align-items: center; gap: 10px; color: var(--ink-2); font-size: .9rem; transition: all .15s; }
+  .zone-btn:hover { border-color: #b9bdf5; background: #f6f6ff; }
+  .zone-btn.on { border-style: solid; border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+  .zone-btn b { font-family: var(--font-h); }
+  .zone-btn .zn { margin-left: auto; font-size: .75rem; color: var(--muted); background: #fff; border-radius: 999px; padding: 2px 8px; }
+  .zone-btn.z-body { min-height: 92px; }
+  .zone-btn.z-header, .zone-btn.z-footer { background: #eef0f7; }
+  .zone-side { display: flex; flex-direction: column; gap: 6px; width: 170px; }
+  .zone-side .zone-btn { flex: 1; flex-direction: column; align-items: flex-start; gap: 2px; font-size: .82rem; }
+  .zone-side .zone-btn .zn { margin-left: 0; }
+  @media (max-width: 560px) { .anat-page { grid-template-columns: 1fr; } .zone-side { width: auto; flex-direction: row; } }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 12px; }
+  .tags .tag { margin: 0; }
+  .tag.zone { background: var(--accent-soft); color: var(--accent); }
+  .cms-table { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .cms-row { display: grid; grid-template-columns: 150px 1fr; gap: 10px; padding: 9px 14px; font-size: .88rem; border-bottom: 1px solid var(--line); }
+  .cms-row:last-child { border-bottom: none; }
+  .cms-row:nth-child(odd) { background: #fafbfe; }
+  .cms-row b { color: var(--ink-2); }
+  .cms-row code { font-family: inherit; color: var(--ink); font-weight: 600; }
+  .note { font-size: .78rem; color: var(--muted); margin-top: 6px; }
+
   /* ---------- Fiche (fenêtre) ---------- */
   .overlay { position: fixed; inset: 0; background: rgba(15,23,42,.45); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
   .overlay.show { display: flex; animation: fadein .2s ease; }
@@ -217,6 +246,13 @@
       <button data-try="ça ne marche pas">ça ne marche pas</button>
     </div>
   </div>
+  <div class="anatomy">
+    <div class="anat-txt">
+      <h2>🗺️ Explore par zone</h2>
+      <p>Comme dans les page builders (Elementor, WordPress, Divi, Wix…), une page se découpe en zones. Clique sur une zone pour voir tout ce qu'on peut y mettre.</p>
+    </div>
+    <div class="anat-page" id="anatomy"></div>
+  </div>
   <div class="toolbar">
     <div class="cats" id="filters"></div>
     <div class="seg" id="viewSeg"><button data-view="cards" class="on">Cartes</button><button data-view="az">A–Z</button></div>
@@ -241,12 +277,13 @@ const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").repla
 const $ = s => document.querySelector(s);
 let cat = "all";
 let view = "cards";
+let zone = "all";
 
 // Pertinence d'une fiche pour une recherche en langage courant.
 function score(item, q) {
   if (!q) return 1;
   const words = norm(q).split(/\s+/).filter(w => w.length > 1);
-  const hay = norm([item.name, item.en, item.desc, item.simple, ...item.aliases].join(" "));
+  const hay = norm([item.name, item.en, item.desc, item.simple, ...item.aliases, ...Object.values(CMS[item.id] || {})].join(" "));
   let s = 0;
   if (item.aliases.map(norm).some(a => a.includes(norm(q).trim()))) s += 10;
   for (const w of words) if (hay.includes(w)) s += 1;
@@ -256,9 +293,11 @@ function score(item, q) {
 function render() {
   const q = $("#q").value.trim();
   const list = DICO.map(i => [i, score(i, q)])
-    .filter(([i, s]) => s > 0 && (cat === "all" || i.cat === cat))
+    .filter(([i, s]) => s > 0 && (cat === "all" || i.cat === cat) && (zone === "all" || zoneOf(i.id) === zone))
     .sort((a, b) => b[1] - a[1]).map(([i]) => i);
-  $("#count").textContent = `${list.length} terme${list.length > 1 ? "s" : ""}${q || cat !== "all" ? ` sur ${DICO.length}` : ""}`;
+  renderAnatomy();
+  const zTxt = zone === "all" ? "" : ` · zone « ${ZONES[zone].label} »`;
+  $("#count").innerHTML = `${list.length} terme${list.length > 1 ? "s" : ""}${q || cat !== "all" || zone !== "all" ? ` sur ${DICO.length}` : ""}${zTxt}${zone !== "all" ? ` <button class="link" id="zoneAll" style="margin-left:6px">Voir toutes les zones</button>` : ""}`;
   if (!list.length) {
     $("#grid").className = "grid";
     $("#grid").innerHTML = `<div class="empty">🤔 Aucun résultat.<br>Essaie d'autres mots, ou décris à quoi ça ressemble : « rond », « en bas », « qui s'ouvre »…</div>`;
@@ -273,9 +312,18 @@ function render() {
         <div class="name">${i.name}</div>
         <div class="en">🇬🇧 ${i.en}</div>
         <div class="simple">${i.simple}</div>
-        <span class="tag">${CAT_ICON[i.cat]} ${catName(i.cat)}</span>
+        <div class="tags"><span class="tag zone">${ZONES[zoneOf(i.id)].icon} ${ZONES[zoneOf(i.id)].label}</span><span class="tag">${CAT_ICON[i.cat]} ${catName(i.cat)}</span></div>
       </div>
     </div>`).join("");
+}
+
+// Plan de page cliquable : chaque zone filtre le dico.
+function renderAnatomy() {
+  const n = z => DICO.filter(i => zoneOf(i.id) === z && (cat === "all" || i.cat === cat)).length;
+  const btn = (z, cls = "") => `<button class="zone-btn z-${z} ${zone === z ? "on" : ""} ${cls}" data-zone="${z}">
+      <span>${ZONES[z].icon}</span><b>${ZONES[z].label}</b><span class="zn">${n(z)}</span></button>`;
+  $("#anatomy").innerHTML = `<div class="anat-col">${btn("header")}${btn("body")}${btn("footer")}</div>
+    <div class="zone-side">${btn("float")}${btn("global")}</div>`;
 }
 
 function renderAZ(list) {
@@ -302,6 +350,11 @@ function open(id) {
       <h2>${i.name}</h2>
       <div class="en" style="margin-top:4px">🇬🇧 En anglais (le terme que les IA connaissent le mieux) : <b>${i.en}</b></div>
       <div class="clair"><b>💬 En clair</b>${i.simple}</div>
+      <div class="label">📍 Où ça se place</div>
+      <p class="desc" style="margin:0"><b style="color:var(--ink)">${ZONES[zoneOf(i.id)].icon} ${ZONES[zoneOf(i.id)].label}</b> (${ZONES[zoneOf(i.id)].en}) : ${ZONES[zoneOf(i.id)].desc}</p>
+      ${CMS[i.id] ? `<div class="label">🧩 Son nom dans les page builders</div>
+      <div class="cms-table">${Object.entries(CMS_LIST).filter(([k]) => CMS[i.id][k]).map(([k, label]) => `<div class="cms-row"><b>${label}</b><code>${CMS[i.id][k]}</code></div>`).join("")}</div>
+      <div class="note">« Pro » = version payante. Les noms viennent de l'interface en anglais et peuvent légèrement varier selon la version ou la langue.</div>` : ""}
       <div class="label">Définition</div>
       <p class="desc" style="margin:0">${i.desc}</p>
       <div class="label">On l'appelle aussi</div>
@@ -357,6 +410,12 @@ $("#filters").onclick = e => {
   document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("on", x === b));
   render();
 };
+$("#anatomy").onclick = e => {
+  const b = e.target.closest("[data-zone]"); if (!b) return;
+  zone = zone === b.dataset.zone ? "all" : b.dataset.zone;
+  render();
+};
+$("#count").onclick = e => { if (e.target.id === "zoneAll") { zone = "all"; render(); } };
 $("#viewSeg").onclick = e => {
   const b = e.target.closest("button"); if (!b) return;
   view = b.dataset.view;

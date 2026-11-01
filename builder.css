@@ -135,3 +135,8 @@
 @media (max-width: 860px) { .final-grid { grid-template-columns: 1fr; } }
 .prompt-box summary { cursor: pointer; margin-bottom: 12px; }
 #out { max-height: 460px; overflow: auto; font-size: .8rem; }
+
+/* Zones dans le plan de la page */
+.sp-zone { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); background: #f4f5f9; padding: 5px 12px; border-bottom: 1px dashed #cdd1dc; }
+.sp-row { flex-wrap: wrap; }
+.sp-cms { width: 100%; font-weight: 500; font-size: .74rem; opacity: .7; }

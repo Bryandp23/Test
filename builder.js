@@ -3,14 +3,17 @@
 
 // Position par défaut des sections dans la page (du haut vers le bas).
 const ORDER = {
-  navbar: 10, hamburger: 11, dropdown: 12, search: 13, breadcrumb: 20,
-  hero: 30, carousel: 32, cta: 40, card: 50, tabs: 52, pagination: 54,
-  reviews: 60, pricing: 65, accordion: 70, booking: 75, form: 80, map: 82,
-  newsletter: 90, footer: 100,
+  announce: 2, topbar: 4, logo: 8, navbar: 10, hamburger: 11, megamenu: 12, dropdown: 12, search: 13,
+  langswitch: 14, minicart: 15, toggle: 16, breadcrumb: 20,
+  hero: 30, carousel: 32, logos: 34, cta: 40, card: 50, tabs: 52, pagination: 54,
+  reviews: 60, pricing: 65, accordion: 70, booking: 75, form: 80, map: 82, ctabanner: 88,
+  newsletter: 90, footer: 100, footermenu: 101, contactinfo: 102, socialicons: 103, payicons: 104, copyright: 110,
 };
+// Position par défaut selon la zone, pour les éléments sans position précise.
+const ZONE_ORDER = { header: 15, body: 50, footer: 105, float: 50, global: 50 };
 // Éléments qui ne sont pas une « bande » de la page mais s'affichent par-dessus ou dans un coin.
 const EXTRA = new Set(["modal", "toast", "tooltip", "cookie", "fab", "backtotop", "chat", "drawer",
-  "bottomnav", "bottomsheet", "spinner", "skeleton", "badge", "toggle"]);
+  "bottomnav", "bottomsheet", "spinner", "skeleton", "badge"]);
 
 // Les notions de base ne sont pas des sections : on les traduit en consignes techniques.
 const TECH = {
@@ -123,7 +126,7 @@ const PALETTES = {
 const TARGETS = { claude: "Claude", chatgpt: "ChatGPT", other: "Autre IA" };
 // Éléments les plus utiles en premier, selon le type de projet.
 const ESSENTIALS = {
-  site: ["navbar", "hamburger", "hero", "carousel", "card", "cta", "reviews", "accordion", "form", "map", "footer", "cookie"],
+  site: ["logo", "navbar", "hamburger", "hero", "mediatext", "iconbox", "card", "reviews", "accordion", "form", "footer", "copyright"],
   webapp: ["navbar", "drawer", "dashboard", "card", "tabs", "search", "modal", "toast", "form", "auth", "account", "darkmode"],
   mobile: ["bottomnav", "fab", "onboarding", "card", "search", "bottomsheet", "swipe", "pulltorefresh", "toast", "push", "auth", "darkmode"],
 };
@@ -131,7 +134,7 @@ const STEPS = ["Type", "Modèle", "Éléments", "Projet", "Prompt"];
 
 const B = {
   sel: [],
-  opt: { kind: "site", target: "claude", type: "un site vitrine", tech: "single", style: "", colors: "", ctx: "", content: "demo", missing: "choose", codeOnly: true },
+  opt: { kind: "site", build: "code", target: "claude", type: "un site vitrine", tech: "single", style: "", colors: "", ctx: "", content: "demo", missing: "choose", codeOnly: true },
 };
 const ui = { step: 1, q: "", cat: "ess" };
 
@@ -142,11 +145,23 @@ function roleOf(i) {
   if (i.cat === "bases") return "tech";
   if (i.cat === "pages") return "page";
   if (["style", "anim", "layout"].includes(i.cat)) return "design";
-  if (EXTRA.has(i.id)) return "extra";
-  if (i.id in ORDER || ["nav", "content", "interact", "form"].includes(i.cat)) return "section";
+  if (EXTRA.has(i.id) || zoneOf(i.id) === "float") return "extra";
+  if (i.id in ORDER) return "section";
+  if (["header", "body", "footer"].includes(zoneOf(i.id)) && ["nav", "content", "interact", "form", "feedback"].includes(i.cat)) return "section";
   return "feature";
 }
-const orderOf = id => ORDER[id] ?? 50;
+const orderOf = id => ORDER[id] ?? ZONE_ORDER[zoneOf(id)];
+
+// Construire avec un CMS / page builder plutôt qu'avec du code.
+const BUILD_TEXT = {
+  elementor: "WordPress avec Elementor (signale chaque widget qui nécessite Elementor Pro)",
+  gutenberg: "WordPress avec l'éditeur de blocs (Gutenberg) et un thème à blocs comme Twenty Twenty-Five",
+  divi: "WordPress avec le thème Divi (Divi Builder et Theme Builder)",
+  wix: "l'éditeur Wix",
+  webflow: "Webflow (Designer)",
+  shopify: "Shopify avec le thème gratuit Dawn (sections et blocs de l'éditeur de thème)",
+};
+const isCms = () => B.opt.kind !== "mobile" && B.opt.build in BUILD_TEXT;
 
 function saveB() {
   try { localStorage.setItem("dico-builder", JSON.stringify(B)); } catch (e) { /* stockage indisponible */ }
@@ -214,24 +229,36 @@ function generatePrompt() {
   const block = (tag, title, body) => claude ? `<${tag}>\n${body}\n</${tag}>` : `## ${title}\n${body}`;
   const parts = [];
 
-  parts.push(block("role", "Rôle", `Tu es ${k.role}.`));
+  const cms = isCms() ? CMS_LIST[o.build] : null;
+  const cmsName = i => cms && CMS[i.id] && CMS[i.id][o.build] ? ` [dans ${cms} : ${CMS[i.id][o.build]}]` : "";
+  parts.push(block("role", "Rôle", cms ? `Tu es un expert ${cms} et designer web expérimenté.` : `Tu es ${k.role}.`));
   parts.push(block("objectif", "Objectif",
-    `Crée ${k.objective} : ${o.type}` + (o.ctx.trim() ? ` pour le projet suivant : ${o.ctx.trim()}` : ".") +
+    (cms ? `Guide-moi pas à pas pour construire moi-même, dans ${BUILD_TEXT[o.build]}, ${k.objective} : ${o.type}`
+         : `Crée ${k.objective} : ${o.type}`) +
+    (o.ctx.trim() ? ` pour le projet suivant : ${o.ctx.trim()}` : ".") +
     `\nLe résultat doit contenir tous les éléments ci-dessous. La position des sections est donnée par l'ordre de la liste : elle prime sur les indications de position écrites dans les descriptions.`));
 
   for (const [key, , title] of GROUPS) {
     const items = g[key];
     if (!items) continue;
-    let body = key === "section"
-      ? items.map((i, n) => `${n + 1}. ${i.name} (${i.en}) : ${promptOf(i)}`).join("\n")
-      : key === "tech"
-        ? items.map(i => `- ${TECH[i.id] || promptOf(i)}`).join("\n")
-        : items.map(i => `- ${i.name} (${i.en}) : ${promptOf(i)}`).join("\n");
+    let body;
+    if (key === "section") {
+      // Les sections sont regroupées par zone : en-tête, corps de page, pied de page.
+      let last = null;
+      body = items.map((i, n) => {
+        const z = zoneOf(i.id), title = z !== last ? `${last ? "\n" : ""}${ZONES[z].label} (${ZONES[z].en}) :\n` : "";
+        last = z;
+        return `${title}${n + 1}. ${i.name} (${i.en})${cmsName(i)} : ${promptOf(i)}`;
+      }).join("\n");
+    } else body = key === "tech"
+      ? items.map(i => `- ${TECH[i.id] || promptOf(i)}`).join("\n")
+      : items.map(i => `- ${i.name} (${i.en})${cmsName(i)} : ${promptOf(i)}`).join("\n");
     if (key === "design" && designHeader(o)) body = designHeader(o) + "\n" + body;
     parts.push(block(TAGS[key], title, body));
   }
   if (!g.design && designHeader(o)) parts.push(block("design", "Design", designHeader(o)));
 
+  if (cms) return parts.concat(cmsTail(o, cms)).join("\n\n");
   const native = o.tech === "rn";
   const constraints = [
     `- Technologie : ${TECH_TEXT[o.tech]}`,
@@ -263,6 +290,32 @@ function generatePrompt() {
   ];
   parts.push(block("format_reponse", "Format de la réponse", fmt.join("\n")));
   return parts.join("\n\n");
+}
+
+// Fin du prompt quand on construit soi-même dans un CMS : un guide, pas du code.
+function cmsTail(o, cms) {
+  const claude = o.target === "claude";
+  const block = (tag, title, body) => claude ? `<${tag}>\n${body}\n</${tag}>` : `## ${title}\n${body}`;
+  const constraints = [
+    `- Outil : ${BUILD_TEXT[o.build]}.`,
+    `- Utilise en priorité les blocs / widgets natifs ${/^[AEIOUYÉ]/i.test(cms) ? "d'" : "de "}${cms}, avec leur nom exact tel qu'il apparaît dans l'interface. Si un élément demande une extension ou une application, dis-le et propose la solution gratuite la plus simple ; en dernier recours, un court extrait de CSS ou de HTML.`,
+    "- Commence par les réglages globaux (couleurs, polices, largeur du contenu) avant les sections.",
+    "- Pour chaque section : réglages ordinateur, puis ce qu'il faut changer pour la tablette et le mobile.",
+    "- Images : indique quel type de photo utiliser et sa taille recommandée.",
+    o.content === "demo"
+      ? "- Textes : rédige des textes d'exemple réalistes en français, adaptés au projet, prêts à copier-coller (pas de lorem ipsum)."
+      : "- Textes : mets des textes provisoires repérables, au format [À COMPLÉTER : description], que je remplacerai.",
+  ];
+  const fmt = [
+    o.missing === "choose"
+      ? "- S'il manque une information, fais un choix raisonnable sans me poser de questions, et liste tes hypothèses en 3 lignes maximum à la fin."
+      : "- Avant de commencer, pose-moi au maximum 3 questions essentielles, puis attends mes réponses.",
+    "- Une liste numérotée par section, dans l'ordre de la page : nom exact du widget ou bloc, réglages importants (mise en page, couleurs, typographie, espacements), puis les textes.",
+    o.codeOnly
+      ? "- Sois concis : pas d'introduction ni de conclusion, pas de répétition (je veux économiser des tokens)."
+      : "- Termine par 5 conseils courts pour améliorer la page.",
+  ];
+  return [block("contraintes", "Contraintes", constraints.join("\n")), block("format_reponse", "Format de la réponse", fmt.join("\n"))];
 }
 
 function designHeader(o) {
@@ -299,13 +352,13 @@ function go(step) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function renderStep() {
+function renderStep(animate = true) {
   $("#stepper").innerHTML = STEPS.map((t, n) => `
     <li class="${n + 1 === ui.step ? "on" : n + 1 < ui.step ? "done" : ""}"><button data-go="${n + 1}">
       <span class="dot">${n + 1 < ui.step ? "✓" : n + 1}</span><span class="st-txt">${t}</span></button></li>`).join("");
   const body = $("#wzBody");
   body.innerHTML = [, stepKind, stepRecipe, stepElements, stepProject, stepPrompt][ui.step]();
-  body.classList.remove("enter"); void body.offsetWidth; body.classList.add("enter");
+  body.classList.remove("enter"); if (animate) { void body.offsetWidth; body.classList.add("enter"); }
   if (ui.step === 3) { renderPicker(); renderSide(); }
   if (ui.step === 5) refreshOut();
   updateFoot();
@@ -357,7 +410,9 @@ function stepRecipe() {
 
 // Étape 3 : choix des éléments
 function stepElements() {
-  const cats = [["ess", "⭐ Les essentiels"], ...kind().cats.map(c => [c, `${CAT_ICON[c]} ${catName(c)}`])];
+  const cats = [["ess", "⭐ Les essentiels"],
+    ...(B.opt.kind === "mobile" ? [] : ["header", "body", "footer"].map(z => ["z:" + z, `${ZONES[z].icon} ${ZONES[z].label}`])),
+    ...kind().cats.map(c => [c, `${CAT_ICON[c]} ${catName(c)}`])];
   return head("Coche ce que tu veux voir", "Reconnais les éléments grâce aux images. Un doute sur un mot ? Clique sur <b>ⓘ</b> pour lire son explication.") + `
     <div class="el-grid">
       <div>
@@ -376,6 +431,7 @@ function renderPicker() {
   const q = ui.q.trim();
   let items = q ? DICO.map(i => [i, score(i, q)]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]).map(([i]) => i)
     : ui.cat === "ess" ? ESSENTIALS[B.opt.kind].map(byId).filter(Boolean)
+    : ui.cat.startsWith("z:") ? DICO.filter(i => zoneOf(i.id) === ui.cat.slice(2)).sort((a, b) => orderOf(a.id) - orderOf(b.id))
     : DICO.filter(i => i.cat === ui.cat);
   document.querySelectorAll("#pcats button").forEach(b => b.classList.toggle("on", !q && b.dataset.pcat === ui.cat));
   $("#picker").innerHTML = items.length ? `<div class="pk-grid">${items.map(i => `
@@ -393,7 +449,9 @@ function renderSide() {
   if (!side) return;
   const g = grouped();
   const sectionIds = (g.section || []).map(i => i.id);
-  const rows = (g.section || []).map((i, pos) => `
+  let lastZ = null;
+  const zoneSep = i => { const z = zoneOf(i.id); if (z === lastZ) return ""; lastZ = z; return `<div class="sp-zone">${ZONES[z].icon} ${ZONES[z].label}</div>`; };
+  const rows = (g.section || []).map((i, pos) => `${zoneSep(i)}
     <div class="sp-row plan-${i.id}"><span>${i.name}</span><span class="b-btns">
       <button data-act="up" data-id="${i.id}" ${pos === 0 ? "disabled" : ""} title="Monter" aria-label="Monter">↑</button>
       <button data-act="down" data-id="${i.id}" ${pos === sectionIds.length - 1 ? "disabled" : ""} title="Descendre" aria-label="Descendre">↓</button>
@@ -434,17 +492,22 @@ function stepProject() {
         chip("colors", v, v.split(",")[0].replace(/\s*\(.*/, ""), `<span class="pal">${cols.map(c => `<i style="background:${c}"></i>`).join("")}</span>`)).join("")}</div>
       <input class="q-input" data-opt="colors" value="${o.colors in PALETTES ? "" : esc(o.colors)}" placeholder="Ou écris tes couleurs : « bleu ciel et jaune », « couleurs de mon logo : #123456 »…">
     </div>
+    ${B.opt.kind !== "mobile" ? `<div class="q-card">
+      <div class="q-title">5. Avec quoi vas-tu construire ?</div>
+      <p class="q-help">Avec du code, l'IA écrit tout pour toi. Avec un outil de création (CMS), elle te guide pas à pas avec le nom exact de chaque bloc à utiliser.</p>
+      <div class="opts" id="buildOpts">${chip("build", "code", "Du code (l'IA écrit tout)", "💻 ")}${Object.entries(CMS_LIST).map(([v, t]) => chip("build", v, t, "🧩 ")).join("")}</div>
+    </div>` : ""}
     <div class="q-card">
-      <div class="q-title">5. Quelle IA vas-tu utiliser ?</div>
+      <div class="q-title">${B.opt.kind !== "mobile" ? 6 : 5}. Quelle IA vas-tu utiliser ?</div>
       <div class="opts">${Object.entries(TARGETS).map(([v, t]) => chip("target", v, t)).join("")}</div>
     </div>
     <details class="q-card adv">
       <summary>⚙️ Options avancées <span>(facultatif, les réglages par défaut conviennent très bien)</span></summary>
       <div class="adv-grid">
-        <div><div class="q-sub">Technologie</div><div class="opts">${k.techs.map(t => chip("tech", t, TECH_LABEL[t])).join("")}</div></div>
+        ${isCms() ? "" : `<div><div class="q-sub">Technologie du code</div><div class="opts">${k.techs.map(t => chip("tech", t, TECH_LABEL[t])).join("")}</div></div>`}
         <div><div class="q-sub">Textes du ${B.opt.kind === "site" ? "site" : "projet"}</div><div class="opts">${chip("content", "demo", "Rédigés par l'IA")}${chip("content", "mine", "Je mettrai les miens")}</div></div>
         <div><div class="q-sub">S'il manque une information</div><div class="opts">${chip("missing", "choose", "L'IA fait des choix")}${chip("missing", "ask", "L'IA me pose des questions")}</div></div>
-        <div><div class="q-sub">Réponse de l'IA</div><div class="opts">${chip("codeOnly", true, "Le code seul (économise des tokens)")}${chip("codeOnly", false, "Le code + une courte explication")}</div></div>
+        <div><div class="q-sub">Réponse de l'IA</div><div class="opts">${chip("codeOnly", true, isCms() ? "Concise (économise des tokens)" : "Le code seul (économise des tokens)")}${chip("codeOnly", false, isCms() ? "Avec des conseils en plus" : "Le code + une courte explication")}</div></div>
       </div>
     </details>`;
 }
@@ -458,18 +521,18 @@ function stepPrompt() {
     <div class="done-hero">
       <div class="done-i">🎉</div>
       <h1>Ton prompt est prêt !</h1>
-      <p>${kind().icon} ${kind().label} · ${plural(B.sel.length, "élément")} · <span id="tok"></span></p>
+      <p>${kind().icon} ${kind().label}${isCms() ? ` · 🧩 ${CMS_LIST[B.opt.build]}` : ""} · ${plural(B.sel.length, "élément")} · <span id="tok"></span></p>
       <button class="btn primary lg" id="cpAll">📋 Copier mon prompt</button>
     </div>
     <div class="use">
       <div class="use-step"><span class="how-num">1</span><div><b>Copie</b> le prompt avec le bouton ci-dessus.</div></div>
       <div class="use-step"><span class="how-num">2</span><div><b>Colle-le</b> dans ${ai[1] ? `<a href="${ai[1]}" target="_blank" rel="noopener">${ai[0]} ↗</a>` : ai[0]} et envoie.</div></div>
-      <div class="use-step"><span class="how-num">3</span><div><b>Enregistre</b> le code reçu dans un fichier <code>index.html</code>, puis ouvre-le dans ton navigateur.</div></div>
+      <div class="use-step"><span class="how-num">3</span><div>${isCms() ? `<b>Suis le guide</b> section par section dans ${CMS_LIST[B.opt.build]} : chaque bloc est donné avec son nom exact.` : `<b>Enregistre</b> le code reçu dans un fichier <code>index.html</code>, puis ouvre-le dans ton navigateur.`}</div></div>
     </div>
     <div class="final-grid">
       <div class="side-card">
         <div class="side-h"><b>🗺️ Plan de ta page</b><button class="link" data-go="3">Modifier</button></div>
-        ${s.length ? `<div class="sp">${s.map(i => `<div class="sp-row plan-${i.id}"><span>${i.name}</span></div>`).join("")}</div>` : `<p class="desc">Aucune section visible.</p>`}
+        ${s.length ? (() => { let lz = null; return `<div class="sp">${s.map(i => { const z = zoneOf(i.id), sep = z !== lz ? `<div class="sp-zone">${ZONES[z].icon} ${ZONES[z].label}</div>` : ""; lz = z; return `${sep}<div class="sp-row plan-${i.id}"><span>${i.name}</span>${isCms() && CMS[i.id] && CMS[i.id][B.opt.build] ? `<small class="sp-cms">${CMS[i.id][B.opt.build]}</small>` : ""}</div>`; }).join("")}</div>`; })() : `<p class="desc">Aucune section visible.</p>`}
         ${GROUPS.filter(([k]) => k !== "section" && g[k]).map(([k, label]) => `<div class="label">${label}</div><div class="chips">${g[k].map(i => `<span>${i.name}</span>`).join("")}</div>`).join("")}
       </div>
       <details class="side-card prompt-box" open>
@@ -522,6 +585,7 @@ function initBuilder() {
       saveB();
       st.parentElement.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === st));
       if (key === "colors") { const inp = v.querySelector('input[data-opt="colors"]'); if (inp) inp.value = ""; }
+      if (key === "build") { const adv = v.querySelector("details.adv"); const wasOpen = adv && adv.open; renderStep(false); const a2 = v.querySelector("details.adv"); if (a2) a2.open = wasOpen; }
       return;
     }
     const tg = t.closest("[data-toggle]");
