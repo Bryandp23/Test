@@ -1,6 +1,5 @@
-// Constructeur de page : sélection de plusieurs fiches du dico, puis génération
-// d'un prompt complet qui demande à l'IA le code HTML/CSS/JS d'une page contenant
-// toutes ces sections, dans le bon ordre.
+// Espace « Je crée mon projet » : choix du type de projet, sélection des éléments du dico,
+// options, puis génération d'un prompt complet qui demande à l'IA tout le code.
 
 // Position par défaut des sections dans la page (du haut vers le bas).
 const ORDER = {
@@ -17,7 +16,7 @@ const EXTRA = new Set(["modal", "toast", "tooltip", "cookie", "fab", "backtotop"
 const TECH = {
   frontend: "Uniquement du front-end : aucune partie serveur.",
   backend: "Indique en commentaire, dans le code, chaque endroit où il faudra brancher le back-end (enregistrement des données, envoi d'emails).",
-  database: "À la fin, propose une structure de base de données simple (tables et colonnes) pour les données du site.",
+  database: "À la fin, propose une structure de base de données simple (tables et colonnes) pour les données du projet.",
   api: "Isole chaque appel d'API dans une fonction dédiée qui renvoie pour l'instant des données d'exemple.",
   responsive: "Soigne particulièrement le responsive : vérifie chaque section à 375 px, 768 px et 1280 px de large.",
   wireframe: "Avant le code, donne le plan de la page en texte (une ligne par section).",
@@ -25,57 +24,119 @@ const TECH = {
   cms: "Structure les contenus pour qu'ils soient faciles à reprendre ensuite dans un CMS comme WordPress.",
   seo: "SEO de base : balise title, meta description, un seul H1, hiérarchie H2/H3 logique, attribut alt sur chaque image.",
   https: "Aucune ressource chargée en http:// (uniquement https://).",
-  domain: "À la fin, explique en 5 étapes maximum comment relier la page à mon nom de domaine.",
-  hosting: "À la fin, explique en 5 étapes maximum comment héberger gratuitement cette page.",
-  deploy: "À la fin, explique en 5 étapes maximum comment mettre la page en ligne gratuitement (GitHub Pages ou Netlify).",
+  domain: "À la fin, explique en 5 étapes maximum comment relier le projet à mon nom de domaine.",
+  hosting: "À la fin, explique en 5 étapes maximum comment héberger gratuitement ce projet.",
+  deploy: "À la fin, explique en 5 étapes maximum comment mettre le projet en ligne gratuitement (GitHub Pages ou Netlify).",
   bug: "Le code ne doit produire aucune erreur dans la console du navigateur.",
-  webapp: "Rends la page installable comme une application (PWA) : fichier manifest et service worker minimal.",
+  webapp: "Rends le projet installable comme une application (PWA) : fichier manifest et service worker minimal.",
 };
+const TECH_WITH_TEXT = new Set(["database", "wireframe", "domain", "hosting", "deploy"]);
+
 // Formulation adaptée au constructeur pour les fiches dont le prompt du dico est une question.
 const BUILD_PROMPT = {
-  palette: "Définis une palette cohérente avec le projet (couleur principale, secondaire, accent, gris, fond), appliquée via des variables CSS, avec un contraste suffisant pour le texte.",
+  palette: "Définis une palette cohérente avec le projet (couleur principale, secondaire, accent, gris, fond), centralisée dans des variables, avec un contraste suffisant pour le texte.",
   typo: "Associe 2 polices Google Fonts adaptées au style (une pour les titres, une pour le texte), avec une échelle de tailles claire et un interligne confortable.",
 };
 const promptOf = i => BUILD_PROMPT[i.id] || i.prompt;
 
-const TECH_WITH_TEXT = new Set(["database", "wireframe", "domain", "hosting", "deploy"]);
-
 const GROUPS = [
-  ["section", "🧱 Sections de la page (de haut en bas)", "Structure de la page, de haut en bas"],
+  ["section", "🧱 Sections (de haut en bas)", "Structure, de haut en bas"],
   ["extra", "🪟 Éléments complémentaires", "Éléments complémentaires (superposés, flottants ou intégrés)"],
   ["feature", "⚙️ Fonctionnalités", "Fonctionnalités"],
-  ["page", "📄 Autres pages", "Autres pages à créer"],
-  ["design", "🎨 Consignes de design", "Design"],
+  ["page", "📄 Autres pages / écrans", "Autres pages ou écrans à créer"],
+  ["design", "🎨 Design", "Design"],
   ["tech", "🛠️ Consignes techniques", "Consignes techniques supplémentaires"],
 ];
-
-const RECIPES = {
-  "🏪 Site vitrine": ["navbar", "hamburger", "hero", "card", "reviews", "form", "map", "footer", "backtotop", "responsive", "seo"],
-  "🎯 Landing page": ["navbar", "hero", "card", "reviews", "pricing", "accordion", "cta", "footer", "scrollreveal", "fold"],
-  "🛍️ Boutique": ["navbar", "hamburger", "search", "badge", "carousel", "card", "pagination", "footer", "cookie", "productpage", "checkout", "payment"],
-  "🍽️ Restaurant": ["navbar", "hamburger", "hero", "carousel", "tabs", "reviews", "booking", "map", "footer", "palette", "typo"],
-  "📱 Appli mobile": ["bottomnav", "fab", "bottomsheet", "onboarding", "pulltorefresh", "swipe", "push", "webapp"],
-};
-
-const OPTS = {
-  target: { label: "IA utilisée", choices: { claude: "Claude", chatgpt: "ChatGPT", other: "Autre IA" } },
-  type: { label: "Type de projet", choices: { "un site vitrine": "Site vitrine", "une landing page": "Landing page", "une boutique en ligne": "Boutique en ligne", "un blog": "Blog", "un portfolio": "Portfolio", "une application web": "Application web" } },
-  tech: { label: "Technologie", choices: { single: "HTML/CSS/JS en 1 fichier", separate: "HTML/CSS/JS en 3 fichiers", react: "React + Tailwind" } },
-  style: { label: "Style", choices: { "": "Laisser l'IA choisir", "moderne et épuré": "Moderne et épuré", "chaleureux et convivial": "Chaleureux", "luxe et élégant": "Luxe et élégant", "coloré et ludique": "Coloré et ludique", "professionnel et sobre": "Professionnel", "minimaliste": "Minimaliste" } },
-};
+const TAGS = { section: "structure", extra: "complements", feature: "fonctionnalites", page: "pages", design: "design", tech: "consignes_techniques" };
 
 const TECH_TEXT = {
   single: "HTML, CSS et JavaScript « vanilla » dans un seul fichier index.html (CSS dans <style>, JavaScript dans <script>), sans framework ni bibliothèque externe : je dois pouvoir l'ouvrir directement dans mon navigateur.",
   separate: "HTML, CSS et JavaScript « vanilla » en 3 fichiers séparés (index.html, style.css, script.js), sans framework ni bibliothèque externe.",
   react: "React (composants fonctionnels et hooks) avec Tailwind CSS, un composant par section, plus un composant App qui les assemble.",
+  rn: "React Native avec Expo, un composant par section ou écran, prêt à tester sur téléphone avec l'application Expo Go.",
 };
+const TECH_LABEL = { single: "HTML/CSS/JS en 1 fichier", separate: "HTML/CSS/JS en 3 fichiers", react: "React + Tailwind", rn: "React Native (Expo)" };
+
+// Les trois types de projets proposés à l'étape 1.
+const KINDS = {
+  site: {
+    icon: "🌐", label: "Un site web", sub: "Site vitrine, boutique, blog, landing page…",
+    role: "un développeur front-end et designer web expérimenté",
+    objective: "une page web complète et fonctionnelle",
+    types: { "un site vitrine": "Site vitrine", "une landing page": "Landing page", "une boutique en ligne": "Boutique en ligne", "un blog": "Blog", "un portfolio": "Portfolio" },
+    techs: ["single", "separate", "react"],
+    cats: ["nav", "content", "interact", "form", "feature", "feedback", "pages", "style", "layout", "anim", "bases", "mobile"],
+    recipes: {
+      "🏪 Site vitrine": ["navbar", "hamburger", "hero", "card", "reviews", "form", "map", "footer", "backtotop", "responsive", "seo"],
+      "🎯 Landing page": ["navbar", "hero", "card", "reviews", "pricing", "accordion", "cta", "footer", "scrollreveal", "fold"],
+      "🛍️ Boutique": ["navbar", "hamburger", "search", "badge", "carousel", "card", "pagination", "footer", "cookie", "productpage", "checkout", "payment"],
+      "🍽️ Restaurant": ["navbar", "hamburger", "hero", "carousel", "tabs", "reviews", "booking", "map", "footer", "palette", "typo"],
+    },
+  },
+  webapp: {
+    icon: "💻", label: "Une application web", sub: "Outil en ligne, espace client, tableau de bord…",
+    role: "un développeur front-end et designer UI expérimenté, spécialiste des applications web",
+    objective: "l'interface complète et fonctionnelle (écran principal)",
+    types: { "un outil en ligne": "Outil en ligne", "un espace client": "Espace client", "un tableau de bord de gestion": "Tableau de bord", "une plateforme de réservation": "Plateforme de réservation" },
+    techs: ["single", "separate", "react"],
+    cats: ["nav", "interact", "content", "form", "feedback", "feature", "pages", "style", "layout", "anim", "bases", "mobile"],
+    recipes: {
+      "📊 Tableau de bord": ["navbar", "search", "card", "tabs", "pagination", "drawer", "modal", "toast", "dashboard", "auth", "darkmode"],
+      "📅 Prise de rendez-vous": ["navbar", "hamburger", "hero", "booking", "form", "footer", "toast", "auth", "account"],
+      "🧑‍💼 Espace client": ["navbar", "breadcrumb", "tabs", "card", "form", "footer", "toast", "badge", "auth", "account"],
+    },
+  },
+  mobile: {
+    icon: "📱", label: "Une appli mobile", sub: "Application pour téléphone, installable",
+    role: "un développeur d'applications mobiles et designer UI expérimenté",
+    objective: "l'écran principal complet et fonctionnel",
+    types: { "une application mobile installable (PWA)": "PWA (installable, sans store)", "une application mobile pour les stores": "Appli pour l'App Store / Google Play" },
+    techs: ["single", "react", "rn"],
+    cats: ["mobile", "nav", "interact", "content", "form", "feedback", "feature", "style", "anim", "layout", "bases", "pages"],
+    recipes: {
+      "📱 Appli de base": ["bottomnav", "fab", "bottomsheet", "onboarding", "pulltorefresh", "swipe", "push", "webapp"],
+      "🛒 Appli de commande": ["bottomnav", "search", "card", "badge", "bottomsheet", "toast", "onboarding", "payment", "push"],
+      "📝 Appli de notes": ["bottomnav", "search", "card", "fab", "swipe", "toast", "darkmode", "auth"],
+    },
+  },
+};
+
+// Ambiances proposées à l'étape 4 (valeur envoyée à l'IA → libellé, aperçu).
+const STYLES = {
+  "": ["✨ L'IA choisit", "conic-gradient(from 90deg, #f87171, #fbbf24, #34d399, #60a5fa, #a78bfa, #f87171)"],
+  "moderne et épuré": ["Moderne", "linear-gradient(135deg, #ffffff 0 50%, #6366f1 50%)"],
+  "chaleureux et convivial": ["Chaleureux", "linear-gradient(135deg, #fde68a, #f97316)"],
+  "luxe et élégant": ["Luxe", "linear-gradient(135deg, #111 0 60%, #d4af37 60%)"],
+  "coloré et ludique": ["Ludique", "linear-gradient(135deg, #f472b6, #facc15, #22d3ee)"],
+  "professionnel et sobre": ["Pro & sobre", "linear-gradient(135deg, #1e3a8a, #64748b)"],
+  "minimaliste": ["Minimaliste", "linear-gradient(135deg, #fafafa, #d4d4d8)"],
+};
+// Palettes toutes prêtes (texte envoyé à l'IA → couleurs d'aperçu).
+const PALETTES = {
+  "bleu nuit et blanc, accent orange": ["#1e3a8a", "#ffffff", "#f97316"],
+  "vert sapin et crème": ["#14532d", "#fef3c7", "#a3e635"],
+  "noir et doré": ["#0a0a0a", "#d4af37", "#f5f5f4"],
+  "tons pastel (rose, lavande, menthe)": ["#fbcfe8", "#ddd6fe", "#bbf7d0"],
+  "rouge vif et blanc": ["#dc2626", "#ffffff", "#1f2937"],
+  "terracotta, beige et vert olive": ["#c2410c", "#f5f0e6", "#65a30d"],
+};
+const TARGETS = { claude: "Claude", chatgpt: "ChatGPT", other: "Autre IA" };
+// Éléments les plus utiles en premier, selon le type de projet.
+const ESSENTIALS = {
+  site: ["navbar", "hamburger", "hero", "carousel", "card", "cta", "reviews", "accordion", "form", "map", "footer", "cookie"],
+  webapp: ["navbar", "drawer", "dashboard", "card", "tabs", "search", "modal", "toast", "form", "auth", "account", "darkmode"],
+  mobile: ["bottomnav", "fab", "onboarding", "card", "search", "bottomsheet", "swipe", "pulltorefresh", "toast", "push", "auth", "darkmode"],
+};
+const STEPS = ["Type", "Modèle", "Éléments", "Projet", "Prompt"];
 
 const B = {
   sel: [],
-  opt: { target: "claude", type: "un site vitrine", tech: "single", style: "", colors: "", ctx: "", content: "demo", missing: "choose", codeOnly: true },
+  opt: { kind: "site", target: "claude", type: "un site vitrine", tech: "single", style: "", colors: "", ctx: "", content: "demo", missing: "choose", codeOnly: true },
 };
+const ui = { step: 1, q: "", cat: "ess" };
 
 const byId = id => DICO.find(x => x.id === id);
+const kind = () => KINDS[B.opt.kind] || KINDS.site;
 
 function roleOf(i) {
   if (i.cat === "bases") return "tech";
@@ -94,8 +155,15 @@ function loadB() {
   try {
     const s = JSON.parse(localStorage.getItem("dico-builder") || "null");
     if (s) { B.sel = (s.sel || []).filter(byId); Object.assign(B.opt, s.opt || {}); }
-    if (!(B.opt.type in OPTS.type.choices)) B.opt.type = "un site vitrine";
   } catch (e) { /* stockage indisponible */ }
+  fixOptions();
+}
+// Garde le type et la technologie cohérents avec le type de projet choisi.
+function fixOptions() {
+  if (!KINDS[B.opt.kind]) B.opt.kind = "site";
+  const k = kind();
+  if (!(B.opt.type in k.types)) B.opt.type = Object.keys(k.types)[0];
+  if (!k.techs.includes(B.opt.tech)) B.opt.tech = k.techs[0];
 }
 
 const isSel = id => B.sel.includes(id);
@@ -103,8 +171,7 @@ const isSel = id => B.sel.includes(id);
 // Ajoute une section à sa place logique (le footer reste en bas, la navbar en haut…).
 function addSel(id) {
   if (isSel(id)) return;
-  const i = byId(id);
-  if (roleOf(i) === "section") {
+  if (roleOf(byId(id)) === "section") {
     const at = B.sel.findIndex(x => roleOf(byId(x)) === "section" && orderOf(x) > orderOf(id));
     if (at >= 0) { B.sel.splice(at, 0, id); return; }
   }
@@ -112,21 +179,25 @@ function addSel(id) {
 }
 function toggleSel(id) {
   isSel(id) ? B.sel.splice(B.sel.indexOf(id), 1) : addSel(id);
-  saveB(); updateBar(); render();
+  selChanged();
 }
-
 function moveSel(id, dir) {
   const sections = B.sel.filter(x => roleOf(byId(x)) === "section");
-  const k = sections.indexOf(id), other = sections[k + dir];
+  const other = sections[sections.indexOf(id) + dir];
   if (other === undefined) return;
   const a = B.sel.indexOf(id), b = B.sel.indexOf(other);
   [B.sel[a], B.sel[b]] = [B.sel[b], B.sel[a]];
 }
-
-function updateBar() {
-  $("#bar").classList.toggle("show", B.sel.length > 0);
-  $("#barCount").textContent = `${B.sel.length} élément${B.sel.length > 1 ? "s" : ""}`;
-  $("#barList").textContent = B.sel.map(id => byId(id).name).join(" · ");
+function selChanged() {
+  saveB();
+  updateBadge();
+  if ($("#picker")) { renderPicker(); renderSide(); }
+  if ($("#wzStatus")) updateFoot();
+}
+function updateBadge() {
+  const b = $("#navCount");
+  b.textContent = B.sel.length;
+  b.style.display = B.sel.length ? "inline-block" : "none";
 }
 
 function grouped() {
@@ -135,41 +206,46 @@ function grouped() {
   return g;
 }
 
+// ---------------------------------------------------------------- prompt
 function generatePrompt() {
-  const o = B.opt, g = grouped();
-  if (!B.sel.length) return "Sélectionne au moins un élément du dico pour générer le prompt.";
+  const o = B.opt, k = kind(), g = grouped();
+  if (!B.sel.length) return "Choisis au moins un élément (étape 3) pour générer le prompt.";
   const claude = o.target === "claude";
   const block = (tag, title, body) => claude ? `<${tag}>\n${body}\n</${tag}>` : `## ${title}\n${body}`;
-  const list = (items, fmt) => items.map(fmt).join("\n");
   const parts = [];
 
-  parts.push(block("role", "Rôle", "Tu es un développeur front-end et designer web expérimenté."));
+  parts.push(block("role", "Rôle", `Tu es ${k.role}.`));
   parts.push(block("objectif", "Objectif",
-    `Crée une page web complète et fonctionnelle : ${o.type}` + (o.ctx.trim() ? ` pour le projet suivant : ${o.ctx.trim()}` : ".") +
-    `\nLa page doit contenir toutes les sections ci-dessous. Leur position est donnée par l'ordre de la liste : il prime sur les indications de position écrites dans les descriptions.`));
+    `Crée ${k.objective} : ${o.type}` + (o.ctx.trim() ? ` pour le projet suivant : ${o.ctx.trim()}` : ".") +
+    `\nLe résultat doit contenir tous les éléments ci-dessous. La position des sections est donnée par l'ordre de la liste : elle prime sur les indications de position écrites dans les descriptions.`));
 
   for (const [key, , title] of GROUPS) {
     const items = g[key];
     if (!items) continue;
-    let body;
-    if (key === "section") body = list(items, (i, n) => `${n + 1}. ${i.name} (${i.en}) : ${promptOf(i)}`);
-    else if (key === "tech") body = list(items, i => `- ${TECH[i.id] || promptOf(i)}`);
-    else if (key === "page") body = list(items, i => `- ${i.name} (${i.en}) : ${promptOf(i)}`);
-    else body = list(items, i => `- ${i.name} (${i.en}) : ${promptOf(i)}`);
-    if (key === "design") body = designHeader(o) + "\n" + body;
-    parts.push(block(key === "section" ? "structure" : key === "extra" ? "complements" : key === "feature" ? "fonctionnalites" : key === "page" ? "pages" : key === "tech" ? "consignes_techniques" : key, title, body));
+    let body = key === "section"
+      ? items.map((i, n) => `${n + 1}. ${i.name} (${i.en}) : ${promptOf(i)}`).join("\n")
+      : key === "tech"
+        ? items.map(i => `- ${TECH[i.id] || promptOf(i)}`).join("\n")
+        : items.map(i => `- ${i.name} (${i.en}) : ${promptOf(i)}`).join("\n");
+    if (key === "design" && designHeader(o)) body = designHeader(o) + "\n" + body;
+    parts.push(block(TAGS[key], title, body));
   }
-  if (!g.design && (o.style || o.colors.trim())) parts.push(block("design", "Design", designHeader(o)));
+  if (!g.design && designHeader(o)) parts.push(block("design", "Design", designHeader(o)));
 
+  const native = o.tech === "rn";
   const constraints = [
     `- Technologie : ${TECH_TEXT[o.tech]}`,
-    "- Responsive « mobile first » : parfait sur téléphone, tablette et ordinateur.",
-    "- Accessible : HTML sémantique (header, nav, main, section, footer), navigation au clavier, contrastes suffisants.",
-    "- Images : utilise https://picsum.photos (ex. https://picsum.photos/1200/600) avec un attribut alt descriptif, faciles à remplacer.",
+    B.opt.kind === "mobile"
+      ? "- Pensé pour le téléphone avant tout (écran de 375 px), utilisable d'une main, avec les gestes tactiles habituels."
+      : "- Responsive « mobile first » : parfait sur téléphone, tablette et ordinateur.",
+    native
+      ? "- Accessible : libellés d'accessibilité, zones tactiles d'au moins 44 px, contrastes suffisants."
+      : "- Accessible : HTML sémantique (header, nav, main, section, footer), navigation au clavier, contrastes suffisants.",
+    "- Images : utilise https://picsum.photos (ex. https://picsum.photos/1200/600) avec une description alternative, faciles à remplacer.",
     o.content === "demo"
       ? "- Textes : rédige des textes d'exemple réalistes en français, adaptés au projet (pas de lorem ipsum)."
       : "- Textes : mets des textes provisoires repérables, au format [À COMPLÉTER : description], que je remplacerai.",
-    "- Code propre, commenté par section, avec des variables CSS pour les couleurs.",
+    `- Code propre, commenté par section, avec les couleurs centralisées (${native ? "fichier de thème" : o.tech === "react" ? "configuration Tailwind" : "variables CSS"}).`,
   ];
   parts.push(block("contraintes", "Contraintes", constraints.join("\n")));
 
@@ -196,103 +272,280 @@ function designHeader(o) {
   return l.join("\n");
 }
 
-function planHTML(g) {
-  const s = g.section || [];
-  const e = [...(g.extra || []), ...(g.feature || [])];
-  if (!s.length && !e.length) return `<div class="desc">Aucune section visible pour l'instant.</div>`;
-  return `<div class="plan">${s.map(i => `<div class="plan-row plan-${i.id}">${i.name}</div>`).join("")}</div>` +
-    (e.length ? `<div class="chips" style="margin-top:8px">${e.map(i => `<span>+ ${i.name}</span>`).join("")}</div>` : "");
+
+// ---------------------------------------------------------------- affichage (parcours guidé)
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+const plural = (n, w) => `${n} ${w}${n > 1 ? "s" : ""}`;
+
+function renderCreate() {
+  $("#createView").innerHTML = `
+    <div class="wz">
+      <ol class="stepper" id="stepper"></ol>
+      <div id="wzBody" class="wz-body"></div>
+    </div>
+    <div class="wz-foot"><div class="wz-foot-in">
+      <div class="wz-status" id="wzStatus"></div>
+      <div class="wz-nav">
+        <button class="btn ghost" id="wzBack">← Retour</button>
+        <button class="btn primary" id="wzNext">Continuer →</button>
+      </div>
+    </div></div>`;
+  renderStep();
 }
 
-function selectHTML(key) {
-  const d = OPTS[key];
-  return `<label class="f"><span>${d.label}</span><select data-opt="${key}">${Object.entries(d.choices)
-    .map(([v, t]) => `<option value="${v}" ${B.opt[key] === v ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
+function go(step) {
+  ui.step = Math.max(1, Math.min(STEPS.length, step));
+  renderStep();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function openBuilder() {
+function renderStep() {
+  $("#stepper").innerHTML = STEPS.map((t, n) => `
+    <li class="${n + 1 === ui.step ? "on" : n + 1 < ui.step ? "done" : ""}"><button data-go="${n + 1}">
+      <span class="dot">${n + 1 < ui.step ? "✓" : n + 1}</span><span class="st-txt">${t}</span></button></li>`).join("");
+  const body = $("#wzBody");
+  body.innerHTML = [, stepKind, stepRecipe, stepElements, stepProject, stepPrompt][ui.step]();
+  body.classList.remove("enter"); void body.offsetWidth; body.classList.add("enter");
+  if (ui.step === 3) { renderPicker(); renderSide(); }
+  if (ui.step === 5) refreshOut();
+  updateFoot();
+}
+
+function updateFoot() {
+  const n = B.sel.length;
+  $("#wzStatus").innerHTML = `<b>Étape ${ui.step}/${STEPS.length}</b><span>${kind().icon} ${kind().label} · ${plural(n, "élément")}</span>`;
+  $("#wzBack").style.visibility = ui.step === 1 ? "hidden" : "visible";
+  const next = $("#wzNext");
+  next.disabled = ui.step === 3 && !n;
+  next.textContent = ui.step === 4 ? "Voir mon prompt ✨" : ui.step === 5 ? "📋 Copier le prompt" : "Continuer →";
+  next.title = next.disabled ? "Choisis au moins un élément" : "";
+}
+
+const head = (title, sub) => `<div class="wz-head"><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ""}</div>`;
+
+// Étape 1 : type de projet
+function stepKind() {
+  return head("Que veux-tu créer ?", "Choisis le type de projet. Tu pourras changer d'avis à tout moment.") + `
+    <div class="kinds">${Object.entries(KINDS).map(([k, d]) => `
+      <button class="kind ${B.opt.kind === k ? "on" : ""}" data-kind="${k}">
+        <span class="kind-i">${d.icon}</span>
+        <b>${d.label}</b>
+        <small>${d.sub}</small>
+        <span class="kind-check">✓</span>
+      </button>`).join("")}</div>
+    <p class="hint-box">💡 <b>Pas sûr ?</b> Un <b>site web</b> présente quelque chose (une activité, des produits). Une <b>application web</b> sert à faire quelque chose (gérer, réserver, suivre). Une <b>appli mobile</b> s'utilise sur téléphone.</p>`;
+}
+
+// Étape 2 : modèle de départ
+function stepRecipe() {
+  const recipes = kind().recipes;
+  return head("Pars d'un modèle", "Un modèle coche pour toi les éléments les plus courants. Tu pourras en ajouter ou en retirer juste après.") + `
+    <div class="recipes-grid">${Object.entries(recipes).map(([r, ids]) => {
+      const names = ids.filter(byId).map(id => byId(id).name);
+      const [icon, ...title] = r.split(" ");
+      return `<button class="recipe" data-recipe="${esc(r)}">
+        <span class="recipe-i">${icon}</span><b>${title.join(" ")}</b>
+        <small>${names.slice(0, 5).join(" · ")}${names.length > 5 ? ` · +${names.length - 5}` : ""}</small>
+        <span class="recipe-go">Utiliser ce modèle →</span></button>`;
+    }).join("")}
+      <button class="recipe blank" data-recipe="">
+        <span class="recipe-i">✏️</span><b>Je choisis moi-même</b>
+        <small>${B.sel.length ? `Garder ma sélection actuelle (${plural(B.sel.length, "élément")})` : "Partir d'une page blanche"}</small>
+        <span class="recipe-go">Continuer →</span></button>
+    </div>`;
+}
+
+// Étape 3 : choix des éléments
+function stepElements() {
+  const cats = [["ess", "⭐ Les essentiels"], ...kind().cats.map(c => [c, `${CAT_ICON[c]} ${catName(c)}`])];
+  return head("Coche ce que tu veux voir", "Reconnais les éléments grâce aux images. Un doute sur un mot ? Clique sur <b>ⓘ</b> pour lire son explication.") + `
+    <div class="el-grid">
+      <div>
+        <div class="search sm">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="pq" type="search" placeholder="Cherche avec tes mots : « menu », « payer », « images qui défilent »…" value="${esc(ui.q)}" autocomplete="off">
+        </div>
+        <div class="cats" id="pcats">${cats.map(([k, v]) => `<button data-pcat="${k}" class="${ui.cat === k ? "on" : ""}">${v}</button>`).join("")}</div>
+        <div id="picker"></div>
+      </div>
+      <aside class="el-side" id="side"></aside>
+    </div>`;
+}
+
+function renderPicker() {
+  const q = ui.q.trim();
+  let items = q ? DICO.map(i => [i, score(i, q)]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]).map(([i]) => i)
+    : ui.cat === "ess" ? ESSENTIALS[B.opt.kind].map(byId).filter(Boolean)
+    : DICO.filter(i => i.cat === ui.cat);
+  document.querySelectorAll("#pcats button").forEach(b => b.classList.toggle("on", !q && b.dataset.pcat === ui.cat));
+  $("#picker").innerHTML = items.length ? `<div class="pk-grid">${items.map(i => `
+    <div class="pk ${isSel(i.id) ? "on" : ""}" data-toggle="${i.id}" role="checkbox" aria-checked="${isSel(i.id)}" tabindex="0">
+      <div class="pk-prev"><div class="pk-zoom">${i.visual}</div></div>
+      <div class="pk-body"><b>${i.name}</b><small>${i.simple}</small></div>
+      <span class="pk-box">✓</span>
+      <button class="pk-info" data-info="${i.id}" title="Voir l'explication" aria-label="Voir l'explication">ⓘ</button>
+    </div>`).join("")}</div>`
+    : `<div class="empty">🤔 Rien trouvé pour « ${esc(q)} ». Essaie d'autres mots.</div>`;
+}
+
+function renderSide() {
+  const side = $("#side");
+  if (!side) return;
   const g = grouped();
   const sectionIds = (g.section || []).map(i => i.id);
-  const rows = GROUPS.filter(([k]) => g[k]).map(([k, label]) => `
-    <div class="b-group"><div class="b-gtitle">${label}</div>${g[k].map(i => {
-      const pos = sectionIds.indexOf(i.id);
-      return `<div class="b-row"><div><b>${i.name}</b> <span class="en">${i.en}</span></div><div class="b-btns">${k === "section"
-        ? `<button data-act="up" data-id="${i.id}" ${pos === 0 ? "disabled" : ""} title="Monter">↑</button><button data-act="down" data-id="${i.id}" ${pos === sectionIds.length - 1 ? "disabled" : ""} title="Descendre">↓</button>`
-        : ""}<button data-act="rm" data-id="${i.id}" title="Retirer">✕</button></div></div>`;
-    }).join("")}</div>`).join("");
-
-  $("#panel").classList.add("wide");
-  $("#panel").innerHTML = `
-    <div class="content" style="position:relative">
-      <button class="close" id="x">✕</button>
-      <h2>🧱 Construire ma page</h2>
-      <p class="desc">Choisis tes éléments, règle quelques options, et copie un seul prompt complet. L'IA te renverra directement le code HTML, CSS et JavaScript de ta page.</p>
-      <div class="b-grid">
-        <div>
-          <div class="label">⚡ Démarrage rapide (remplace la sélection)</div>
-          <div class="chips recipes">${Object.keys(RECIPES).map(r => `<button data-act="recipe" data-id="${r}">${r}</button>`).join("")}</div>
-          <div class="label">Ta sélection (${B.sel.length})</div>
-          ${rows || `<div class="desc">Rien de sélectionné. Utilise un démarrage rapide ou ajoute des éléments depuis le dico (bouton ＋ sur chaque carte).</div>`}
-          <div class="actions"><button class="btn ghost" data-act="more">＋ Ajouter d'autres éléments</button>${B.sel.length ? `<button class="btn ghost" data-act="clear">Tout retirer</button>` : ""}</div>
-          <div class="label">Ton projet</div>
-          <textarea data-opt="ctx" placeholder="Ex. : Restaurant italien « Da Marco » à Lyon, cuisine familiale, clientèle de quartier et touristes.">${B.opt.ctx}</textarea>
-          <div class="f-grid">
-            ${selectHTML("target")}${selectHTML("type")}${selectHTML("tech")}${selectHTML("style")}
-            <label class="f"><span>Couleurs (facultatif)</span><input data-opt="colors" value="${B.opt.colors.replace(/"/g, "&quot;")}" placeholder="Ex. : vert sapin et crème"></label>
-            <label class="f"><span>Textes</span><select data-opt="content"><option value="demo" ${B.opt.content === "demo" ? "selected" : ""}>Textes d'exemple rédigés par l'IA</option><option value="mine" ${B.opt.content === "mine" ? "selected" : ""}>Je mettrai mes propres textes</option></select></label>
-            <label class="f"><span>S'il manque une info</span><select data-opt="missing"><option value="choose" ${B.opt.missing === "choose" ? "selected" : ""}>L'IA fait des choix (plus rapide)</option><option value="ask" ${B.opt.missing === "ask" ? "selected" : ""}>L'IA me pose des questions d'abord</option></select></label>
-            <label class="f check"><input type="checkbox" data-opt="codeOnly" ${B.opt.codeOnly ? "checked" : ""}> <span>Réponse = le code seul (économise des tokens)</span></label>
-          </div>
-        </div>
-        <div>
-          <div class="label">🗺️ Plan de ta page</div>
-          ${planHTML(g)}
-          <div class="label">✨ Prompt généré <span id="tok" class="tok"></span></div>
-          <div class="prompt" id="out"></div>
-          <div class="actions"><button class="btn primary" id="cpAll" ${B.sel.length ? "" : "disabled"}>📋 Copier le prompt</button></div>
-          <p class="desc">💡 Un seul message complet et structuré évite les allers-retours avec l'IA, donc les tokens perdus.${B.opt.target === "claude" ? " Le prompt utilise des balises (&lt;structure&gt;…), un format que Claude comprend particulièrement bien." : ""}</p>
-        </div>
-      </div>
+  const rows = (g.section || []).map((i, pos) => `
+    <div class="sp-row plan-${i.id}"><span>${i.name}</span><span class="b-btns">
+      <button data-act="up" data-id="${i.id}" ${pos === 0 ? "disabled" : ""} title="Monter" aria-label="Monter">↑</button>
+      <button data-act="down" data-id="${i.id}" ${pos === sectionIds.length - 1 ? "disabled" : ""} title="Descendre" aria-label="Descendre">↓</button>
+      <button data-act="rm" data-id="${i.id}" title="Retirer" aria-label="Retirer">✕</button></span></div>`).join("");
+  const extras = GROUPS.filter(([k]) => k !== "section" && g[k]).flatMap(([k]) => g[k]);
+  side.innerHTML = `
+    <div class="side-card">
+      <div class="side-h"><b>🗺️ Ma page</b>${B.sel.length ? `<button class="link" data-act="clear">Tout retirer</button>` : ""}</div>
+      ${B.sel.length ? `
+        ${rows ? `<div class="sp">${rows}</div>` : ""}
+        ${extras.length ? `<div class="label">En plus</div><div class="chips x">${extras.map(i => `<span>${i.name}<button data-act="rm" data-id="${i.id}" aria-label="Retirer">✕</button></span>`).join("")}</div>` : ""}
+        <p class="desc small">Les sections sont rangées automatiquement de haut en bas. Utilise ↑ ↓ pour changer l'ordre.</p>`
+      : `<div class="side-empty">👈 Coche des éléments :<br>ils apparaîtront ici, à leur place sur ta page.</div>`}
     </div>`;
-  refreshOut();
-  $("#overlay").classList.add("show");
+}
+
+// Étape 4 : le projet
+function stepProject() {
+  const k = kind(), o = B.opt;
+  const chip = (key, val, label, extra = "") => `<button class="opt ${o[key] === val ? "on" : ""}" data-set="${key}" data-val="${esc(val)}">${extra}${label}</button>`;
+  return head("Parle-nous de ton projet", "Plus l'IA a de contexte, plus le résultat te ressemblera. Seule la première question est vraiment importante.") + `
+    <div class="q-card">
+      <label class="q-title" for="ctx">1. C'est pour quoi ? <span class="req">Recommandé</span></label>
+      <p class="q-help">Le nom, l'activité, la ville, pour qui… en une ou deux phrases.</p>
+      <textarea id="ctx" data-opt="ctx" rows="3" placeholder="Ex. : Restaurant italien « Da Marco » à Lyon, cuisine familiale, pour les familles du quartier et les touristes.">${esc(o.ctx)}</textarea>
+    </div>
+    <div class="q-card">
+      <div class="q-title">2. Quel genre de ${B.opt.kind === "site" ? "site" : "projet"} ?</div>
+      <div class="opts">${Object.entries(k.types).map(([v, t]) => chip("type", v, t)).join("")}</div>
+    </div>
+    <div class="q-card">
+      <div class="q-title">3. Quelle ambiance ?</div>
+      <div class="opts">${Object.entries(STYLES).map(([v, [t, sw]]) => chip("style", v, t, `<span class="sw" style="background:${sw}"></span>`)).join("")}</div>
+    </div>
+    <div class="q-card">
+      <div class="q-title">4. Quelles couleurs ?</div>
+      <div class="opts">${chip("colors", "", "✨ L'IA choisit")}${Object.entries(PALETTES).map(([v, cols]) =>
+        chip("colors", v, v.split(",")[0].replace(/\s*\(.*/, ""), `<span class="pal">${cols.map(c => `<i style="background:${c}"></i>`).join("")}</span>`)).join("")}</div>
+      <input class="q-input" data-opt="colors" value="${o.colors in PALETTES ? "" : esc(o.colors)}" placeholder="Ou écris tes couleurs : « bleu ciel et jaune », « couleurs de mon logo : #123456 »…">
+    </div>
+    <div class="q-card">
+      <div class="q-title">5. Quelle IA vas-tu utiliser ?</div>
+      <div class="opts">${Object.entries(TARGETS).map(([v, t]) => chip("target", v, t)).join("")}</div>
+    </div>
+    <details class="q-card adv">
+      <summary>⚙️ Options avancées <span>(facultatif, les réglages par défaut conviennent très bien)</span></summary>
+      <div class="adv-grid">
+        <div><div class="q-sub">Technologie</div><div class="opts">${k.techs.map(t => chip("tech", t, TECH_LABEL[t])).join("")}</div></div>
+        <div><div class="q-sub">Textes du ${B.opt.kind === "site" ? "site" : "projet"}</div><div class="opts">${chip("content", "demo", "Rédigés par l'IA")}${chip("content", "mine", "Je mettrai les miens")}</div></div>
+        <div><div class="q-sub">S'il manque une information</div><div class="opts">${chip("missing", "choose", "L'IA fait des choix")}${chip("missing", "ask", "L'IA me pose des questions")}</div></div>
+        <div><div class="q-sub">Réponse de l'IA</div><div class="opts">${chip("codeOnly", true, "Le code seul (économise des tokens)")}${chip("codeOnly", false, "Le code + une courte explication")}</div></div>
+      </div>
+    </details>`;
+}
+
+// Étape 5 : le prompt final
+function stepPrompt() {
+  const g = grouped(), s = g.section || [];
+  const t = generatePrompt();
+  const ai = { claude: ["Claude", "https://claude.ai/new"], chatgpt: ["ChatGPT", "https://chatgpt.com"], other: ["ton IA", ""] }[B.opt.target];
+  return `
+    <div class="done-hero">
+      <div class="done-i">🎉</div>
+      <h1>Ton prompt est prêt !</h1>
+      <p>${kind().icon} ${kind().label} · ${plural(B.sel.length, "élément")} · <span id="tok"></span></p>
+      <button class="btn primary lg" id="cpAll">📋 Copier mon prompt</button>
+    </div>
+    <div class="use">
+      <div class="use-step"><span class="how-num">1</span><div><b>Copie</b> le prompt avec le bouton ci-dessus.</div></div>
+      <div class="use-step"><span class="how-num">2</span><div><b>Colle-le</b> dans ${ai[1] ? `<a href="${ai[1]}" target="_blank" rel="noopener">${ai[0]} ↗</a>` : ai[0]} et envoie.</div></div>
+      <div class="use-step"><span class="how-num">3</span><div><b>Enregistre</b> le code reçu dans un fichier <code>index.html</code>, puis ouvre-le dans ton navigateur.</div></div>
+    </div>
+    <div class="final-grid">
+      <div class="side-card">
+        <div class="side-h"><b>🗺️ Plan de ta page</b><button class="link" data-go="3">Modifier</button></div>
+        ${s.length ? `<div class="sp">${s.map(i => `<div class="sp-row plan-${i.id}"><span>${i.name}</span></div>`).join("")}</div>` : `<p class="desc">Aucune section visible.</p>`}
+        ${GROUPS.filter(([k]) => k !== "section" && g[k]).map(([k, label]) => `<div class="label">${label}</div><div class="chips">${g[k].map(i => `<span>${i.name}</span>`).join("")}</div>`).join("")}
+      </div>
+      <details class="side-card prompt-box" open>
+        <summary><b>👀 Voir le prompt</b> <span class="desc">(tu n'as rien à modifier)</span></summary>
+        <div class="prompt" id="out">${esc(t)}</div>
+      </details>
+    </div>
+    <p class="desc center">💡 Un seul message complet au lieu de 5 à 10 allers-retours : c'est autant de tokens économisés.</p>`;
 }
 
 function refreshOut() {
   const t = generatePrompt();
-  $("#out").textContent = t;
-  $("#tok").textContent = B.sel.length ? `≈ ${Math.round(t.length / 4)} tokens` : "";
+  if ($("#out")) $("#out").textContent = t;
+  if ($("#tok")) $("#tok").textContent = `≈ ${Math.round(t.length / 4)} tokens`;
 }
 
 function initBuilder() {
   loadB();
-  updateBar();
-  $("#openBuilder").onclick = openBuilder;
-  $("#clearSel").onclick = () => { B.sel = []; saveB(); updateBar(); render(); };
-  const panel = $("#panel");
-  panel.addEventListener("click", e => {
-    const b = e.target.closest("[data-act]");
-    if (b) {
-      const { act, id } = b.dataset;
-      if (act === "more") return close();
-      if (act === "up") moveSel(id, -1);
-      if (act === "down") moveSel(id, 1);
-      if (act === "rm") B.sel.splice(B.sel.indexOf(id), 1);
-      if (act === "clear") B.sel = [];
-      if (act === "recipe") { B.sel = []; RECIPES[id].filter(byId).forEach(addSel); }
-      saveB(); updateBar(); render(); openBuilder();
+  updateBadge();
+  const v = $("#createView");
+  v.addEventListener("click", e => {
+    const t = e.target;
+    const info = t.closest("[data-info]");
+    if (info) { e.stopPropagation(); return open(info.dataset.info); }
+    const gs = t.closest("[data-go]");
+    if (gs) return go(+gs.dataset.go);
+    if (t.closest("#wzBack")) return go(ui.step - 1);
+    if (t.closest("#wzNext")) return ui.step === 5 ? copy(generatePrompt()) : go(ui.step + 1);
+    if (t.closest("#cpAll")) return copy(generatePrompt());
+    const kd = t.closest("[data-kind]");
+    if (kd) {
+      if (B.opt.kind !== kd.dataset.kind) { B.opt.kind = kd.dataset.kind; fixOptions(); ui.cat = "ess"; saveB(); }
+      return go(2);
+    }
+    const rc = t.closest("[data-recipe]");
+    if (rc) {
+      if (rc.dataset.recipe) {
+        B.sel = []; kind().recipes[rc.dataset.recipe].filter(byId).forEach(addSel);
+        saveB(); updateBadge(); toast("Modèle chargé ✓ Ajuste-le à ton goût");
+      }
+      ui.cat = "ess";
+      return go(3);
+    }
+    const pc = t.closest("[data-pcat]");
+    if (pc) { ui.cat = pc.dataset.pcat; ui.q = ""; $("#pq").value = ""; return renderPicker(); }
+    const st = t.closest("[data-set]");
+    if (st) {
+      const key = st.dataset.set;
+      B.opt[key] = key === "codeOnly" ? st.dataset.val === "true" : st.dataset.val;
+      saveB();
+      st.parentElement.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === st));
+      if (key === "colors") { const inp = v.querySelector('input[data-opt="colors"]'); if (inp) inp.value = ""; }
       return;
     }
-    if (e.target.id === "cpAll") copy(generatePrompt());
+    const tg = t.closest("[data-toggle]");
+    if (tg) return toggleSel(tg.dataset.toggle);
+    const act = t.closest("[data-act]");
+    if (act) {
+      const { act: a, id } = act.dataset;
+      if (a === "up") moveSel(id, -1);
+      if (a === "down") moveSel(id, 1);
+      if (a === "rm") B.sel.splice(B.sel.indexOf(id), 1);
+      if (a === "clear") B.sel = [];
+      return selChanged();
+    }
   });
-  const onOpt = e => {
-    const k = e.target.dataset.opt;
-    if (!k) return;
-    B.opt[k] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+  v.addEventListener("keydown", e => {
+    const tg = e.target.closest("[data-toggle]");
+    if (tg && e.target === tg && (e.key === " " || e.key === "Enter")) { e.preventDefault(); toggleSel(tg.dataset.toggle); }
+  });
+  v.addEventListener("input", e => {
+    if (e.target.id === "pq") { ui.q = e.target.value; return renderPicker(); }
+    const key = e.target.dataset.opt;
+    if (!key) return;
+    B.opt[key] = e.target.value;
+    if (key === "colors") v.querySelectorAll('[data-set="colors"]').forEach(x => x.classList.toggle("on", x.dataset.val === e.target.value));
     saveB();
-    if (k === "target") openBuilder(); else refreshOut();
-  };
-  const isChoice = el => el.tagName === "SELECT" || el.type === "checkbox";
-  panel.addEventListener("input", e => { if (!isChoice(e.target)) onOpt(e); });
-  panel.addEventListener("change", e => { if (isChoice(e.target)) onOpt(e); });
+  });
 }

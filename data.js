@@ -18,6 +18,10 @@ const C = {
   feature: "12. Fonctionnalités complètes",
 };
 
+// Icône de chaque catégorie (navigation et filtres).
+const CAT_ICON = { bases: "🧩", pages: "📄", layout: "📐", nav: "🧭", content: "🖼️", interact: "👆", form: "✍️", feedback: "💬", style: "🎨", anim: "✨", mobile: "📱", feature: "⚙️" };
+const catName = k => C[k].replace(/^\d+\.\s*/, "");
+
 // Aperçu pour les notions abstraites (pas d'élément visible à dessiner).
 const ico = (emoji, caption) =>
   `<div class="ico"><div class="ico-e">${emoji}</div><div class="ico-t">${caption}</div></div>`;

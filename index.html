@@ -4,68 +4,146 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le Dico de l'IA : le vocabulaire pour créer un site ou une appli, expliqué simplement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f5f2; --card: #fff; --ink: #1d1d1f; --muted: #6b6b70;
-    --accent: #4f46e5; --accent-soft: #eef0ff; --line: #e4e2dd; --ok: #16a34a;
+    --bg: #f8f9fc; --surface: #ffffff; --ink: #0f172a; --ink-2: #334155; --muted: #64748b; --line: #e6e8f0;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-soft: #eef0ff; --ok: #10b981;
+    --grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #d946ef 100%);
+    --r-lg: 24px; --r: 16px; --r-sm: 12px;
+    --sh-sm: 0 1px 2px rgba(15,23,42,.04), 0 2px 8px rgba(15,23,42,.04);
+    --sh: 0 1px 2px rgba(15,23,42,.04), 0 12px 32px -8px rgba(15,23,42,.10);
+    --sh-lg: 0 30px 60px -15px rgba(15,23,42,.25);
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-h: "Plus Jakarta Sans", var(--font);
   }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); }
-  header.top { padding: 40px 20px 24px; text-align: center; }
-  header.top h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
-  header.top p { margin: 0 auto; max-width: 640px; color: var(--muted); line-height: 1.5; }
-  .search-wrap { max-width: 680px; margin: 24px auto 0; position: relative; }
-  #q { width: 100%; padding: 16px 20px; font-size: 1.1rem; border: 2px solid var(--line); border-radius: 14px; outline: none; background: #fff; }
-  #q:focus { border-color: var(--accent); }
-  .hint { font-size: .85rem; color: var(--muted); margin-top: 8px; }
-  .hint button { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0 2px; font: inherit; text-decoration: underline; }
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px auto 0; padding: 0 20px; }
-  .filters button { border: 1px solid var(--line); background: #fff; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .9rem; }
-  .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-  main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 140px; }
-  #count { color: var(--muted); font-size: .9rem; margin-bottom: 12px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-  .item { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform .15s, box-shadow .15s; }
-  .item:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.07); }
-  .preview { height: 150px; background: #fafaf8; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; padding: 14px; position: relative; overflow: hidden; }
-  .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .name { font-weight: 700; font-size: 1.05rem; }
-  .en { font-size: .8rem; color: var(--accent); font-weight: 600; }
-  .desc { font-size: .9rem; color: var(--muted); line-height: 1.4; }
-  .tag { align-self: flex-start; font-size: .72rem; background: var(--accent-soft); color: var(--accent); padding: 3px 8px; border-radius: 6px; margin-top: auto; }
-  .empty { text-align: center; color: var(--muted); padding: 40px; }
+  body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto 0; height: 620px; z-index: -1; pointer-events: none;
+    background: radial-gradient(600px 300px at 15% -5%, rgba(99,102,241,.16), transparent 70%),
+                radial-gradient(500px 300px at 85% 0%, rgba(217,70,239,.12), transparent 70%); }
+  h1, h2, h3 { font-family: var(--font-h); letter-spacing: -.02em; }
+  button { font-family: inherit; }
+  a { color: inherit; }
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-  /* Detail panel */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
-  .overlay.show { display: flex; }
-  .panel { background: #fff; border-radius: 18px; max-width: 720px; width: 100%; max-height: 90vh; overflow: auto; }
-  .panel .preview { height: 200px; }
-  .panel .content { padding: 20px 24px 24px; }
-  .panel h2 { margin: 0; }
-  .close { position: absolute; top: 10px; right: 12px; background: #fff; border: 1px solid var(--line); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 1.1rem; z-index: 2; }
-  .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 6px; font-weight: 700; }
+  /* ---------- Boutons ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; padding: 12px 20px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: .95rem; text-decoration: none; transition: transform .15s, box-shadow .15s, background .15s; white-space: nowrap; }
+  .btn:active { transform: scale(.98); }
+  .btn.primary { background: var(--grad); color: #fff; box-shadow: 0 8px 20px -6px rgba(99,102,241,.55); }
+  .btn.primary:hover { box-shadow: 0 12px 26px -6px rgba(99,102,241,.7); transform: translateY(-1px); }
+  .btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .btn.ghost:hover { box-shadow: inset 0 0 0 1px #c9cde0; background: #fdfdff; }
+  .btn.lg { padding: 16px 28px; font-size: 1.05rem; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ---------- Navigation ---------- */
+  .topnav { position: sticky; top: 12px; z-index: 45; padding: 0 16px; }
+  .topnav-in { max-width: 1180px; margin: 12px auto 0; padding: 8px 8px 8px 18px; display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,.75); backdrop-filter: saturate(180%) blur(14px); -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border: 1px solid rgba(230,232,240,.9); border-radius: 999px; box-shadow: var(--sh-sm); }
+  .brand { font-family: var(--font-h); font-weight: 800; font-size: 1.05rem; text-decoration: none; margin-right: auto; display: flex; align-items: center; gap: 8px; }
+  .brand-logo { width: 30px; height: 30px; border-radius: 9px; background: var(--grad); display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
+  .tabs { display: flex; gap: 4px; background: #f1f2f7; padding: 4px; border-radius: 999px; }
+  .tabs a { text-decoration: none; color: var(--ink-2); padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: .9rem; display: flex; align-items: center; gap: 6px; }
+  .tabs a:hover { color: var(--ink); }
+  .tabs a.on { background: var(--surface); color: var(--ink); box-shadow: var(--sh-sm); }
+  #navCount { background: var(--accent); color: #fff; border-radius: 999px; font-size: .72rem; padding: 1px 7px; display: none; }
+  @media (max-width: 560px) { .brand-txt { display: none; } .tabs a { padding: 8px 12px; font-size: .85rem; } }
+  .view { display: none; animation: fadein .3s ease; }
+  .view.show { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Accueil ---------- */
+  .home { max-width: 1100px; margin: 0 auto; padding: 72px 20px 90px; text-align: center; }
+  .pill { display: inline-flex; gap: 8px; align-items: center; padding: 6px 14px; border-radius: 999px; background: var(--surface); box-shadow: var(--sh-sm); border: 1px solid var(--line); font-size: .85rem; font-weight: 600; color: var(--ink-2); }
+  .home h1 { font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.05; margin: 22px auto 18px; max-width: 860px; font-weight: 800; }
+  .home .lead { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1.15rem; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+  .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 72px; text-align: left; }
+  @media (max-width: 820px) { .how { grid-template-columns: 1fr; } }
+  .how-card { background: var(--surface); border-radius: var(--r-lg); padding: 26px; box-shadow: var(--sh); border: 1px solid var(--line); }
+  .how-num { width: 36px; height: 36px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); font-weight: 800; display: flex; align-items: center; justify-content: center; font-family: var(--font-h); }
+  .how-card h3 { margin: 14px 0 6px; font-size: 1.15rem; }
+  .how-card p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .example { margin: 56px auto 0; max-width: 760px; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--sh); border: 1px solid var(--line); padding: 22px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; text-align: left; }
+  .example .ex-q { background: #f4f5f9; border-radius: var(--r-sm); padding: 14px 16px; font-style: italic; color: var(--ink-2); }
+  .example .ex-a b { display: block; font-family: var(--font-h); font-size: 1.1rem; }
+  .example .ex-a span { color: var(--accent); font-size: .85rem; font-weight: 600; }
+  .ex-arrow { font-size: 1.4rem; color: var(--accent); }
+  .ex-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+  @media (max-width: 640px) { .example { grid-template-columns: 1fr; } .ex-arrow { transform: rotate(90deg); justify-self: center; } }
+
+  /* ---------- Le dico ---------- */
+  .dico-head { max-width: 820px; margin: 0 auto; padding: 56px 20px 12px; text-align: center; }
+  .dico-head h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 10px; font-weight: 800; }
+  .dico-head p { margin: 0 auto; color: var(--muted); max-width: 600px; font-size: 1.05rem; }
+  .search { position: relative; margin: 28px auto 0; max-width: 680px; }
+  .search svg { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  #q { width: 100%; padding: 18px 20px 18px 54px; font-size: 1.05rem; font-family: inherit; border: 1px solid var(--line); border-radius: 999px; outline: none; background: var(--surface); box-shadow: var(--sh); transition: box-shadow .2s, border-color .2s; }
+  #q:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99,102,241,.15), var(--sh); }
+  .suggest { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; font-size: .85rem; color: var(--muted); align-items: center; }
+  .suggest button { border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: .82rem; }
+  .suggest button:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar { max-width: 1180px; margin: 30px auto 0; padding: 0 20px; display: flex; gap: 12px; align-items: center; }
+  .cats { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 10px; scrollbar-width: thin; flex: 1; }
+  .cats button { flex-shrink: 0; border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .88rem; font-weight: 500; color: var(--ink-2); transition: all .15s; }
+  .cats button:hover { border-color: #c9cde0; }
+  .cats button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .seg { display: flex; background: #eceef4; padding: 3px; border-radius: 999px; flex-shrink: 0; margin-bottom: 10px; }
+  .seg button { border: none; background: none; padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted); }
+  .seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--sh-sm); }
+  main.dico { max-width: 1180px; margin: 0 auto; padding: 8px 20px 80px; }
+  #count { color: var(--muted); font-size: .88rem; margin: 6px 0 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 20px; }
+  .item { background: var(--surface); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; border: 1px solid var(--line); box-shadow: var(--sh-sm); transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .item:hover { transform: translateY(-4px); box-shadow: var(--sh); border-color: #d9dcf0; }
+  .preview { height: 160px; background: linear-gradient(160deg, #f5f3ff 0%, #f8fafc 60%); display: flex; align-items: center; justify-content: center; padding: 18px; position: relative; overflow: hidden; }
+  .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .name { font-family: var(--font-h); font-weight: 700; font-size: 1.08rem; }
+  .en { font-size: .78rem; color: var(--accent); font-weight: 600; }
+  .simple { font-size: .9rem; line-height: 1.5; color: var(--ink-2); margin-top: 4px; }
+  .tag { align-self: flex-start; display: inline-block; font-size: .72rem; background: #f1f2f7; color: var(--muted); padding: 4px 10px; border-radius: 999px; margin-top: 12px; font-weight: 600; }
+  .empty { text-align: center; color: var(--muted); padding: 50px 20px; background: var(--surface); border-radius: var(--r-lg); border: 1px dashed var(--line); grid-column: 1 / -1; }
+  .az h3 { margin: 30px 0 8px; font-size: 1.6rem; }
+  .az-row { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 16px; padding: 14px 16px; border-radius: var(--r-sm); cursor: pointer; transition: background .15s; }
+  .az-row:hover { background: var(--surface); box-shadow: var(--sh-sm); }
+  .az-row .en { display: block; }
+  @media (max-width: 640px) { .az-row { grid-template-columns: 1fr; gap: 4px; } }
+  .bridge { margin: 48px auto 0; max-width: 760px; background: var(--grad); color: #fff; border-radius: var(--r-lg); padding: 24px 26px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 20px 40px -18px rgba(99,102,241,.6); }
+  .bridge b { font-family: var(--font-h); font-size: 1.15rem; display: block; }
+  .bridge span { opacity: .85; font-size: .93rem; }
+  .bridge .btn { background: #fff; color: var(--accent); }
+
+  /* ---------- Fiche (fenêtre) ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(15,23,42,.45); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .overlay.show { display: flex; animation: fadein .2s ease; }
+  .panel { background: var(--surface); border-radius: var(--r-lg); max-width: 680px; width: 100%; max-height: 90vh; overflow: auto; box-shadow: var(--sh-lg); position: relative; }
+  @media (max-width: 640px) { .overlay { align-items: flex-end; padding: 0; } .panel { border-radius: 24px 24px 0 0; max-height: 92vh; } }
+  .panel .preview { height: 210px; }
+  .panel .content { padding: 24px 28px 28px; }
+  .panel h2 { margin: 0; font-size: 1.7rem; }
+  .close { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,.9); border: 1px solid var(--line); border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; z-index: 3; color: var(--ink-2); }
+  .close:hover { background: #fff; color: var(--ink); }
+  .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 22px 0 8px; font-weight: 700; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chips span { background: #f1f0ec; padding: 4px 10px; border-radius: 999px; font-size: .85rem; }
-  .prompt { background: #111827; color: #e5e7eb; padding: 14px 16px; border-radius: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88rem; line-height: 1.5; white-space: pre-wrap; }
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-  .btn { border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
-  .btn.primary { background: var(--accent); color: #fff; }
-  .btn.ghost { background: #f1f0ec; color: var(--ink); }
-  ul.vars { margin: 0; padding-left: 18px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+  .chips span { background: #f1f2f7; padding: 5px 11px; border-radius: 999px; font-size: .84rem; color: var(--ink-2); }
+  .clair { background: linear-gradient(135deg, #fff8eb, #fff3e0); border: 1px solid #fde4b8; padding: 14px 16px; border-radius: var(--r); margin-top: 16px; line-height: 1.55; font-size: 1rem; }
+  .clair b { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: #b45309; margin-bottom: 4px; }
+  .desc { font-size: .93rem; color: var(--muted); line-height: 1.55; }
+  ul.vars { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: .92rem; line-height: 1.75; }
+  .prompt { background: #0f172a; color: #e2e8f0; padding: 16px 18px; border-radius: var(--r); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .84rem; line-height: 1.6; white-space: pre-wrap; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .toast { position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 999px; font-weight: 600; display: none; z-index: 70; box-shadow: var(--sh-lg); font-size: .92rem; max-width: calc(100vw - 32px); width: max-content; text-align: center; }
 
-  /* Project basket */
-  .basket { position: fixed; bottom: 0; left: 0; right: 0; background: var(--ink); color: #fff; padding: 12px 20px; display: none; align-items: center; justify-content: space-between; gap: 12px; z-index: 40; flex-wrap: wrap; }
-  .basket.show { display: flex; }
-  .basket .list { font-size: .9rem; opacity: .85; }
-  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; padding: 10px 18px; border-radius: 10px; font-weight: 600; display: none; z-index: 60; }
-  textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px; font: inherit; min-height: 70px; }
-
-  /* ---- Mini visual mockups ---- */
-  .m-screen { width: 100%; height: 100%; background: #fff; border: 1px solid #ddd; border-radius: 8px; position: relative; overflow: hidden; }
-  .m-bar { height: 8px; background: #d4d4d8; border-radius: 4px; }
-  .hl { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-  .pulse { animation: pulse 1.6s infinite; }
-  @keyframes pulse { 50% { outline-color: rgba(79,70,229,.3); } }
+  /* ---------- Aperçus visuels (mini maquettes) ---------- */
+  .m-screen { width: 100%; height: 100%; background: #fff; border: 1px solid #e2e4ec; border-radius: 10px; position: relative; overflow: hidden; box-shadow: 0 6px 16px -8px rgba(15,23,42,.15); }
+  .m-bar { height: 8px; background: #dfe2ea; border-radius: 4px; }
+  .hl { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+  .pulse { animation: pulse 1.8s infinite; }
+  @keyframes pulse { 50% { outline-color: rgba(99,102,241,.25); } }
   .slides { display: flex; width: 300%; height: 100%; animation: slide 6s infinite; }
   .slides div { width: 33.333%; height: 100%; }
   @keyframes slide { 0%,28% { transform: translateX(0); } 33%,61% { transform: translateX(-33.333%); } 66%,95% { transform: translateX(-66.666%); } 100% { transform: translateX(0); } }
@@ -77,109 +155,100 @@
   .burger i { width: 22px; height: 3px; background: #333; border-radius: 2px; display: block; }
   .spin { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--accent); border-radius: 50%; animation: rot 1s linear infinite; }
   @keyframes rot { to { transform: rotate(360deg); } }
-  .ico { text-align: center; }
-  .ico-e { font-size: 46px; line-height: 1.1; }
-  .ico-t { font-size: .8rem; color: var(--muted); margin-top: 6px; }
-  .clair { background: #fff7e6; border-left: 4px solid #f59e0b; padding: 12px 14px; border-radius: 8px; margin-top: 12px; line-height: 1.5; }
-  .clair b { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #b45309; margin-bottom: 4px; }
-  .simple { font-size: .92rem; line-height: 1.45; }
-  .az h3 { margin: 26px 0 8px; font-size: 1.4rem; color: var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 4px; }
-  .az-row { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 14px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
-  .az-row:hover { background: #fff; }
-  .az-row .en { display: block; }
-  @media (max-width: 640px) { .az-row { grid-template-columns: 1fr; gap: 4px; } }
-  .item { position: relative; }
-  .item.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
-  .pick { position: absolute; top: 10px; right: 10px; z-index: 3; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: .82rem; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
-  .pick:hover { border-color: var(--accent); color: var(--accent); }
-  .item.sel .pick { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .az-row .pick { position: static; align-self: center; }
-  .az-row { grid-template-columns: minmax(180px, 260px) 1fr auto !important; }
-  .panel.wide { max-width: 1150px; }
-  .b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-  @media (max-width: 860px) { .b-grid { grid-template-columns: 1fr; } }
-  .b-group { margin-bottom: 10px; }
-  .b-gtitle { font-weight: 700; font-size: .85rem; margin: 6px 0; }
-  .b-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px; background: #f7f6f2; border-radius: 8px; margin-bottom: 4px; font-size: .9rem; }
-  .b-row .en { display: inline; font-size: .75rem; }
-  .b-btns { display: flex; gap: 4px; flex-shrink: 0; }
-  .b-btns button { width: 28px; height: 28px; border: 1px solid var(--line); background: #fff; border-radius: 6px; cursor: pointer; }
-  .b-btns button:disabled { opacity: .3; cursor: default; }
-  .recipes button { border: 1px solid var(--line); background: #fff; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: .85rem; }
-  .recipes button:hover { border-color: var(--accent); color: var(--accent); }
-  .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  @media (max-width: 520px) { .f-grid { grid-template-columns: 1fr; } }
-  .f { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; color: var(--muted); font-weight: 600; }
-  .f select, .f input { font: inherit; font-weight: 400; color: var(--ink); padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-  .f.check { flex-direction: row; align-items: center; grid-column: 1 / -1; }
-  .plan { border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; }
-  .plan-row { padding: 9px 12px; font-size: .85rem; font-weight: 600; border-bottom: 1px dashed #bbb; background: #fff; }
-  .plan-row:last-child { border-bottom: none; }
-  .plan-navbar, .plan-hamburger, .plan-footer { background: #1f2937; color: #fff; }
-  .plan-hero, .plan-carousel { background: #e0e7ff; padding: 20px 12px; }
-  #out { max-height: 380px; overflow: auto; }
-  .tok { float: right; text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--accent); }
-  .btn:disabled { opacity: .4; cursor: default; }
   .shimmer { background: linear-gradient(90deg, #eee 25%, #f7f7f7 50%, #eee 75%); background-size: 200% 100%; animation: sh 1.4s infinite; border-radius: 6px; }
   @keyframes sh { to { background-position: -200% 0; } }
+  .ico { text-align: center; }
+  .ico-e { font-size: 46px; line-height: 1.1; filter: drop-shadow(0 6px 10px rgba(15,23,42,.12)); }
+  .ico-t { font-size: .8rem; color: var(--muted); margin-top: 8px; }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
+<link rel="stylesheet" href="builder.css">
 </head>
 <body>
 
-<header class="top">
-  <h1>📖 Le Dico de l'IA</h1>
-  <p>Tout le vocabulaire pour créer un site ou une appli, <b>expliqué simplement</b>. Tu sais ce que tu veux mais pas comment ça s'appelle ? Décris-le avec tes mots, trouve le bon terme, et copie la phrase exacte à donner à Claude, ChatGPT ou toute autre IA.</p>
-  <div class="search-wrap">
-    <input id="q" type="search" placeholder="Ex. : « images qui défilent », « les 3 traits », « mettre en ligne », « payer par carte »…" autocomplete="off">
-    <div class="hint">Essaie :
-      <button data-try="images qui défilent">images qui défilent</button>·
-      <button data-try="trois traits">trois traits</button>·
-      <button data-try="questions qui s'ouvrent">questions qui s'ouvrent</button>·
-      <button data-try="message en bas">message en bas</button>·
-      <button data-try="adresse du site">adresse du site</button>·
+<nav class="topnav"><div class="topnav-in">
+  <a class="brand" href="#accueil"><span class="brand-logo">✦</span><span class="brand-txt">Le Dico de l'IA</span></a>
+  <div class="tabs">
+    <a href="#dico" data-route="dico">📖 Le dico</a>
+    <a href="#creer" data-route="creer">🧱 Créer <span id="navCount"></span></a>
+  </div>
+</div></nav>
+
+<!-- ============ ACCUEIL ============ -->
+<section class="view" id="accueilView">
+  <div class="home">
+    <span class="pill">✨ Gratuit · Sans inscription · En français</span>
+    <h1>Crée ton site avec l'IA, <span class="grad-text">même sans connaître les mots.</span></h1>
+    <p class="lead">Tu as une idée mais tu ne sais pas comment l'expliquer à Claude ou ChatGPT ? On t'aide à trouver les bons termes et à écrire le prompt parfait, du premier coup.</p>
+    <div class="cta-row">
+      <a class="btn primary lg" href="#creer">🧱 Créer mon projet</a>
+      <a class="btn ghost lg" href="#dico">📖 Explorer le dico</a>
+    </div>
+
+    <div class="how">
+      <div class="how-card"><div class="how-num">1</div><h3>Dis ce que tu veux créer</h3><p>Un site web, une application web ou une appli mobile. Pas besoin d'être technique.</p></div>
+      <div class="how-card"><div class="how-num">2</div><h3>Coche ce que tu veux voir</h3><p>Chaque élément a une image et une explication simple. Tu reconnais, tu coches.</p></div>
+      <div class="how-card"><div class="how-num">3</div><h3>Copie ton prompt</h3><p>Colle-le dans ton IA : elle te renvoie tout le code de ton projet, en un seul message.</p></div>
+    </div>
+
+    <div class="example">
+      <div><div class="ex-label">Tu tapes</div><div class="ex-q">« les images qui défilent en haut »</div></div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-a"><div class="ex-label">On te répond</div><b>Carrousel</b><span>🇬🇧 Carousel / Slider</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE DICO ============ -->
+<section class="view" id="dicoView">
+  <div class="dico-head">
+    <h1>📖 Le <span class="grad-text">dico</span></h1>
+    <p>Tout le vocabulaire des sites et des applis, expliqué simplement. Décris ce que tu cherches avec tes mots.</p>
+    <div class="search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Ex. : « les 3 traits », « images qui défilent »…" autocomplete="off">
+    </div>
+    <div class="suggest">Essaie :
+      <button data-try="images qui défilent">images qui défilent</button>
+      <button data-try="trois traits">trois traits</button>
+      <button data-try="questions qui s'ouvrent">questions qui s'ouvrent</button>
+      <button data-try="adresse du site">adresse du site</button>
       <button data-try="ça ne marche pas">ça ne marche pas</button>
     </div>
-    <div class="hint" style="margin-top:14px">🧱 <b>Nouveau :</b> clique sur <b>＋</b> sur les éléments que tu veux sur ton site, puis sur « Construire ma page » pour obtenir un prompt complet.
-      <button id="startBuilder">Ou pars d'un modèle de site</button></div>
   </div>
-</header>
+  <div class="toolbar">
+    <div class="cats" id="filters"></div>
+    <div class="seg" id="viewSeg"><button data-view="cards" class="on">Cartes</button><button data-view="az">A–Z</button></div>
+  </div>
+  <main class="dico">
+    <div id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="bridge"><div><b>Tu as trouvé ton bonheur ?</b><span>Assemble ton site ou ton appli et obtiens ton prompt complet.</span></div><a class="btn" href="#creer">🧱 Créer mon projet →</a></div>
+  </main>
+</section>
 
-<div class="filters" id="filters"></div>
-
-<main>
-  <div id="count"></div>
-  <div class="grid" id="grid"></div>
-</main>
+<!-- ============ CRÉER ============ -->
+<section class="view" id="creerView"><div id="createView"></div></section>
 
 <div class="overlay" id="overlay"><div class="panel" id="panel"></div></div>
-
-<div class="basket" id="bar">
-  <div><strong>🧱 Ma page : <span id="barCount"></span></strong> <span class="list" id="barList"></span></div>
-  <div class="actions" style="margin:0">
-    <button class="btn ghost" id="clearSel">Vider</button>
-    <button class="btn primary" id="openBuilder">Construire ma page →</button>
-  </div>
-</div>
-
-<div class="toast" id="toast">Copié ✔</div>
+<div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
 <script src="builder.js"></script>
 <script>
-
-
-const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, " ");
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ");
 const $ = s => document.querySelector(s);
 let cat = "all";
 let view = "cards";
 
+// Pertinence d'une fiche pour une recherche en langage courant.
 function score(item, q) {
   if (!q) return 1;
   const words = norm(q).split(/\s+/).filter(w => w.length > 1);
   const hay = norm([item.name, item.en, item.desc, item.simple, ...item.aliases].join(" "));
-  const aliasHay = item.aliases.map(norm);
   let s = 0;
-  if (aliasHay.some(a => a.includes(norm(q).trim()))) s += 10;
+  if (item.aliases.map(norm).some(a => a.includes(norm(q).trim()))) s += 10;
   for (const w of words) if (hay.includes(w)) s += 1;
   return words.length && s < Math.ceil(words.length / 2) ? 0 : s;
 }
@@ -189,20 +258,24 @@ function render() {
   const list = DICO.map(i => [i, score(i, q)])
     .filter(([i, s]) => s > 0 && (cat === "all" || i.cat === cat))
     .sort((a, b) => b[1] - a[1]).map(([i]) => i);
-  $("#count").textContent = `${list.length} terme${list.length > 1 ? "s" : ""} sur ${DICO.length}`;
-  if (view === "az" && list.length) return renderAZ(list);
+  $("#count").textContent = `${list.length} terme${list.length > 1 ? "s" : ""}${q || cat !== "all" ? ` sur ${DICO.length}` : ""}`;
+  if (!list.length) {
+    $("#grid").className = "grid";
+    $("#grid").innerHTML = `<div class="empty">🤔 Aucun résultat.<br>Essaie d'autres mots, ou décris à quoi ça ressemble : « rond », « en bas », « qui s'ouvre »…</div>`;
+    return;
+  }
+  if (view === "az") return renderAZ(list);
   $("#grid").className = "grid";
-  $("#grid").innerHTML = list.length ? list.map(i => `
-    <div class="item ${isSel(i.id) ? "sel" : ""}" data-id="${i.id}">
-      <button class="pick" data-pick="${i.id}">${isSel(i.id) ? "✓ Choisi" : "＋ Choisir"}</button>
+  $("#grid").innerHTML = list.map(i => `
+    <div class="item" data-id="${i.id}" tabindex="0">
       <div class="preview">${i.visual}</div>
       <div class="body">
         <div class="name">${i.name}</div>
         <div class="en">🇬🇧 ${i.en}</div>
         <div class="simple">${i.simple}</div>
-        <span class="tag">${C[i.cat]}</span>
+        <span class="tag">${CAT_ICON[i.cat]} ${catName(i.cat)}</span>
       </div>
-    </div>`).join("") : `<div class="empty">Aucun résultat. Essaie d'autres mots, ou décris à quoi ça ressemble (« rond », « en bas », « qui s'ouvre »…).</div>`;
+    </div>`).join("");
 }
 
 function renderAZ(list) {
@@ -210,67 +283,95 @@ function renderAZ(list) {
   const groups = {};
   for (const i of sorted) (groups[norm(i.name)[0].toUpperCase()] ||= []).push(i);
   $("#grid").className = "az";
-  $("#grid").innerHTML = Object.entries(groups).map(([l, items]) => `<h3>${l}</h3>` + items.map(i => `
-    <div class="az-row item" data-id="${i.id}" style="transform:none;box-shadow:none;border:none;background:transparent">
+  $("#grid").innerHTML = Object.entries(groups).map(([l, items]) => `<h3 class="grad-text">${l}</h3>` + items.map(i => `
+    <div class="az-row item" data-id="${i.id}" tabindex="0" style="border:none;box-shadow:none;background:transparent;transform:none">
       <div><span class="name">${i.name}</span><span class="en">🇬🇧 ${i.en}</span></div>
-      <div class="simple">${i.simple}</div>
-      <button class="pick" data-pick="${i.id}">${isSel(i.id) ? "✓ Choisi" : "＋ Choisir"}</button>
+      <div class="simple" style="margin:0">${i.simple}</div>
     </div>`).join("")).join("");
 }
 
+// Fiche détaillée d'un terme.
 function open(id) {
   const i = DICO.find(x => x.id === id);
+  const addLabel = () => isSel(i.id) ? "✓ Dans mon projet" : "🧱 Ajouter à mon projet";
   $("#panel").innerHTML = `
-    <div class="preview" style="position:relative">${i.visual}<button class="close" id="x">✕</button></div>
+    <button class="close" id="x" aria-label="Fermer">✕</button>
+    <div class="preview">${i.visual}</div>
     <div class="content">
+      <span class="tag" style="margin:0 0 10px">${CAT_ICON[i.cat]} ${catName(i.cat)}</span>
       <h2>${i.name}</h2>
-      <div class="en">🇬🇧 En anglais (le terme que les IA connaissent le mieux) : <b>${i.en}</b></div>
+      <div class="en" style="margin-top:4px">🇬🇧 En anglais (le terme que les IA connaissent le mieux) : <b>${i.en}</b></div>
       <div class="clair"><b>💬 En clair</b>${i.simple}</div>
       <div class="label">Définition</div>
       <p class="desc" style="margin:0">${i.desc}</p>
-      <div class="label">On l'appelle aussi…</div>
+      <div class="label">On l'appelle aussi</div>
       <div class="chips">${i.aliases.map(a => `<span>${a}</span>`).join("")}</div>
       <div class="label">Variantes à préciser à l'IA</div>
       <ul class="vars">${i.vars.map(v => `<li>${v}</li>`).join("")}</ul>
-      <div class="label">✨ Phrase prête à copier dans ton IA</div>
+      <div class="label">✨ Phrase prête à copier</div>
       <div class="prompt">${i.prompt}</div>
       <div class="actions">
-        <button class="btn primary" id="cp">📋 Copier</button>
-        <button class="btn ghost" id="add">${isSel(i.id) ? "✓ Sur ma page" : "＋ Ajouter à ma page"}</button>
+        <button class="btn primary" id="cp">📋 Copier la phrase</button>
+        <button class="btn ghost" id="add">${addLabel()}</button>
       </div>
     </div>`;
   $("#overlay").classList.add("show");
+  $("#panel").scrollTop = 0;
   $("#x").onclick = close;
   $("#cp").onclick = () => copy(i.prompt);
-  $("#add").onclick = e => { toggleSel(i.id); e.target.textContent = isSel(i.id) ? "✓ Sur ma page" : "＋ Ajouter à ma page"; };
+  $("#add").onclick = e => {
+    toggleSel(i.id);
+    e.currentTarget.textContent = addLabel();
+    if (isSel(i.id) && route() !== "creer") toast("Ajouté à ton projet 🧱");
+  };
 }
-function close() { $("#overlay").classList.remove("show"); $("#panel").classList.remove("wide"); }
+function close() { $("#overlay").classList.remove("show"); }
 
+let toastTimer;
+function toast(msg) {
+  $("#toast").textContent = msg; $("#toast").style.display = "block";
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => $("#toast").style.display = "none", 2000);
+}
 function copy(text) {
-  const done = msg => { $("#toast").textContent = msg; $("#toast").style.display = "block"; setTimeout(() => $("#toast").style.display = "none", 1800); };
-  navigator.clipboard.writeText(text).then(() => done("Copié ✔"), () => done("Copie impossible : sélectionne le texte à la main"));
+  navigator.clipboard.writeText(text).then(() => toast("✓ Copié ! Colle-le dans ton IA"), () => toast("Copie impossible : sélectionne le texte à la main"));
 }
 
-$("#filters").innerHTML = `<button data-view="az">🔤 Glossaire A–Z</button>` + [["all", "Tout"], ...Object.entries(C)].map(([k, v]) => `<button data-cat="${k}" class="${k === "all" ? "on" : ""}">${v}</button>`).join("");
+// Navigation entre les 3 espaces via l'ancre de l'adresse (#accueil, #dico, #creer).
+const ROUTES = ["accueil", "dico", "creer"];
+const route = () => ROUTES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "accueil";
+function showRoute() {
+  const r = route();
+  for (const x of ROUTES) $("#" + x + "View").classList.toggle("show", x === r);
+  document.querySelectorAll("[data-route]").forEach(a => a.classList.toggle("on", a.dataset.route === r));
+  if (r === "creer") renderCreate();
+  if (r === "dico") render();
+  close();
+  window.scrollTo(0, 0);
+}
+
+$("#filters").innerHTML = [["all", "✦ Tout"], ...Object.keys(C).map(k => [k, `${CAT_ICON[k]} ${catName(k)}`])]
+  .map(([k, v]) => `<button data-cat="${k}" class="${k === "all" ? "on" : ""}">${v}</button>`).join("");
 $("#filters").onclick = e => {
   const b = e.target.closest("button"); if (!b) return;
-  if (b.dataset.view) { view = view === "az" ? "cards" : "az"; b.classList.toggle("on", view === "az"); return render(); }
   cat = b.dataset.cat;
-  document.querySelectorAll("#filters [data-cat]").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("#filters button").forEach(x => x.classList.toggle("on", x === b));
+  render();
+};
+$("#viewSeg").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  view = b.dataset.view;
+  document.querySelectorAll("#viewSeg button").forEach(x => x.classList.toggle("on", x === b));
   render();
 };
 $("#q").oninput = render;
 document.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { $("#q").value = b.dataset.try; render(); });
-$("#grid").onclick = e => {
-  const pk = e.target.closest("[data-pick]");
-  if (pk) return toggleSel(pk.dataset.pick);
-  const c = e.target.closest(".item"); if (c) open(c.dataset.id);
-};
+$("#grid").onclick = e => { const c = e.target.closest(".item"); if (c) open(c.dataset.id); };
+$("#grid").onkeydown = e => { const c = e.target.closest(".item"); if (c && e.key === "Enter") open(c.dataset.id); };
 $("#overlay").onclick = e => { if (e.target.id === "overlay") close(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
-$("#startBuilder").onclick = openBuilder;
 initBuilder();
-render();
+window.addEventListener("hashchange", showRoute);
+showRoute();
 </script>
 </body>
 </html>
