@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Dico de l'IA : trouve le bon mot, écris le bon prompt</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #fff; --ink: #1d1d1f; --muted: #6b6b70;
+    --accent: #4f46e5; --accent-soft: #eef0ff; --line: #e4e2dd; --ok: #16a34a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); }
+  header.top { padding: 40px 20px 24px; text-align: center; }
+  header.top h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  header.top p { margin: 0 auto; max-width: 640px; color: var(--muted); line-height: 1.5; }
+  .search-wrap { max-width: 680px; margin: 24px auto 0; position: relative; }
+  #q { width: 100%; padding: 16px 20px; font-size: 1.1rem; border: 2px solid var(--line); border-radius: 14px; outline: none; background: #fff; }
+  #q:focus { border-color: var(--accent); }
+  .hint { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+  .hint button { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0 2px; font: inherit; text-decoration: underline; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 20px auto 0; padding: 0 20px; }
+  .filters button { border: 1px solid var(--line); background: #fff; padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .9rem; }
+  .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 140px; }
+  #count { color: var(--muted); font-size: .9rem; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+  .item { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+  .item:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.07); }
+  .preview { height: 150px; background: #fafaf8; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: center; padding: 14px; position: relative; overflow: hidden; }
+  .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .name { font-weight: 700; font-size: 1.05rem; }
+  .en { font-size: .8rem; color: var(--accent); font-weight: 600; }
+  .desc { font-size: .9rem; color: var(--muted); line-height: 1.4; }
+  .tag { align-self: flex-start; font-size: .72rem; background: var(--accent-soft); color: var(--accent); padding: 3px 8px; border-radius: 6px; margin-top: auto; }
+  .empty { text-align: center; color: var(--muted); padding: 40px; }
+
+  /* Detail panel */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .overlay.show { display: flex; }
+  .panel { background: #fff; border-radius: 18px; max-width: 720px; width: 100%; max-height: 90vh; overflow: auto; }
+  .panel .preview { height: 200px; }
+  .panel .content { padding: 20px 24px 24px; }
+  .panel h2 { margin: 0; }
+  .close { position: absolute; top: 10px; right: 12px; background: #fff; border: 1px solid var(--line); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 1.1rem; z-index: 2; }
+  .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 6px; font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { background: #f1f0ec; padding: 4px 10px; border-radius: 999px; font-size: .85rem; }
+  .prompt { background: #111827; color: #e5e7eb; padding: 14px 16px; border-radius: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .88rem; line-height: 1.5; white-space: pre-wrap; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .btn { border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: .9rem; }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.ghost { background: #f1f0ec; color: var(--ink); }
+  ul.vars { margin: 0; padding-left: 18px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+
+  /* Project basket */
+  .basket { position: fixed; bottom: 0; left: 0; right: 0; background: var(--ink); color: #fff; padding: 12px 20px; display: none; align-items: center; justify-content: space-between; gap: 12px; z-index: 40; flex-wrap: wrap; }
+  .basket.show { display: flex; }
+  .basket .list { font-size: .9rem; opacity: .85; }
+  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--ok); color: #fff; padding: 10px 18px; border-radius: 10px; font-weight: 600; display: none; z-index: 60; }
+  textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px; font: inherit; min-height: 70px; }
+
+  /* ---- Mini visual mockups ---- */
+  .m-screen { width: 100%; height: 100%; background: #fff; border: 1px solid #ddd; border-radius: 8px; position: relative; overflow: hidden; }
+  .m-bar { height: 8px; background: #d4d4d8; border-radius: 4px; }
+  .hl { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .pulse { animation: pulse 1.6s infinite; }
+  @keyframes pulse { 50% { outline-color: rgba(79,70,229,.3); } }
+  .slides { display: flex; width: 300%; height: 100%; animation: slide 6s infinite; }
+  .slides div { width: 33.333%; height: 100%; }
+  @keyframes slide { 0%,28% { transform: translateX(0); } 33%,61% { transform: translateX(-33.333%); } 66%,95% { transform: translateX(-66.666%); } 100% { transform: translateX(0); } }
+  .arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.9); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.6); display: block; }
+  .dots i:first-child { background: #fff; }
+  .burger { display: flex; flex-direction: column; gap: 4px; padding: 6px; }
+  .burger i { width: 22px; height: 3px; background: #333; border-radius: 2px; display: block; }
+  .spin { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--accent); border-radius: 50%; animation: rot 1s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+  .shimmer { background: linear-gradient(90deg, #eee 25%, #f7f7f7 50%, #eee 75%); background-size: 200% 100%; animation: sh 1.4s infinite; border-radius: 6px; }
+  @keyframes sh { to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>📖 Le Dico de l'IA</h1>
+  <p>Tu sais ce que tu veux, mais pas comment ça s'appelle ? Décris-le avec tes mots, trouve l'élément en image, et copie la phrase exacte à donner à Claude, ChatGPT ou toute autre IA.</p>
+  <div class="search-wrap">
+    <input id="q" type="search" placeholder="Ex. : « les images qui défilent », « les 3 traits », « fenêtre qui s'ouvre »…" autocomplete="off">
+    <div class="hint">Essaie :
+      <button data-try="images qui défilent">images qui défilent</button>·
+      <button data-try="trois traits">trois traits</button>·
+      <button data-try="questions qui s'ouvrent">questions qui s'ouvrent</button>·
+      <button data-try="message en bas">message en bas</button>
+    </div>
+  </div>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<main>
+  <div id="count"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="overlay" id="overlay"><div class="panel" id="panel"></div></div>
+
+<div class="basket" id="basket">
+  <div><strong>🧺 Mon projet</strong> <span class="list" id="basketList"></span></div>
+  <div class="actions" style="margin:0">
+    <button class="btn ghost" id="clearBasket">Vider</button>
+    <button class="btn primary" id="buildPrompt">Générer le prompt complet</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copié ✔</div>
+
+<script>
+const C = { nav: "Navigation", content: "Contenu & mise en page", interact: "Interaction", feedback: "Retour à l'utilisateur", form: "Formulaires", mobile: "Spécial appli mobile" };
+
+// Each entry: everyday words people actually use go into "aliases" so the search finds them.
+const DICO = [
+  { id: "carousel", name: "Carrousel", en: "Carousel / Slider", cat: "content",
+    aliases: ["slide", "slides", "slider", "diaporama", "images qui défilent", "images qui tournent", "photos qui changent", "défilement", "galerie qui bouge", "bannière animée"],
+    desc: "Zone qui fait défiler plusieurs images ou contenus, automatiquement ou avec des flèches.",
+    vars: ["Défilement automatique ou manuel", "Flèches gauche/droite", "Points (indicateurs) en bas", "Miniatures cliquables", "Glissement au doigt sur mobile (swipe)"],
+    prompt: "Ajoute un carrousel (slider) d'images en haut de la page d'accueil : 3 à 5 slides, défilement automatique toutes les 5 secondes avec pause au survol, flèches précédent/suivant, points de navigation en bas, swipe sur mobile, et un titre + bouton sur chaque slide.",
+    visual: `<div class="m-screen hl pulse"><div class="slides"><div style="background:linear-gradient(135deg,#818cf8,#c084fc)"></div><div style="background:linear-gradient(135deg,#34d399,#06b6d4)"></div><div style="background:linear-gradient(135deg,#fb923c,#f43f5e)"></div></div><span class="arrow" style="left:6px">‹</span><span class="arrow" style="right:6px">›</span><div class="dots"><i></i><i></i><i></i></div></div>` },
+
+  { id: "hamburger", name: "Menu hamburger", en: "Hamburger menu", cat: "nav",
+    aliases: ["trois traits", "3 traits", "trois lignes", "3 lignes", "trois barres", "menu mobile", "menu caché", "icône menu", "burger"],
+    desc: "Icône à trois traits horizontaux qui ouvre le menu, surtout sur téléphone.",
+    vars: ["Ouvre un tiroir latéral (drawer)", "Ouvre un menu plein écran", "Se transforme en croix (X) une fois ouvert"],
+    prompt: "Sur mobile (écran de moins de 768 px), remplace la barre de navigation par un menu hamburger (icône à trois traits) en haut à droite. Au clic, il ouvre un menu latéral qui glisse depuis la droite, l'icône se transforme en croix pour fermer, et un fond sombre semi-transparent couvre le reste de la page.",
+    visual: `<div class="m-screen" style="width:110px;height:130px"><div style="display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid #eee"><div class="m-bar" style="width:36px"></div><div class="burger hl pulse"><i></i><i></i><i></i></div></div></div>` },
+
+  { id: "navbar", name: "Barre de navigation", en: "Navbar / Header", cat: "nav",
+    aliases: ["menu du haut", "en-tête", "entête", "barre du haut", "header", "liens en haut", "menu principal", "bandeau du haut"],
+    desc: "Bande en haut de chaque page avec le logo et les liens vers les rubriques.",
+    vars: ["Fixe (reste visible en scrollant) : « sticky header »", "Transparente sur l'image puis opaque en descendant", "Avec bouton d'action à droite"],
+    prompt: "Crée une barre de navigation (header) fixe en haut de page (sticky) : logo à gauche, liens Accueil / Services / À propos / Contact au centre, bouton « Réserver » à droite. Elle reste visible au défilement et se transforme en menu hamburger sur mobile.",
+    visual: `<div class="m-screen"><div class="hl pulse" style="display:flex;align-items:center;gap:8px;padding:8px;background:#fff;border-bottom:1px solid #eee"><div style="width:20px;height:20px;border-radius:50%;background:var(--accent)"></div><div class="m-bar" style="width:30px"></div><div class="m-bar" style="width:30px"></div><div class="m-bar" style="width:30px"></div><div style="margin-left:auto;width:40px;height:16px;border-radius:5px;background:var(--accent)"></div></div></div>` },
+
+  { id: "footer", name: "Pied de page", en: "Footer", cat: "nav",
+    aliases: ["bas de page", "bas du site", "tout en bas", "mentions légales", "liens en bas", "infos en bas"],
+    desc: "Zone tout en bas du site : coordonnées, liens utiles, réseaux sociaux, mentions légales.",
+    vars: ["Simple (une ligne)", "En colonnes (plusieurs catégories de liens)", "Avec inscription à la newsletter"],
+    prompt: "Ajoute un pied de page (footer) sur fond sombre en 3 colonnes : coordonnées (adresse, téléphone, email), liens utiles (Mentions légales, CGV, Politique de confidentialité), icônes des réseaux sociaux. En dessous, une ligne « © 2026 NomDuSite ».",
+    visual: `<div class="m-screen"><div style="padding:8px"><div class="m-bar" style="width:70%;margin-bottom:6px"></div><div class="m-bar" style="width:50%"></div></div><div class="hl pulse" style="position:absolute;bottom:0;left:0;right:0;height:45px;background:#1f2937;display:flex;gap:14px;padding:10px"><div class="m-bar" style="width:40px;background:#555"></div><div class="m-bar" style="width:40px;background:#555"></div><div class="m-bar" style="width:40px;background:#555"></div></div></div>` },
+
+  { id: "hero", name: "Section héro", en: "Hero section", cat: "content",
+    aliases: ["grande image en haut", "bannière", "accueil", "image de fond", "gros titre", "premier écran", "haut de page d'accueil"],
+    desc: "Le grand bloc d'accueil tout en haut : grand titre, phrase d'accroche, bouton principal, souvent sur une image.",
+    vars: ["Image ou vidéo en fond", "Texte à gauche, image à droite (split)", "Plein écran (100 % de la hauteur)"],
+    prompt: "Crée une section héro (hero section) en plein écran en haut de la page d'accueil : image de fond avec un léger voile sombre, grand titre centré, une phrase d'accroche en dessous et un bouton d'appel à l'action « Découvrir ».",
+    visual: `<div class="m-screen hl pulse" style="background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px"><div class="m-bar" style="width:60%;height:12px;background:#fff"></div><div class="m-bar" style="width:40%;background:rgba(255,255,255,.7)"></div><div style="width:50px;height:16px;border-radius:5px;background:#fff;margin-top:4px"></div></div>` },
+
+  { id: "card", name: "Carte", en: "Card", cat: "content",
+    aliases: ["vignette", "case", "bloc produit", "encadré", "boîte", "fiche", "petits blocs", "tuile"],
+    desc: "Petit bloc rectangulaire regroupant image, titre, texte et bouton. Souvent affichés en grille.",
+    vars: ["Grille de cartes (grid)", "Carte produit avec prix", "Effet au survol (ombre, zoom)"],
+    prompt: "Affiche les services sous forme de cartes (cards) dans une grille de 3 colonnes (1 colonne sur mobile). Chaque carte contient une image, un titre, une courte description et un bouton « En savoir plus ». Au survol, la carte se soulève légèrement avec une ombre.",
+    visual: `<div style="display:flex;gap:8px;width:100%;height:100%">${[1,2,3].map((n)=>`<div class="m-screen ${n===2?'hl pulse':''}" style="flex:1"><div style="height:45%;background:#c7d2fe"></div><div style="padding:5px"><div class="m-bar" style="margin-bottom:4px"></div><div class="m-bar" style="width:60%;height:5px"></div></div></div>`).join('')}</div>` },
+
+  { id: "cta", name: "Bouton d'appel à l'action", en: "CTA button (Call To Action)", cat: "interact",
+    aliases: ["gros bouton", "bouton principal", "bouton acheter", "bouton réserver", "bouton contact", "bouton important"],
+    desc: "Le bouton qui pousse à agir : acheter, réserver, s'inscrire. Il doit sauter aux yeux.",
+    vars: ["Principal (plein, couleur forte)", "Secondaire (contour seulement)", "Flottant / collant en bas sur mobile"],
+    prompt: "Ajoute un bouton d'appel à l'action (CTA) « Réserver une table » bien visible : couleur principale de la marque, coins arrondis, légère animation au survol, et sur mobile un bouton collant en bas de l'écran.",
+    visual: `<div style="display:flex;gap:10px"><div class="hl pulse" style="padding:10px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700">Réserver</div><div style="padding:10px 18px;border:2px solid var(--accent);color:var(--accent);border-radius:8px;font-size:12px;font-weight:700">En savoir +</div></div>` },
+
+  { id: "modal", name: "Fenêtre modale", en: "Modal / Dialog / Pop-up", cat: "interact",
+    aliases: ["popup", "pop-up", "pop up", "fenêtre qui s'ouvre", "fenêtre par dessus", "boîte de dialogue", "fenêtre surgissante", "lightbox"],
+    desc: "Fenêtre qui s'ouvre par-dessus la page, avec le fond assombri, pour afficher un message ou un formulaire.",
+    vars: ["Confirmation (« Êtes-vous sûr ? »)", "Formulaire (connexion, inscription)", "Image agrandie : « lightbox »"],
+    prompt: "Quand on clique sur « Nous contacter », ouvre une fenêtre modale (modal) centrée par-dessus la page, avec le fond assombri. Elle contient un formulaire de contact et se ferme avec une croix en haut à droite, avec la touche Échap ou en cliquant à l'extérieur.",
+    visual: `<div class="m-screen" style="background:#999"><div class="hl pulse" style="position:absolute;inset:22% 22%;background:#fff;border-radius:8px;padding:8px"><div class="m-bar" style="width:60%;margin-bottom:6px"></div><div class="m-bar" style="height:5px;margin-bottom:4px"></div><div style="position:absolute;bottom:8px;right:8px;width:30px;height:12px;background:var(--accent);border-radius:4px"></div></div></div>` },
+
+  { id: "accordion", name: "Accordéon", en: "Accordion / Collapse", cat: "interact",
+    aliases: ["faq", "questions qui s'ouvrent", "questions réponses", "texte qui se déplie", "déplier", "dérouler", "plus moins", "flèche qui ouvre"],
+    desc: "Liste de titres qui se déplient au clic pour montrer leur contenu. Idéal pour les FAQ.",
+    vars: ["Un seul élément ouvert à la fois", "Plusieurs ouverts en même temps", "Icône + / − ou flèche"],
+    prompt: "Crée une section FAQ en accordéon : chaque question est un titre cliquable avec une icône « + » ; au clic, la réponse se déplie en douceur et l'icône devient « − ». Un seul élément ouvert à la fois.",
+    visual: `<div style="width:100%;display:flex;flex-direction:column;gap:5px">${['−','+','+'].map((s,i)=>`<div class="m-screen ${i===0?'hl pulse':''}" style="height:auto;padding:7px;display:flex;flex-direction:column;gap:5px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="m-bar" style="width:55%"></div><b style="font-size:12px">${s}</b></div>${i===0?'<div class="m-bar" style="height:5px;width:85%;background:#e4e4e7"></div><div class="m-bar" style="height:5px;width:70%;background:#e4e4e7"></div>':''}</div>`).join('')}</div>` },
+
+  { id: "tabs", name: "Onglets", en: "Tabs", cat: "interact",
+    aliases: ["onglet", "rubriques côte à côte", "changer de contenu", "boutons qui changent le texte", "intercalaires"],
+    desc: "Plusieurs titres côte à côte : on clique sur l'un pour afficher son contenu, sans changer de page.",
+    vars: ["Onglets horizontaux", "Onglets verticaux sur le côté", "Style « pilule » (segmented control)"],
+    prompt: "Présente les menus du restaurant avec des onglets (tabs) : « Entrées », « Plats », « Desserts ». Cliquer sur un onglet affiche son contenu sans recharger la page ; l'onglet actif est souligné en couleur.",
+    visual: `<div class="m-screen"><div style="display:flex;border-bottom:1px solid #eee"><div class="hl pulse" style="padding:8px 12px;border-bottom:3px solid var(--accent);font-size:10px;font-weight:700">Entrées</div><div style="padding:8px 12px;font-size:10px;color:#999">Plats</div><div style="padding:8px 12px;font-size:10px;color:#999">Desserts</div></div><div style="padding:10px"><div class="m-bar" style="margin-bottom:5px"></div><div class="m-bar" style="width:70%"></div></div></div>` },
+
+  { id: "dropdown", name: "Menu déroulant", en: "Dropdown", cat: "nav",
+    aliases: ["liste déroulante", "sous-menu", "menu qui descend", "choix dans une liste", "select", "flèche vers le bas"],
+    desc: "Liste d'options qui apparaît sous un bouton ou un lien quand on clique ou survole.",
+    vars: ["Sous-menu de navigation", "Liste de choix dans un formulaire (select)", "Méga-menu (grand panneau avec plusieurs colonnes)"],
+    prompt: "Dans la barre de navigation, transforme « Services » en menu déroulant (dropdown) : au survol sur ordinateur et au clic sur mobile, une liste apparaît en dessous avec les liens « Traiteur », « Événements », « Livraison ».",
+    visual: `<div style="position:relative;width:140px;height:110px"><div style="padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:11px;background:#fff">Services ▾</div><div class="hl pulse" style="position:absolute;top:32px;left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:6px;padding:6px;display:flex;flex-direction:column;gap:6px"><div class="m-bar"></div><div class="m-bar"></div><div class="m-bar"></div></div></div>` },
+
+  { id: "breadcrumb", name: "Fil d'Ariane", en: "Breadcrumb", cat: "nav",
+    aliases: ["chemin", "où je suis", "accueil > rubrique", "retour en arrière", "chemin de navigation"],
+    desc: "Petite ligne « Accueil > Rubrique > Page » qui montre où l'on se trouve dans le site.",
+    vars: ["Séparateur « > » ou « / »", "Placé sous le header"],
+    prompt: "Ajoute un fil d'Ariane (breadcrumb) en haut de chaque page intérieure, sous le header, du type « Accueil > Boutique > Chaussures », chaque niveau étant cliquable sauf la page actuelle.",
+    visual: `<div class="hl pulse" style="font-size:12px;padding:8px 12px;background:#fff;border-radius:8px;border:1px solid #ddd"><span style="color:var(--accent)">Accueil</span> › <span style="color:var(--accent)">Boutique</span> › <b>Chaussures</b></div>` },
+
+  { id: "toast", name: "Notification toast", en: "Toast / Snackbar", cat: "feedback",
+    aliases: ["message en bas", "petit message", "message qui apparaît", "notification", "message temporaire", "alerte qui disparaît", "confirmation"],
+    desc: "Petit message qui apparaît quelques secondes (coin ou bas de l'écran) pour confirmer une action.",
+    vars: ["Succès (vert), erreur (rouge), info (bleu)", "Disparaît seul après X secondes", "Avec bouton « Annuler »"],
+    prompt: "Après l'ajout d'un produit au panier, affiche une notification toast en bas à droite : « Produit ajouté au panier ✔ », fond vert, qui disparaît automatiquement après 3 secondes.",
+    visual: `<div class="m-screen"><div class="hl pulse" style="position:absolute;bottom:10px;right:10px;background:#16a34a;color:#fff;font-size:10px;padding:7px 10px;border-radius:6px">✔ Ajouté au panier</div></div>` },
+
+  { id: "tooltip", name: "Infobulle", en: "Tooltip", cat: "feedback",
+    aliases: ["bulle d'aide", "texte au survol", "petite bulle", "aide quand on passe la souris", "point d'interrogation"],
+    desc: "Petite bulle d'explication qui apparaît quand on survole un élément.",
+    vars: ["Au survol (ordinateur)", "Au clic sur une icône ⓘ (mobile)"],
+    prompt: "Ajoute une infobulle (tooltip) sur l'icône ⓘ à côté du champ « Code promo » : au survol, une petite bulle sombre apparaît au-dessus avec le texte « Le code se trouve dans votre email de bienvenue ».",
+    visual: `<div style="position:relative;display:flex;flex-direction:column;align-items:center"><div class="hl pulse" style="background:#111;color:#fff;font-size:10px;padding:6px 9px;border-radius:6px;margin-bottom:6px">Texte d'aide</div><div style="width:22px;height:22px;border-radius:50%;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:12px">i</div></div>` },
+
+  { id: "spinner", name: "Indicateur de chargement", en: "Loader / Spinner", cat: "feedback",
+    aliases: ["chargement", "rond qui tourne", "roue qui tourne", "attente", "loading", "patienter"],
+    desc: "Animation qui indique que quelque chose est en cours de chargement.",
+    vars: ["Rond qui tourne (spinner)", "Barre de progression (progress bar)", "Squelette (skeleton) : voir fiche dédiée"],
+    prompt: "Pendant l'envoi du formulaire, désactive le bouton et remplace son texte par un indicateur de chargement (spinner) qui tourne, jusqu'à la réponse du serveur.",
+    visual: `<div class="spin"></div>` },
+
+  { id: "skeleton", name: "Squelette de chargement", en: "Skeleton screen", cat: "feedback",
+    aliases: ["blocs gris", "formes grises qui brillent", "chargement gris", "contenu fantôme"],
+    desc: "Formes grises animées à la place du contenu pendant qu'il charge, pour que la page ne paraisse pas vide.",
+    vars: ["Effet de brillance (shimmer)", "Imite exactement la forme du contenu final"],
+    prompt: "Pendant le chargement de la liste d'articles, affiche des squelettes (skeleton screens) : des blocs gris animés avec un effet de brillance qui reprennent la forme des cartes (image + 2 lignes de texte).",
+    visual: `<div style="width:100%;display:flex;gap:10px"><div class="shimmer" style="width:60px;height:60px"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center"><div class="shimmer" style="height:10px"></div><div class="shimmer" style="height:10px;width:60%"></div></div></div>` },
+
+  { id: "cookie", name: "Bandeau de cookies", en: "Cookie consent banner", cat: "feedback",
+    aliases: ["cookies", "rgpd", "accepter les cookies", "consentement", "bandeau en bas"],
+    desc: "Bandeau obligatoire (RGPD) demandant l'accord du visiteur pour les cookies.",
+    vars: ["Boutons « Tout accepter » / « Tout refuser » / « Personnaliser »", "En bas de l'écran ou en fenêtre modale"],
+    prompt: "Ajoute un bandeau de consentement aux cookies conforme au RGPD en bas de l'écran, avec trois boutons de même importance : « Tout accepter », « Tout refuser » et « Personnaliser ». Le choix est mémorisé et le bandeau ne réapparaît plus.",
+    visual: `<div class="m-screen"><div class="hl pulse" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;padding:8px;display:flex;gap:6px;align-items:center"><div class="m-bar" style="flex:1;height:5px"></div><div style="width:28px;height:12px;background:var(--accent);border-radius:3px"></div><div style="width:28px;height:12px;background:#ddd;border-radius:3px"></div></div></div>` },
+
+  { id: "search", name: "Barre de recherche avec suggestions", en: "Search bar with autocomplete", cat: "form",
+    aliases: ["recherche", "loupe", "chercher", "suggestions", "autocomplétion", "propositions en tapant"],
+    desc: "Champ de recherche qui propose des résultats pendant que l'on tape.",
+    vars: ["Simple (on valide avec Entrée)", "Avec suggestions en direct (autocomplete)", "Avec filtres"],
+    prompt: "Ajoute une barre de recherche avec autocomplétion dans le header : dès 2 lettres tapées, une liste de 5 suggestions maximum apparaît en dessous, navigable au clavier (flèches + Entrée), avec l'icône loupe à gauche.",
+    visual: `<div style="width:80%"><div class="hl pulse" style="background:#fff;border:1px solid #ccc;border-radius:8px;padding:7px;font-size:11px">🔍 chaus|</div><div style="background:#fff;border:1px solid #eee;border-radius:6px;margin-top:4px;padding:6px;display:flex;flex-direction:column;gap:5px"><div class="m-bar"></div><div class="m-bar" style="width:70%"></div></div></div>` },
+
+  { id: "toggle", name: "Interrupteur", en: "Toggle switch", cat: "form",
+    aliases: ["bouton on off", "on/off", "activer désactiver", "curseur", "mode sombre", "bouton qui glisse"],
+    desc: "Petit bouton qui glisse entre deux états : activé / désactivé.",
+    vars: ["Mode sombre / clair (dark mode)", "Activer les notifications"],
+    prompt: "Ajoute dans le header un interrupteur (toggle switch) pour passer du mode clair au mode sombre (dark mode), avec une icône soleil/lune, et mémorise le choix de l'utilisateur.",
+    visual: `<div style="display:flex;gap:16px;align-items:center"><div class="hl pulse" style="width:46px;height:26px;border-radius:13px;background:var(--accent);position:relative"><div style="position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff"></div></div><div style="width:46px;height:26px;border-radius:13px;background:#ccc;position:relative"><div style="position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff"></div></div></div>` },
+
+  { id: "pagination", name: "Pagination", en: "Pagination", cat: "nav",
+    aliases: ["pages suivantes", "numéros de page", "page 1 2 3", "suivant précédent", "voir plus"],
+    desc: "Numéros en bas d'une liste pour passer d'une page de résultats à l'autre.",
+    vars: ["Numéros classiques", "Bouton « Voir plus » (load more)", "Défilement infini (infinite scroll)"],
+    prompt: "Sous la liste des produits, ajoute une pagination : 12 produits par page, boutons « Précédent » / « Suivant » et numéros de pages, la page actuelle mise en évidence.",
+    visual: `<div style="display:flex;gap:5px;font-size:11px">${['‹','1','2','3','›'].map((t,i)=>`<div class="${i===1?'hl pulse':''}" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;${i===1?'background:var(--accent);color:#fff':'background:#fff;border:1px solid #ddd'}">${t}</div>`).join('')}</div>` },
+
+  { id: "drawer", name: "Tiroir latéral", en: "Drawer / Side panel", cat: "nav",
+    aliases: ["menu sur le côté", "panneau latéral", "volet", "barre latérale", "sidebar", "menu qui glisse"],
+    desc: "Panneau qui glisse depuis le bord de l'écran (menu, panier, filtres…).",
+    vars: ["Depuis la gauche (menu)", "Depuis la droite (panier)", "Barre latérale fixe (sidebar) sur ordinateur"],
+    prompt: "Quand on clique sur l'icône panier, ouvre un tiroir latéral (drawer) qui glisse depuis la droite et prend 400 px de large (plein écran sur mobile), avec la liste des articles, le total et un bouton « Commander ».",
+    visual: `<div class="m-screen" style="background:#aaa"><div class="hl pulse" style="position:absolute;top:0;bottom:0;right:0;width:45%;background:#fff;padding:8px;display:flex;flex-direction:column;gap:6px"><div class="m-bar"></div><div class="m-bar" style="width:70%"></div><div style="margin-top:auto;height:14px;background:var(--accent);border-radius:4px"></div></div></div>` },
+
+  { id: "bottomnav", name: "Barre d'onglets du bas", en: "Bottom navigation bar / Tab bar", cat: "mobile",
+    aliases: ["icônes en bas", "menu en bas", "barre du bas", "boutons en bas de l'appli", "navigation en bas"],
+    desc: "Barre fixe en bas de l'écran d'une appli avec 3 à 5 icônes pour passer d'une section à l'autre.",
+    vars: ["Icônes seules ou icônes + texte", "Avec pastille de notification (badge)"],
+    prompt: "Dans l'application mobile, ajoute une barre de navigation en bas (bottom navigation bar) fixe avec 4 onglets : Accueil, Recherche, Favoris, Profil (icône + libellé). L'onglet actif est coloré.",
+    visual: `<div class="m-screen" style="width:110px;height:130px"><div class="hl pulse" style="position:absolute;bottom:0;left:0;right:0;height:26px;border-top:1px solid #ddd;display:flex;justify-content:space-around;align-items:center;font-size:12px"><span style="color:var(--accent)">⌂</span><span>⌕</span><span>♡</span><span>☺</span></div></div>` },
+
+  { id: "fab", name: "Bouton d'action flottant", en: "FAB (Floating Action Button)", cat: "mobile",
+    aliases: ["bouton rond", "bouton plus", "bouton +", "bouton qui flotte", "rond en bas à droite"],
+    desc: "Bouton rond qui flotte en bas à droite pour l'action principale (ajouter, écrire…).",
+    vars: ["Simple (« + »)", "Qui déploie plusieurs mini-boutons (speed dial)", "Bouton WhatsApp / chat sur un site"],
+    prompt: "Ajoute un bouton d'action flottant (FAB) rond en bas à droite de l'écran avec une icône « + », qui reste visible au défilement et ouvre le formulaire de création d'une nouvelle note.",
+    visual: `<div class="m-screen" style="width:110px;height:130px"><div class="hl pulse" style="position:absolute;bottom:10px;right:10px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px">+</div></div>` },
+
+  { id: "badge", name: "Pastille / Badge", en: "Badge", cat: "feedback",
+    aliases: ["petit rond rouge", "chiffre sur l'icône", "nombre de notifications", "étiquette", "nouveau", "pastille"],
+    desc: "Petit rond ou étiquette sur une icône pour signaler un nombre ou un statut (« 3 », « Nouveau »).",
+    vars: ["Compteur (panier, notifications)", "Étiquette de statut : « Nouveau », « Promo », « Épuisé »"],
+    prompt: "Ajoute un badge rouge avec le nombre d'articles sur l'icône du panier dans le header ; il se met à jour en temps réel et disparaît quand le panier est vide.",
+    visual: `<div style="position:relative;font-size:34px">🛒<span class="hl pulse" style="position:absolute;top:-4px;right:-10px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 6px">3</span></div>` },
+
+  { id: "form", name: "Formulaire de contact", en: "Contact form", cat: "form",
+    aliases: ["formulaire", "champs à remplir", "nous contacter", "envoyer un message", "cases à remplir"],
+    desc: "Ensemble de champs (nom, email, message) avec un bouton d'envoi.",
+    vars: ["Validation en direct (erreurs affichées sous le champ)", "Cases à cocher (checkbox), boutons radio", "Formulaire en plusieurs étapes (stepper)"],
+    prompt: "Crée un formulaire de contact avec les champs Nom, Email, Téléphone (optionnel) et Message, une case à cocher d'acceptation RGPD et un bouton « Envoyer ». Valide les champs en direct (message d'erreur rouge sous le champ) et affiche un message de confirmation après l'envoi.",
+    visual: `<div class="hl pulse" style="width:70%;display:flex;flex-direction:column;gap:6px;background:#fff;padding:10px;border-radius:8px;border:1px solid #ddd"><div style="height:14px;border:1px solid #ccc;border-radius:4px"></div><div style="height:14px;border:1px solid #ccc;border-radius:4px"></div><div style="height:28px;border:1px solid #ccc;border-radius:4px"></div><div style="height:14px;width:50%;background:var(--accent);border-radius:4px"></div></div>` },
+];
+
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ");
+const $ = s => document.querySelector(s);
+let cat = "all";
+const basket = new Set();
+
+function score(item, q) {
+  if (!q) return 1;
+  const words = norm(q).split(/\s+/).filter(w => w.length > 1);
+  const hay = norm([item.name, item.en, item.desc, ...item.aliases].join(" "));
+  const aliasHay = item.aliases.map(norm);
+  let s = 0;
+  if (aliasHay.some(a => a.includes(norm(q).trim()))) s += 10;
+  for (const w of words) if (hay.includes(w)) s += 1;
+  return words.length && s < Math.ceil(words.length / 2) ? 0 : s;
+}
+
+function render() {
+  const q = $("#q").value.trim();
+  const list = DICO.map(i => [i, score(i, q)])
+    .filter(([i, s]) => s > 0 && (cat === "all" || i.cat === cat))
+    .sort((a, b) => b[1] - a[1]).map(([i]) => i);
+  $("#count").textContent = `${list.length} élément${list.length > 1 ? "s" : ""}`;
+  $("#grid").innerHTML = list.length ? list.map(i => `
+    <div class="item" data-id="${i.id}">
+      <div class="preview">${i.visual}</div>
+      <div class="body">
+        <div class="name">${i.name}</div>
+        <div class="en">🇬🇧 ${i.en}</div>
+        <div class="desc">${i.desc}</div>
+        <span class="tag">${C[i.cat]}</span>
+      </div>
+    </div>`).join("") : `<div class="empty">Aucun résultat. Essaie d'autres mots, ou décris à quoi ça ressemble (« rond », « en bas », « qui s'ouvre »…).</div>`;
+}
+
+function open(id) {
+  const i = DICO.find(x => x.id === id);
+  $("#panel").innerHTML = `
+    <div class="preview" style="position:relative">${i.visual}<button class="close" id="x">✕</button></div>
+    <div class="content">
+      <h2>${i.name}</h2>
+      <div class="en">🇬🇧 En anglais (le terme que les IA connaissent le mieux) : <b>${i.en}</b></div>
+      <p class="desc">${i.desc}</p>
+      <div class="label">On l'appelle aussi…</div>
+      <div class="chips">${i.aliases.map(a => `<span>${a}</span>`).join("")}</div>
+      <div class="label">Variantes à préciser à l'IA</div>
+      <ul class="vars">${i.vars.map(v => `<li>${v}</li>`).join("")}</ul>
+      <div class="label">✨ Phrase prête à copier dans ton IA</div>
+      <div class="prompt">${i.prompt}</div>
+      <div class="actions">
+        <button class="btn primary" id="cp">📋 Copier</button>
+        <button class="btn ghost" id="add">${basket.has(i.id) ? "✔ Dans mon projet" : "➕ Ajouter à mon projet"}</button>
+      </div>
+    </div>`;
+  $("#overlay").classList.add("show");
+  $("#x").onclick = close;
+  $("#cp").onclick = () => copy(i.prompt);
+  $("#add").onclick = e => { basket.has(i.id) ? basket.delete(i.id) : basket.add(i.id); e.target.textContent = basket.has(i.id) ? "✔ Dans mon projet" : "➕ Ajouter à mon projet"; updateBasket(); };
+}
+function close() { $("#overlay").classList.remove("show"); }
+
+function updateBasket() {
+  $("#basket").classList.toggle("show", basket.size > 0);
+  $("#basketList").textContent = [...basket].map(id => DICO.find(x => x.id === id).name).join(" · ");
+}
+
+function buildPrompt() {
+  const items = [...basket].map(id => DICO.find(x => x.id === id));
+  $("#panel").innerHTML = `
+    <div class="content" style="position:relative">
+      <button class="close" id="x">✕</button>
+      <h2>🧺 Prompt complet pour ton projet</h2>
+      <p class="desc">Décris ton projet en une phrase : l'IA comprendra mieux le contexte.</p>
+      <textarea id="ctx" placeholder="Ex. : Site vitrine pour mon restaurant italien à Lyon, ambiance chaleureuse, couleurs vert et crème."></textarea>
+      <div class="label">Prompt généré</div>
+      <div class="prompt" id="out"></div>
+      <div class="actions"><button class="btn primary" id="cp">📋 Copier le prompt</button></div>
+      <p class="desc" style="margin-top:14px">💡 Tout demander en un seul message bien structuré évite les allers-retours avec l'IA, et donc les tokens perdus.</p>
+    </div>`;
+  const gen = () => {
+    const ctx = $("#ctx").value.trim();
+    return (ctx ? `Contexte : ${ctx}\n\n` : "") +
+      `Voici les éléments à intégrer :\n\n` +
+      items.map((i, n) => `${n + 1}. ${i.name} (${i.en})\n   ${i.prompt}`).join("\n\n") +
+      `\n\nContraintes : design responsive (mobile + ordinateur), code propre et commenté. Si une information te manque, pose-moi tes questions avant de commencer.`;
+  };
+  const refresh = () => $("#out").textContent = gen();
+  $("#ctx").oninput = refresh; refresh();
+  $("#x").onclick = close;
+  $("#cp").onclick = () => copy(gen());
+  $("#overlay").classList.add("show");
+}
+
+function copy(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    $("#toast").style.display = "block";
+    setTimeout(() => $("#toast").style.display = "none", 1500);
+  });
+}
+
+$("#filters").innerHTML = [["all", "Tout"], ...Object.entries(C)].map(([k, v]) => `<button data-cat="${k}" class="${k === "all" ? "on" : ""}">${v}</button>`).join("");
+$("#filters").onclick = e => { if (!e.target.dataset.cat) return; cat = e.target.dataset.cat; document.querySelectorAll("#filters button").forEach(b => b.classList.toggle("on", b === e.target)); render(); };
+$("#q").oninput = render;
+document.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { $("#q").value = b.dataset.try; render(); });
+$("#grid").onclick = e => { const c = e.target.closest(".item"); if (c) open(c.dataset.id); };
+$("#overlay").onclick = e => { if (e.target.id === "overlay") close(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+$("#clearBasket").onclick = () => { basket.clear(); updateBasket(); };
+$("#buildPrompt").onclick = buildPrompt;
+render();
+</script>
+</body>
+</html>
