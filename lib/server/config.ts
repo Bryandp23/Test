@@ -20,6 +20,8 @@ export function configProblems(): ConfigProblem[] {
   const out: ConfigProblem[] = [];
   if (!process.env.APP_SECRET && !process.env.ALLOW_DEV_SECRET)
     out.push({ name: "APP_SECRET", help: "Une longue phrase secrète au hasard (40 caractères ou plus)." });
+  else if (process.env.APP_SECRET && process.env.APP_SECRET.length < 32)
+    out.push({ name: "APP_SECRET", help: "La clé est trop courte. Utilisez une clé aléatoire générée avec openssl rand -base64 32, conservée uniquement dans les variables d'environnement Netlify." });
   if (!databaseUrl() && isServerless())
     out.push({
       name: "Base de données",
