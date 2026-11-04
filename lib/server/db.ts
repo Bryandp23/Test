@@ -4,7 +4,6 @@ import "server-only";
 // - Développement et démonstration : PGlite (PostgreSQL compilé en WebAssembly, fichiers dans ./data).
 // Le même SQL fonctionne dans les deux cas.
 import { SCHEMA_MIGRATIONS } from "./schema";
-import { databaseUrl, isServerless } from "./config";
 
 export interface Queryable {
   query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<T[]>;
@@ -61,8 +60,7 @@ async function createPglite(dir: string): Promise<Db> {
 
 async function init(): Promise<Db> {
   // DATABASE_URL, ou la variable posée automatiquement par Netlify DB / Vercel Postgres.
-  const url = databaseUrl();
-  if (!url && isServerless()) throw Object.assign(new Error("Aucune base de données configurée (DATABASE_URL ou Netlify DB)."), { code: "CONFIG" });
+  const url = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.POSTGRES_URL;
   let db: Db;
   if (url) db = await createPg(url);
   else {
