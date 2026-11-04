@@ -6,7 +6,13 @@ export function isServerless() {
 }
 
 export function databaseUrl(): string | undefined {
-  return process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.POSTGRES_URL || undefined;
+  const known = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.NETLIFY_DB_URL || process.env.POSTGRES_URL;
+  if (known) return known;
+  // Hébergeurs qui nomment la variable autrement (ex. Netlify Database) : toute variable *DATABASE*/*DB_URL* contenant une adresse PostgreSQL.
+  for (const [k, v] of Object.entries(process.env)) {
+    if (v && /DATABASE|DB_URL|POSTGRES/i.test(k) && !/UNPOOLED|DIRECT/i.test(k) && /^postgres(ql)?:\/\//.test(v)) return v;
+  }
+  return undefined;
 }
 
 export interface ConfigProblem {
