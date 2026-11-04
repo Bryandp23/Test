@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@netlify/plugin-nextjs": "^5.16.6",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.4",
     "@types/node": "^26.6.6",
