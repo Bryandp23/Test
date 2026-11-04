@@ -113,7 +113,8 @@ export async function seedIfEmpty(db: Queryable) {
       await db.query(`insert into users (email, name, role, password_hash) values ($1,$2,'admin',$3)`, ["admin@ephec.local", "Admin démo", await hashPassword("Demo-EPHEC-2026!")]);
       await db.query(`insert into users (email, name, role, password_hash) values ($1,$2,'editor',$3)`, ["editeur@ephec.local", "Éditeur démo", await hashPassword("Demo-Editeur-2026!")]);
     } else {
-      throw new Error("Aucun administrateur : définissez ADMIN_EMAIL et ADMIN_PASSWORD pour le premier démarrage.");
+      // Aucun compte créé : l'écran de configuration indique ADMIN_EMAIL / ADMIN_PASSWORD.
+      console.warn("[seed] Aucun administrateur : définissez ADMIN_EMAIL et ADMIN_PASSWORD.");
     }
   }
   const events = await db.query<{ n: number }>(`select count(*)::int as n from events`);
