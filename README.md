@@ -22,6 +22,12 @@ Ouvrez http://localhost:3000/admin. Les comptes de démonstration sont affichés
 
 Trois événements de démonstration, clairement marqués comme fictifs, sont créés au premier démarrage. La base locale (PostgreSQL en WebAssembly, PGlite) se trouve dans `./data`. Supprimez ce dossier pour repartir de zéro.
 
+## Déploiement Netlify : clé secrète
+
+Définissez `APP_SECRET` uniquement dans les variables d'environnement Netlify, avec une valeur aléatoire générée par `openssl rand -base64 32`. Ne réutilisez pas un mot courant ni les valeurs de test. Les fichiers `.env.*` sont ignorés, sauf le modèle `.env.example` qui reste sans secrets.
+
+Si le contrôle de secrets détecte cette valeur dans de nombreux fichiers ordinaires, remplacez la clé trop courte ou commune au lieu de désactiver le contrôle. Une rotation invalide les sessions signées et nécessite de reconnecter les agendas dont les jetons étaient chiffrés avec l'ancienne clé. Relancez ensuite le déploiement ; conservez le contrôle des secrets activé.
+
 ## Tests
 
 ```bash

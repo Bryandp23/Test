@@ -9,6 +9,8 @@ let cachedKey: Buffer | null = null;
 function masterKey(): Buffer {
   if (cachedKey) return cachedKey;
   let raw = process.env.APP_SECRET;
+  if (process.env.NODE_ENV === "production" && raw && raw.length < 32)
+    throw new Error("APP_SECRET doit contenir au moins 32 caractères aléatoires.");
   if (!raw) {
     if (process.env.NODE_ENV === "production" && !process.env.ALLOW_DEV_SECRET)
       throw new Error("APP_SECRET doit être défini en production (ex. `openssl rand -base64 32`).");
