@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --color-brand: #27958f;
+  --color-brand-light: #46c4bc;
+  --color-brand-700: #1d7a75; /* contraste 5,1:1 sur blanc : utilisé pour le texte et les boutons */
+  --color-brand-800: #175f5b;
+  --color-brand-900: #10423f;
+  --color-brand-50: #effaf9;
+  --color-brand-100: #d6f1ee;
+  --color-ink: #13201f;
+  --color-muted: #4a5655; /* 7,4:1 sur blanc */
+  --color-line: #dfe7e6;
+  --color-canvas: #f5f8f8;
+  --color-danger: #b42318;
+  --color-danger-50: #fef3f2;
+  --color-warn: #8a5300;
+  --color-warn-50: #fff8eb;
+  --color-ok: #1b7a3d;
+  --color-ok-50: #effaf3;
+  --radius-ephec: 6px 26px 6px 26px;
+}
+
+/* Coins asymétriques caractéristiques de l'identité EPHEC */
+@utility shape {
+  border-radius: 6px 26px 6px 26px;
+}
+@utility shape-sm {
+  border-radius: 4px 16px 4px 16px;
+}
+@utility shape-lg {
+  border-radius: 8px 40px 8px 40px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus toujours visible au clavier */
+:focus-visible {
+  outline: 3px solid var(--color-brand-700);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: rise 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
