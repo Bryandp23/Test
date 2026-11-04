@@ -59,7 +59,8 @@ async function createPglite(dir: string): Promise<Db> {
 }
 
 async function init(): Promise<Db> {
-  const url = process.env.DATABASE_URL;
+  // DATABASE_URL, ou la variable posée automatiquement par Netlify DB / Vercel Postgres.
+  const url = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.POSTGRES_URL;
   let db: Db;
   if (url) db = await createPg(url);
   else {
