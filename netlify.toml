@@ -1,0 +1,11 @@
+# Configuration Netlify : construit l'application Next.js et active le moteur serveur (pages dynamiques, API).
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
