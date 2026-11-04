@@ -5,6 +5,8 @@ data/
 next-env.d.ts
 .env
 .env.local
+.env.*
+!.env.example
 test-results/
 playwright-report/
 e2e/artifacts/
