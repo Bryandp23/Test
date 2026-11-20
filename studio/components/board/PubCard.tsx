@@ -3,7 +3,7 @@ import { memo, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Archive, ArrowLeft, ArrowRight, Copy, FileCode2, FileText, FileType2, Globe, Layers, MoreHorizontal, MoveRight, Play, Trash2, ExternalLink, File as FileIcon, Paperclip } from "lucide-react";
-import { cardStage, hostOf, type PublicationSummary, type Tag } from "@/lib/domain";
+import { cardStage, hostOf, STAGE_LABEL, type PublicationSummary, type Tag } from "@/lib/domain";
 import { useStudio } from "@/lib/client/store";
 import { archivePub, confirmDeletePub, duplicatePub, nudgePub } from "@/lib/client/ops";
 import { uploadFiles } from "@/lib/client/upload";
@@ -150,7 +150,7 @@ export const PubCard = memo(function PubCard({ p, channel, density, selected, dr
         {...listeners}
         role="button"
         aria-roledescription="Carte de publication déplaçable"
-        aria-label={`${p.title} — ${channel?.label ?? "sans canal"}, ${stage}`}
+        aria-label={`${p.title} — ${channel?.label ?? "sans canal"}, ${STAGE_LABEL[stage]}`}
         data-pub-id={p.id}
         onClick={() => select(p.id)}
         onKeyDown={(e) => {
