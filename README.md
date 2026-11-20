@@ -1,5 +1,7 @@
 # EPHEC Calendar
 
+> Ce dépôt contient aussi **EPHEC Content Studio**, l'espace de production éditoriale, dans le dossier [`studio/`](studio/README.md) (application indépendante).
+
 Application web qui permet aux participants de la Formation Continue de l'EPHEC d'ajouter une formation, un webinaire ou un cycle de plusieurs séances au calendrier de leur choix, à partir du bouton « Ajouter à mon calendrier » de leur email de confirmation (ActiveCampaign).
 
 - **Participants** : une page `/e/<identifiant>`, sans compte, qui ouvre Google Agenda, Outlook (personnel ou Microsoft 365), Apple Calendrier ou un fichier `.ics`, avec un ajout direct vérifié lorsque l'agenda est connecté (OAuth).
