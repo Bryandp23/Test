@@ -77,6 +77,12 @@
   .efa-ast li{position:relative;padding-left:30px}
   .efa-ast li::before{content:"✳";position:absolute;left:0;top:-1px;color:var(--efa-teal);font-size:18px;line-height:1.6}
 
+  /* ---------- Flèches EPHEC ---------- */
+  .efa-arw{display:grid;gap:12px}
+  .efa-arw li{position:relative;padding-left:32px}
+  .efa-arw li::before{content:"→";position:absolute;left:0;top:0;color:var(--efa-dept);font-weight:500;font-size:1.1em;line-height:1.55}
+  .efa-arr{display:inline-block;transition:transform .25s ease}
+
   /* ---------- Bloc "Nouveau programme" (couleur département) ---------- */
   .efa-new{position:relative;overflow:hidden;background:var(--efa-dept);color:var(--efa-white);border-radius:var(--efa-r-xl);padding:clamp(24px,4vw,36px)}
   .efa-new > *{position:relative}
@@ -95,6 +101,7 @@
   .efa-link strong{font-family:inherit;font-weight:500;font-size:1.08rem;line-height:1.3;color:var(--efa-ink)}
   .efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:var(--efa-dept);color:var(--efa-white);padding:12px 20px;border-radius:var(--efa-r-pill);transition:background .2s ease}
   .efa-link:hover .efa-btn{background:var(--efa-dept-ink)}
+  .efa-link:hover .efa-arr,.efa-rows a:hover .efa-arr{transform:translateX(4px)}
 
   .efa-rows{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:6px 24px}
   .efa-rows a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-top:1px solid var(--efa-line);font-family:inherit;font-weight:500;color:var(--efa-ink);transition:color .2s}
@@ -104,7 +111,7 @@
 
   /* ---------- Déroulé (blocs 1-2-3) ---------- */
   .efa-step{display:flex;flex-direction:column;gap:6px}
-  .efa-step .efa-pill{align-self:flex-start;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-white);background:var(--efa-dept);padding:5px 12px;border-radius:var(--efa-r-pill);margin-bottom:8px}
+  .efa-step .efa-pill{align-self:flex-start;display:inline-flex;gap:8px;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-white);background:var(--efa-dept);padding:5px 12px;border-radius:var(--efa-r-pill);margin-bottom:8px}
 
   /* ---------- Vidéo ---------- */
   .efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:var(--efa-ink)}
@@ -113,12 +120,14 @@
   /* ---------- Débouchés : pastilles + explication ---------- */
   .efa-jobs{display:flex;flex-wrap:wrap;gap:8px}
   .efa-jobs button{cursor:pointer;border:1px solid transparent;background:var(--efa-white);color:var(--efa-text);font-size:14px;line-height:1.3;padding:10px 16px;border-radius:var(--efa-r-pill);display:inline-flex;align-items:center;gap:8px;transition:background .2s,color .2s,border-color .2s}
-  .efa-jobs button::after{content:"+";font-family:inherit;color:var(--efa-dept)}
+  .efa-jobs button::after{content:"→";color:var(--efa-dept);transition:transform .25s ease}
+  .efa-jobs button:hover::after{transform:translateX(3px)}
   .efa-jobs button:hover{border-color:var(--efa-dept)}
   .efa-jobs button[aria-pressed="true"]{background:var(--efa-dept);color:var(--efa-white)}
-  .efa-jobs button[aria-pressed="true"]::after{content:"−";color:var(--efa-white)}
+  .efa-jobs button[aria-pressed="true"]::after{color:var(--efa-white);transform:rotate(90deg)}
   .efa-job-panel{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:22px 24px;border-left:0}
   .efa-job-panel[hidden]{display:none}
+  .efa-job-panel .efa-h3::before,.efa-job-list .efa-h3::before{content:"→ ";color:var(--efa-dept)}
   .efa-job-panel.is-in{animation:efa-in .3s ease}
   @keyframes efa-in{from{opacity:.2;transform:translateY(6px)}to{opacity:1;transform:none}}
   /* Sans JavaScript : la liste complète reste lisible */
@@ -157,11 +166,11 @@
         <div class="efa-actions">
           <a class="efa-link" href="https://www.ephec.be/sites/default/files/2026-06/HE_26-27_Profil%20d%27enseignement_MARKETING_Pr%C3%A9sentation%20pour%20ARES_2026-2027%20%282%29.pdf" target="_blank" rel="noopener">
             <strong>Profil d’enseignement du Bachelier en Marketing</strong>
-            <span class="efa-btn">Voir le profil <span aria-hidden="true">→</span></span>
+            <span class="efa-btn">Voir le profil <span class="efa-arr" aria-hidden="true">→</span></span>
           </a>
           <a class="efa-link" href="https://www.ephec.be/haute-ecole-ephec-ensemble-se-realiser/la-qualite">
             <strong>La démarche qualité de ce département</strong>
-            <span class="efa-btn">Consulter <span aria-hidden="true">→</span></span>
+            <span class="efa-btn">Consulter <span class="efa-arr" aria-hidden="true">→</span></span>
           </a>
         </div>
       </div>
@@ -172,7 +181,7 @@
         <h2 class="efa-title">Ce que tu vas <em>apprendre</em></h2>
       </header>
       <div class="efa-body">
-        <ul class="efa-ast efa-card">
+        <ul class="efa-arw efa-card">
           <li>Comprendre de manière approfondie les fondamentaux du marketing et sa mise en œuvre pratique.</li>
           <li>Prendre des décisions stratégiques basées sur l’analyse de données et les études de marché.</li>
           <li>Maîtriser les outils marketing technologiques pour élaborer des plans d’action efficaces.</li>
@@ -229,9 +238,9 @@
       <div class="efa-body">
         <p class="efa-text">Une approche concrète et ouverte sur le monde professionnel, y compris dans des contextes multilingues. Le programme est régulièrement mis à jour avec les dernières techniques de marketing.</p>
         <div class="efa-grid efa-grid--3">
-          <div class="efa-card efa-step"><span class="efa-pill">Bloc 1</span><h3 class="efa-h3">Lancer un produit innovant</h3><p class="efa-small">Sur le marché belge, en collaboration avec une entreprise locale, avec des pratiques responsables et écologiques dès le début.</p></div>
-          <div class="efa-card efa-step"><span class="efa-pill">Bloc 2</span><h3 class="efa-h3">Résoudre un cas réel</h3><p class="efa-small">Des solutions concrètes pour une entreprise de renom : Walibi, Martin’s Hôtel, ING ou Touring.</p></div>
-          <div class="efa-card efa-step"><span class="efa-pill">Bloc 3</span><h3 class="efa-h3">Un projet de A à Z</h3><p class="efa-small">Encadré par des professionnels dans ton cours à choix : Marketing des Arts et de la Culture, Sales Management, Sports Marketing, Digital Communication and Media Strategies, Entrepreneuriat et Innovation, International Market Development, (e)-Retail Management.</p></div>
+          <div class="efa-card efa-step"><span class="efa-pill">Bloc 1 <span aria-hidden="true">→</span></span><h3 class="efa-h3">Lancer un produit innovant</h3><p class="efa-small">Sur le marché belge, en collaboration avec une entreprise locale, avec des pratiques responsables et écologiques dès le début.</p></div>
+          <div class="efa-card efa-step"><span class="efa-pill">Bloc 2 <span aria-hidden="true">→</span></span><h3 class="efa-h3">Résoudre un cas réel</h3><p class="efa-small">Des solutions concrètes pour une entreprise de renom : Walibi, Martin’s Hôtel, ING ou Touring.</p></div>
+          <div class="efa-card efa-step"><span class="efa-pill">Bloc 3 <span aria-hidden="true">✳</span></span><h3 class="efa-h3">Un projet de A à Z</h3><p class="efa-small">Encadré par des professionnels dans ton cours à choix : Marketing des Arts et de la Culture, Sales Management, Sports Marketing, Digital Communication and Media Strategies, Entrepreneuriat et Innovation, International Market Development, (e)-Retail Management.</p></div>
         </div>
       </div>
     </section>
@@ -288,10 +297,10 @@
       </header>
       <div class="efa-body">
         <div class="efa-rows">
-          <a href="https://www.ulb.be/fr/programme/ma-comu" target="_blank" rel="noopener">Master en communication <span aria-hidden="true">↗</span></a>
-          <a href="https://www.ichec.be/fr/master-en-gestion-de-lentreprise" target="_blank" rel="noopener">Master en gestion de l’entreprise <span aria-hidden="true">↗</span></a>
-          <a href="https://exed.solvay.edu/fr/formation-continue/marketing-et-ventes/executive-master-in-digital-marketing-and-communication" target="_blank" rel="noopener">Master en marketing digital <span aria-hidden="true">↗</span></a>
-          <a href="https://www.ichec.be/fr/masters-degree-business-management-international-track" target="_blank" rel="noopener">Master en affaires et gestion internationale <span aria-hidden="true">↗</span></a>
+          <a href="https://www.ulb.be/fr/programme/ma-comu" target="_blank" rel="noopener">Master en communication <span class="efa-arr" aria-hidden="true">→</span></a>
+          <a href="https://www.ichec.be/fr/master-en-gestion-de-lentreprise" target="_blank" rel="noopener">Master en gestion de l’entreprise <span class="efa-arr" aria-hidden="true">→</span></a>
+          <a href="https://exed.solvay.edu/fr/formation-continue/marketing-et-ventes/executive-master-in-digital-marketing-and-communication" target="_blank" rel="noopener">Master en marketing digital <span class="efa-arr" aria-hidden="true">→</span></a>
+          <a href="https://www.ichec.be/fr/masters-degree-business-management-international-track" target="_blank" rel="noopener">Master en affaires et gestion internationale <span class="efa-arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
