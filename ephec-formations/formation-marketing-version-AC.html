@@ -1,5 +1,4 @@
 <!-- EPHEC · Page formation · Version A+C (sommaire) -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=JetBrains+Mono:wght@500&display=swap">
 <div class="efa efa--ac">
   <style>
   /* ============================================================
@@ -19,9 +18,6 @@
     --efa-line:#E3E7E6;
     --efa-paper:#F5F6F6;
     --efa-white:#FFFFFF;
-    --efa-font-title:"DM Sans",var(--efa-font-fallback);
-    --efa-font-label:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-    --efa-font-fallback:system-ui,-apple-system,"Segoe UI",sans-serif;
     --efa-sticky-top:120px;  /* hauteur du menu Drupal collant */
     --efa-r-xl:28px; --efa-r-lg:20px; --efa-r-md:14px; --efa-r-pill:999px;
 
@@ -40,6 +36,8 @@
     text-align:left;
   }
   .efa *,.efa *::before,.efa *::after{box-sizing:border-box}
+  /* Police : toujours celle du site (Borna), imposée par Drupal */
+  .efa,.efa *{font-family:inherit!important}
   /* Neutralise les styles du thème sur les balises du bloc */
   .efa :where(h2,h3,h4,p,ul,li,figure){margin:0;padding:0}
   .efa :where(ul){list-style:none}
@@ -49,10 +47,10 @@
   .efa :focus-visible{outline:2px solid var(--efa-dept);outline-offset:3px}
 
   /* ---------- Typo ---------- */
-  .efa-eyebrow{display:block;font-family:var(--efa-font-label);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-dept);margin-bottom:12px}
-  .efa-title{font-family:var(--efa-font-title);font-weight:400;font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1.08;letter-spacing:-.015em;color:var(--efa-ink);text-wrap:balance}
+  .efa-eyebrow{display:block;font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-dept);margin-bottom:12px}
+  .efa-title{font-family:inherit;font-weight:400;font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1.08;letter-spacing:-.015em;color:var(--efa-ink);text-wrap:balance}
   .efa-title em{font-style:normal;color:var(--efa-teal)}
-  .efa-h3{font-family:var(--efa-font-title);font-weight:500;font-size:1.12rem;line-height:1.3;color:var(--efa-ink);margin-bottom:8px}
+  .efa-h3{font-family:inherit;font-weight:500;font-size:1.12rem;line-height:1.3;color:var(--efa-ink);margin-bottom:8px}
   .efa-text{color:var(--efa-muted);max-width:68ch}
   .efa-text a{color:var(--efa-dept);font-weight:500;text-decoration:underline;text-underline-offset:3px}
   .efa-small{font-size:14px;color:var(--efa-muted);line-height:1.6}
@@ -82,8 +80,8 @@
   /* ---------- Bloc "Nouveau programme" (couleur département) ---------- */
   .efa-new{position:relative;overflow:hidden;background:var(--efa-dept);color:var(--efa-white);border-radius:var(--efa-r-xl);padding:clamp(24px,4vw,36px)}
   .efa-new > *{position:relative}
-  .efa-new .efa-badge{display:inline-block;font-family:var(--efa-font-label);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:var(--efa-r-pill)}
-  .efa-new h3{font-family:var(--efa-font-title);font-weight:400;font-size:clamp(1.4rem,2.6vw,1.8rem);line-height:1.15;margin:14px 0 10px;color:var(--efa-white)}
+  .efa-new .efa-badge{display:inline-block;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:var(--efa-r-pill)}
+  .efa-new h3{font-family:inherit;font-weight:400;font-size:clamp(1.4rem,2.6vw,1.8rem);line-height:1.15;margin:14px 0 10px;color:var(--efa-white)}
   .efa-new p{color:rgba(255,255,255,.82);margin-bottom:18px;max-width:62ch}
   .efa-new .efa-ast li{color:var(--efa-white)}
   .efa-stripes{position:absolute;inset:0;pointer-events:none}
@@ -94,19 +92,19 @@
   @container efa (min-width:560px){ .efa-actions{grid-template-columns:repeat(2,minmax(0,1fr))} }
   .efa-link{display:flex;flex-direction:column;justify-content:space-between;gap:18px;background:var(--efa-white);border-radius:var(--efa-r-lg);padding:22px 24px;transition:transform .25s ease,box-shadow .25s ease}
   .efa-link:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,19,18,.08)}
-  .efa-link strong{font-family:var(--efa-font-title);font-weight:500;font-size:1.08rem;line-height:1.3;color:var(--efa-ink)}
-  .efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-family:var(--efa-font-label);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:var(--efa-dept);color:var(--efa-white);padding:12px 20px;border-radius:var(--efa-r-pill);transition:background .2s ease}
+  .efa-link strong{font-family:inherit;font-weight:500;font-size:1.08rem;line-height:1.3;color:var(--efa-ink)}
+  .efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:var(--efa-dept);color:var(--efa-white);padding:12px 20px;border-radius:var(--efa-r-pill);transition:background .2s ease}
   .efa-link:hover .efa-btn{background:var(--efa-dept-ink)}
 
   .efa-rows{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:6px 24px}
-  .efa-rows a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-top:1px solid var(--efa-line);font-family:var(--efa-font-title);font-weight:500;color:var(--efa-ink);transition:color .2s}
+  .efa-rows a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 0;border-top:1px solid var(--efa-line);font-family:inherit;font-weight:500;color:var(--efa-ink);transition:color .2s}
   .efa-rows a:first-child{border-top:0}
-  .efa-rows a span{font-family:var(--efa-font-label);color:var(--efa-dept)}
+  .efa-rows a span{font-family:inherit;color:var(--efa-dept)}
   .efa-rows a:hover{color:var(--efa-dept)}
 
   /* ---------- Déroulé (blocs 1-2-3) ---------- */
   .efa-step{display:flex;flex-direction:column;gap:6px}
-  .efa-step .efa-pill{align-self:flex-start;font-family:var(--efa-font-label);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-white);background:var(--efa-dept);padding:5px 12px;border-radius:var(--efa-r-pill);margin-bottom:8px}
+  .efa-step .efa-pill{align-self:flex-start;font-family:inherit;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--efa-white);background:var(--efa-dept);padding:5px 12px;border-radius:var(--efa-r-pill);margin-bottom:8px}
 
   /* ---------- Vidéo ---------- */
   .efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:var(--efa-ink)}
@@ -115,7 +113,7 @@
   /* ---------- Débouchés : pastilles + explication ---------- */
   .efa-jobs{display:flex;flex-wrap:wrap;gap:8px}
   .efa-jobs button{cursor:pointer;border:1px solid transparent;background:var(--efa-white);color:var(--efa-text);font-size:14px;line-height:1.3;padding:10px 16px;border-radius:var(--efa-r-pill);display:inline-flex;align-items:center;gap:8px;transition:background .2s,color .2s,border-color .2s}
-  .efa-jobs button::after{content:"+";font-family:var(--efa-font-label);color:var(--efa-dept)}
+  .efa-jobs button::after{content:"+";font-family:inherit;color:var(--efa-dept)}
   .efa-jobs button:hover{border-color:var(--efa-dept)}
   .efa-jobs button[aria-pressed="true"]{background:var(--efa-dept);color:var(--efa-white)}
   .efa-jobs button[aria-pressed="true"]::after{content:"−";color:var(--efa-white)}
@@ -148,7 +146,7 @@
     .efa-nav a.is-active{background:var(--efa-white)}
   }
   .efa-marquee{overflow:hidden;max-width:100%;white-space:nowrap;border-block:1px solid var(--efa-line);padding-block:16px;margin-block:8px}
-  .efa-marquee > div{display:inline-block;font-family:var(--efa-font-title);font-size:clamp(1.5rem,3.4vw,2.4rem);line-height:1.2;letter-spacing:-.01em;color:var(--efa-ink);animation:efa-mq 36s linear infinite}
+  .efa-marquee > div{display:inline-block;font-family:inherit;font-size:clamp(1.5rem,3.4vw,2.4rem);line-height:1.2;letter-spacing:-.01em;color:var(--efa-ink);animation:efa-mq 36s linear infinite}
   .efa-marquee b{font-weight:400;color:var(--efa-teal);margin:0 .5em}
   @keyframes efa-mq{to{transform:translateX(-50%)}}
 </style>
