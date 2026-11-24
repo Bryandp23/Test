@@ -98,13 +98,14 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-card .efa-h3::before{content:"✳";display:block;color:var(--efa-brand);font-size:1.25rem;line-height:1;margin-bottom:16px;}
 .efa-card p{font-size:1rem;color:var(--efa-muted);}
 .efa-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;}
-.efa-steps li{position:relative;border-radius:var(--efa-r-lg);padding:30px 30px 32px;display:flex;flex-direction:column;gap:14px;background:var(--efa-mint-soft);}
-.efa-steps li::before,.efa-steps li::after{content:"";position:absolute;top:0;left:0;height:6px;border-radius:var(--efa-r-lg) 0 0 0;}
-.efa-steps li::before{right:0;background:rgba(17,17,17,.08);border-radius:var(--efa-r-lg) var(--efa-r-lg) 0 0;}
+.efa-steps li{position:relative;border-radius:var(--efa-r-lg);padding:60px 30px 32px;display:flex;flex-direction:column;gap:14px;background:var(--efa-mint-soft);}
+/* Barre d'avancement : à l'intérieur de la carte, arrondie, jamais collée aux bords */
+.efa-steps li::before,.efa-steps li::after{content:"";position:absolute;top:30px;left:30px;height:4px;border-radius:999px;}
+.efa-steps li::before{right:30px;background:rgba(17,17,17,.1);}
 .efa-steps li::after{background:var(--efa-sector-strong);}
-.efa-steps li:nth-child(1)::after{width:33.34%;}
-.efa-steps li:nth-child(2)::after{width:66.67%;}
-.efa-steps li:nth-child(3)::after{width:100%;border-radius:var(--efa-r-lg) var(--efa-r-lg) 0 0;}
+.efa-steps li:nth-child(1)::after{width:calc((100% - 60px) / 3);}
+.efa-steps li:nth-child(2)::after{width:calc((100% - 60px) * 2 / 3);}
+.efa-steps li:nth-child(3)::after{width:calc(100% - 60px);}
 .efa .efa-step-name{font-weight:400;font-size:clamp(2.2rem,1.6rem + 2vw,3.2rem);line-height:1;letter-spacing:-.025em;color:var(--efa-ink);margin-top:8px;}
 .efa-steps p{font-size:1.0625rem;color:var(--efa-text);}
 .efa-steps li:not(:last-child) p::after{content:"→";position:absolute;left:50%;bottom:-36px;transform:translateX(-50%) rotate(90deg);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--efa-white);box-shadow:0 0 0 1px var(--efa-line);color:var(--efa-sector-strong);font-size:1rem;line-height:1;z-index:2;}
@@ -141,6 +142,16 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 #ijruf2{width:100% !important;max-width:100% !important;}
 #i3hqbg{width:calc(100% + 1 * max(0px, (min(1216px, 100vw - 48px) - 100%) / 2) - (0%)) !important;margin-left:calc(0%) !important;max-width:none !important;padding-right:0px !important;}
 #iakxzt{width:calc(100% + 1 * max(0px, (min(1216px, 100vw - 48px) - 100%) / 2) - (0%)) !important;margin-left:calc(0%) !important;max-width:none !important;}
+/* FAQ : accordéon natif (fonctionne sans JavaScript, clavier compris) */
+.efa-faq{display:flex;flex-direction:column;gap:10px;}
+.efa-faq details{background:var(--efa-white);border:1px solid var(--efa-line);border-radius:var(--efa-r-md);transition:border-color .2s ease;}
+.efa-faq details[open]{border-color:var(--efa-sector);}
+.efa-faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:64px;padding:16px 16px 16px 26px;font-size:1.125rem;line-height:1.4;color:var(--efa-ink);}
+.efa-faq summary::-webkit-details-marker{display:none;}
+.efa-faq summary::after{content:"+";flex-shrink:0;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--efa-grey);color:var(--efa-ink);font-size:1.4rem;line-height:1;transition:transform .2s ease,background .2s ease,color .2s ease;}
+.efa-faq details[open] summary::after{transform:rotate(45deg);background:var(--efa-ink);color:var(--efa-brand);}
+.efa-faq-answer{padding:0 26px 24px;max-width:75ch;}
+.efa-faq-answer p + p{margin-top:12px;}
 @media (prefers-reduced-motion:reduce){.efa *,.efa *::before,.efa *::after{transition:none!important;animation:none!important;}
 }
 @media (min-width:680px){.efa-plus{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -154,7 +165,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-links{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media (min-width:940px){.efa-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;}
-.efa-steps li{padding:36px 34px 40px;}
+.efa-steps li{padding:62px 30px 40px;}
 .efa-steps li:not(:last-child) p::after{left:auto;right:-28px;bottom:auto;top:50%;transform:translateY(-50%);}
 .efa-jobs.is-enhanced{gap:20px;}
 .efa-jobs.is-enhanced .efa-jobs-chips{display:flex;flex-wrap:wrap;gap:8px;}
