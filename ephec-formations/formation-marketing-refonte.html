@@ -494,7 +494,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
       var chips = document.createElement('div'); chips.className = 'efa-jobs-chips';
       chips.setAttribute('role', 'group'); chips.setAttribute('aria-label', 'Choisir un métier');
       var nav = document.createElement('div'); nav.className = 'efa-jobs-nav';
-      nav.innerHTML = '<span class="efa-jobs-count" aria-hidden="true"><b>01</b> / ' + String(items.length).padStart(2, '0') + '</span>' +
+      nav.innerHTML = '<span class="efa-jobs-count" aria-hidden="true"><b>1</b> / ' + items.length + '</span>' +
         '<button type="button" data-dir="-1" aria-label="Métier précédent">→</button>' +
         '<button type="button" data-dir="1" aria-label="Métier suivant">→</button>';
       var count = nav.querySelector('b');
@@ -504,7 +504,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
         current = (i + items.length) % items.length;
         items.forEach(function (d, k) { d.open = (k === current); });
         [].forEach.call(chips.children, function (b, k) { b.setAttribute('aria-pressed', k === current ? 'true' : 'false'); });
-        count.textContent = String(current + 1).padStart(2, '0');
+        count.textContent = String(current + 1);
         var desc = items[current].querySelector('.efa-job-desc');
         desc.classList.remove('is-in'); void desc.offsetWidth; desc.classList.add('is-in');
         if (fromChip !== true) chips.children[current].focus({ preventScroll: true });
