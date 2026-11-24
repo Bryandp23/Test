@@ -22,6 +22,7 @@
   --efa-sector:#007965;
   --efa-sector-strong:#007965;
   --efa-sticky-offset:140px;    /* hauteur des éléments collants Drupal (header + onglets) */
+  --efa-stripe:#46C4BC;         /* couleur des bandes diagonales */
   --efa-r-xl:32px; --efa-r-lg:24px; --efa-r-md:18px; --efa-pill:999px;
   --efa-pad:clamp(22px,5cqi,72px);
 
@@ -42,6 +43,16 @@
 .efa[data-sector="sante"]      {--efa-sector:#65A858;--efa-sector-strong:#3F7534}
 .efa[data-sector="tech"]       {--efa-sector:#0284C7;--efa-sector-strong:#0369A1}
 
+/* Variante de test : toutes les teintes (dégradés, bandes, ✳, mots-clés) partent
+   de la couleur du secteur au lieu du menthe EPHEC. Activer avec data-tint="secteur". */
+.efa[data-tint="secteur"]{
+  --efa-mint:color-mix(in srgb,var(--efa-sector) 34%,#FFFFFF);
+  --efa-mint-soft:color-mix(in srgb,var(--efa-sector) 8%,#FFFFFF);
+  --efa-brand:color-mix(in srgb,var(--efa-sector) 55%,#FFFFFF);
+  --efa-brand-text:var(--efa-sector-strong);
+  --efa-stripe:var(--efa-sector);
+}
+.efa[data-tint="secteur"] .efa-feature{--efa-stripe:color-mix(in srgb,var(--efa-sector) 40%,#FFFFFF)}
 .efa *,.efa *::before,.efa *::after{box-sizing:border-box}
 .efa,.efa *{font-family:inherit!important}
 .efa :where(h2,h3,p,ul,ol,li){margin:0;padding:0}
@@ -108,8 +119,8 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-plus li::before{content:"✳";flex-shrink:0;color:var(--efa-brand);font-size:1.35rem;line-height:1.1}
 
 .efa-stripes{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.efa-stripes i{position:absolute;height:36px;border-radius:2px;background:linear-gradient(90deg,rgba(70,196,188,.9),rgba(70,196,188,0))}
-.efa-feature .efa-stripes i,.efa-dark .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.4),rgba(70,196,188,0))}
+.efa-stripes i{position:absolute;height:36px;border-radius:2px;background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 90%,transparent),transparent)}
+.efa-feature .efa-stripes i,.efa-dark .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 40%,transparent),transparent)}
 
 .efa-docs{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @container efa (min-width:640px){ .efa-docs{grid-template-columns:repeat(2,minmax(0,1fr))} }
@@ -144,7 +155,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 /* ---------- 4. Vidéo : bande menthe, moment fort de la page ---------- */
 .efa-video-band{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--efa-mint) 0%,var(--efa-mint-soft) 70%)}
 .efa-video-band > *:not(.efa-stripes){position:relative;z-index:1}
-.efa-video-band .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.75),rgba(70,196,188,0))}
+.efa-video-band .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 75%,transparent),transparent)}
 .efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:#000000;box-shadow:0 24px 60px rgba(8,51,45,.18)}
 .efa-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 
@@ -201,7 +212,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
   .efa-job-desc > *:not(.efa-stripes){position:relative;z-index:1}
   .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2.2cqi,2.8rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400}
   .efa-job-desc p{font-size:1.25rem;line-height:1.65;color:var(--efa-on-dark);max-width:44ch}
-  .efa-job-desc .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.55),rgba(70,196,188,0))}
+  .efa-job-desc .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 55%,transparent),transparent)}
 }
 .efa-job-desc .efa-stripes{display:none}
 @container efa (min-width:900px){ .efa-job-desc .efa-stripes{display:block} }
