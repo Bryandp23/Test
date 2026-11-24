@@ -8,8 +8,8 @@
    - Police : héritée du site (Borna).
    ===================================================================== */
 .efa{
-  --efa-brand:#46C4BC;          /* turquoise EPHEC : décor, flèches sur fond noir */
-  --efa-brand-text:#279E96;     /* turquoise des mots-clés de titres (≥ 3:1, grands textes) */
+  --efa-brand:#46C4BC;          /* turquoise EPHEC : décor, accents sur fond sombre */
+  --efa-brand-text:#279E96;     /* turquoise des mots-clés de titres sur fond clair (≥ 3:1) */
   --efa-mint:#A9EEDF;
   --efa-mint-soft:#EAF9F5;
   --efa-ink:#111111;
@@ -18,17 +18,19 @@
   --efa-line:#E4E7E6;
   --efa-grey:#F5F5F5;
   --efa-white:#FFFFFF;
-  --efa-sector:#007965;         /* couleur officielle du secteur */
-  --efa-sector-strong:#007965;  /* version contrastée AA (texte, fond sous texte blanc) */
+  --efa-on-dark:#C9CECD;        /* texte courant sur noir (11:1) */
+  --efa-sector:#007965;
+  --efa-sector-strong:#007965;
   --efa-sticky-offset:140px;    /* hauteur des éléments collants Drupal (header + onglets) */
-  --efa-r-xl:28px; --efa-r-lg:22px; --efa-r-md:16px; --efa-pill:999px;
+  --efa-r-xl:32px; --efa-r-lg:24px; --efa-r-md:18px; --efa-pill:999px;
+  --efa-pad:clamp(22px,5cqi,72px);
 
   container:efa / inline-size;
   box-sizing:border-box;
   width:100%;
   display:flex;
   flex-direction:column;
-  gap:24px;
+  gap:20px;
   color:var(--efa-text);
   font-family:inherit;
   font-size:1rem;
@@ -47,141 +49,169 @@
 .efa :where(li)::marker{content:none}
 .efa :where(a){color:inherit;text-decoration:none}
 .efa :focus-visible{outline:3px solid var(--efa-sector-strong);outline-offset:3px}
+.efa-dark :focus-visible,.efa-feature :focus-visible{outline-color:var(--efa-brand)}
 .efa :where(h2)[tabindex="-1"]:focus{outline:none}
 
-/* ---------- Typographie ---------- */
-.efa-h2{font-weight:400;font-size:clamp(2rem,1.35rem + 2.6cqi,3.1rem);line-height:1.08;letter-spacing:-.02em;color:var(--efa-ink);text-wrap:balance;scroll-margin-top:var(--efa-sticky-offset)}
+/* ---------- Typographie : une échelle, trois niveaux ---------- */
+.efa-h2{font-weight:400;font-size:clamp(2.1rem,1.4rem + 3cqi,3.5rem);line-height:1.04;letter-spacing:-.025em;color:var(--efa-ink);text-wrap:balance;scroll-margin-top:var(--efa-sticky-offset);max-width:18ch}
 .efa-h2 em{font-style:normal;color:var(--efa-brand-text)}
+.efa-h2--xl{font-size:clamp(2.6rem,1.6rem + 5cqi,5.2rem);max-width:none}
 .efa-h3{font-weight:500;font-size:1.1875rem;line-height:1.3;color:var(--efa-ink)}
 .efa p{font-size:1.0625rem;line-height:1.75}
-.efa .efa-lead{font-size:clamp(1.125rem,1rem + .6cqi,1.35rem);line-height:1.6;color:var(--efa-ink)}
-.efa-prose{display:flex;flex-direction:column;gap:1em;max-width:68ch}
-.efa-inline-link{color:var(--efa-sector-strong)!important;text-decoration:underline!important;text-underline-offset:3px}
+.efa .efa-lead{font-size:clamp(1.2rem,1.05rem + .8cqi,1.5rem);line-height:1.5;color:var(--efa-ink);letter-spacing:-.005em}
+.efa-inline-link{color:var(--efa-sector-strong)!important;text-decoration:underline!important;text-underline-offset:3px;font-weight:500}
 
-/* ---------- Sections et bandes ---------- */
-.efa-sec{display:flex;flex-direction:column;gap:32px;padding-block:40px;scroll-margin-top:var(--efa-sticky-offset)}
-.efa-band{border-radius:var(--efa-r-xl);padding:clamp(24px,5cqi,64px) clamp(18px,5cqi,64px)}
-.efa-band--mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 55%,var(--efa-white) 100%)}
-.efa-band--grey{background:var(--efa-grey)}
-.efa-split{display:flex;flex-direction:column;gap:18px}
-@container efa (min-width:780px){
-  .efa-sec{padding-block:56px;gap:44px}
-  .efa-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:56px;align-items:start}
+/* ---------- Sections ---------- */
+.efa-sec{display:flex;flex-direction:column;gap:clamp(28px,4cqi,48px);padding:clamp(40px,6cqi,80px) var(--efa-pad);border-radius:var(--efa-r-xl);scroll-margin-top:var(--efa-sticky-offset)}
+.efa-sec--flat{padding-inline:0}
+.efa-mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 50%,var(--efa-white) 100%)}
+.efa-grey{background:var(--efa-grey)}
+.efa-dark{background:var(--efa-ink)}
+.efa-dark .efa-h2{color:var(--efa-white)}
+.efa-dark .efa-h2 em{color:var(--efa-brand)}
+.efa-head{display:flex;flex-direction:column;gap:18px}
+@container efa (min-width:860px){
+  .efa-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:start}
+  .efa-head > p{padding-bottom:6px}
 }
 
-/* ---------- Sommaire (pastilles comme la sous-navigation du site) ---------- */
-.efa-toc{display:flex;align-items:center;gap:8px;background:var(--efa-white);border:1px solid var(--efa-line);border-radius:var(--efa-pill);padding:6px;overflow-x:auto;scrollbar-width:none}
+/* ---------- Sommaire : pastilles de la sous-navigation ---------- */
+.efa-toc{display:flex;background:var(--efa-white);border:1px solid var(--efa-line);border-radius:var(--efa-pill);padding:6px;overflow-x:auto;scrollbar-width:none}
 .efa-toc::-webkit-scrollbar{display:none}
-.efa-toc ol{display:flex;gap:4px;flex-wrap:nowrap}
-.efa-toc a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-height:44px;padding:8px 18px;border-radius:var(--efa-pill);font-size:.9375rem;color:var(--efa-text);transition:background .2s ease}
-.efa-toc a::before{content:"";width:7px;height:7px;border-radius:50%;background:transparent;transition:background .2s ease}
-.efa-toc a:hover,.efa-toc a:focus-visible{background:var(--efa-grey);color:var(--efa-ink)}
-.efa-toc a:hover::before,.efa-toc a:focus-visible::before{background:var(--efa-sector)}
-@container efa (min-width:1100px){ .efa-toc{border-radius:var(--efa-r-lg)} .efa-toc ol{flex-wrap:wrap} }
+.efa-toc ol{display:flex;gap:2px;flex-wrap:nowrap}
+.efa-toc a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-height:44px;padding:8px 18px;border-radius:var(--efa-pill);font-size:.9375rem;color:var(--efa-text);transition:background .2s ease,color .2s ease}
+.efa-toc a::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--efa-line);transition:background .2s ease}
+.efa-toc a:hover,.efa-toc a[aria-current="true"]{background:var(--efa-grey);color:var(--efa-ink)}
+.efa-toc a:hover::before,.efa-toc a[aria-current="true"]::before{background:var(--efa-sector)}
+@container efa (min-width:1180px){ .efa-toc{border-radius:var(--efa-r-lg)} .efa-toc ol{flex-wrap:wrap} }
 
-/* ---------- Boutons pilule (DA : noir, libellé capitales, flèche turquoise) ---------- */
-.efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:12px 26px;border-radius:var(--efa-pill);background:var(--efa-ink);color:var(--efa-white);font-size:.8125rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:transform .25s ease}
+/* ---------- Bouton pilule de la DA ---------- */
+.efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:12px 26px;border-radius:var(--efa-pill);background:var(--efa-ink);color:var(--efa-white);font-size:.8125rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
 .efa-btn .efa-arrow{color:var(--efa-brand);display:inline-block;transition:transform .25s ease}
 a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:translateX(4px)}
 
-/* ---------- Présentation ---------- */
-.efa-feature{position:relative;overflow:hidden;background:var(--efa-sector-strong);color:var(--efa-white);border-radius:var(--efa-r-xl);padding:clamp(28px,5cqi,52px);display:grid;gap:28px}
-.efa-feature > div:not(.efa-stripes){position:relative;z-index:1}
-.efa-feature .efa-h3{color:var(--efa-white);font-weight:400;font-size:clamp(1.6rem,1.25rem + 1.4cqi,2.2rem);line-height:1.12;margin-bottom:16px}
-.efa-feature p{color:var(--efa-white)}
-.efa-feature-label{font-weight:500;margin-bottom:8px!important}
-.efa-plus li{position:relative;padding:11px 0 11px 32px;border-top:1px solid rgba(255,255,255,.22);color:var(--efa-white);font-size:1.0625rem;line-height:1.55}
-.efa-plus li:first-child{border-top:0}
-.efa-plus li::before{content:"✳";position:absolute;left:0;top:10px;color:var(--efa-brand);font-size:1.15rem;line-height:1.4}
-@container efa (min-width:780px){ .efa-feature{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px} }
+/* ---------- 1. Présentation : ouverture éditoriale ---------- */
+.efa-intro-text{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@container efa (min-width:860px){ .efa-intro-text{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
 
-/* Bandes diagonales turquoise (motif de la DA) */
+.efa-feature{position:relative;overflow:hidden;background:var(--efa-sector-strong);color:var(--efa-white);border-radius:var(--efa-r-lg);padding:clamp(28px,5cqi,56px);display:flex;flex-direction:column;gap:32px}
+.efa-feature > *:not(.efa-stripes){position:relative;z-index:1}
+.efa-feature-head{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+@container efa (min-width:860px){ .efa-feature-head{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px} }
+.efa-feature .efa-h3{color:var(--efa-white);font-weight:400;font-size:clamp(1.75rem,1.3rem + 1.8cqi,2.6rem);line-height:1.08;letter-spacing:-.015em}
+.efa-feature p{color:var(--efa-white)}
+.efa-feature-label{font-weight:500;padding-top:24px!important;border-top:1px solid rgba(255,255,255,.24)}
+.efa-plus{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:-16px!important}
+@container efa (min-width:600px){ .efa-plus{grid-template-columns:repeat(2,minmax(0,1fr))} .efa-plus li{flex-direction:column;gap:10px;padding:20px 22px} }
+@container efa (min-width:980px){ .efa-plus{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.efa-plus li{display:flex;flex-direction:row;gap:14px;padding:14px 16px;border-radius:var(--efa-r-md);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:var(--efa-white);font-size:1rem;line-height:1.5}
+.efa-plus li::before{content:"✳";flex-shrink:0;color:var(--efa-brand);font-size:1.35rem;line-height:1.1}
+
 .efa-stripes{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.efa-stripes i{position:absolute;height:34px;border-radius:2px;background:linear-gradient(90deg,rgba(70,196,188,.9),rgba(70,196,188,0))}
-.efa-feature .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.45),rgba(70,196,188,0))}
+.efa-stripes i{position:absolute;height:36px;border-radius:2px;background:linear-gradient(90deg,rgba(70,196,188,.9),rgba(70,196,188,0))}
+.efa-feature .efa-stripes i,.efa-dark .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.4),rgba(70,196,188,0))}
 
 .efa-docs{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @container efa (min-width:640px){ .efa-docs{grid-template-columns:repeat(2,minmax(0,1fr))} }
-.efa-doc{display:flex;flex-direction:column;justify-content:space-between;gap:22px;background:var(--efa-white);border-radius:var(--efa-r-lg);padding:26px 28px;transition:box-shadow .25s ease}
-.efa-doc:hover{box-shadow:0 18px 40px rgba(17,17,17,.08)}
-.efa-doc-title{font-size:1.1875rem;line-height:1.35;font-weight:500;color:var(--efa-ink)}
+.efa-doc{display:flex;flex-direction:column;justify-content:space-between;gap:24px;background:var(--efa-white);border-radius:var(--efa-r-lg);padding:28px 30px;box-shadow:0 1px 0 var(--efa-line);transition:box-shadow .25s ease,transform .25s ease}
+.efa-doc:hover{box-shadow:0 22px 44px rgba(17,17,17,.09);transform:translateY(-2px)}
+.efa-doc-title{font-size:1.25rem;line-height:1.3;font-weight:400;color:var(--efa-ink);letter-spacing:-.005em}
 
-/* ---------- Objectifs : flèches EPHEC ---------- */
-.efa-arrows li{position:relative;padding:16px 0 16px 42px;border-top:1px solid var(--efa-line);font-size:1.0625rem;line-height:1.65;color:var(--efa-ink)}
-.efa-arrows li:last-child{border-bottom:1px solid var(--efa-line)}
-.efa-arrows li::before{content:"→";position:absolute;left:4px;top:16px;color:var(--efa-sector-strong);font-size:1.25rem;line-height:1.35}
+/* ---------- 2. Objectifs : grille 2 × 2 ---------- */
+.efa-goals{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@container efa (min-width:700px){ .efa-goals{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.efa-goals li{display:flex;gap:18px;align-items:flex-start;padding:24px 26px;border:1px solid var(--efa-line);border-radius:var(--efa-r-lg);font-size:1.125rem;line-height:1.55;color:var(--efa-ink)}
+.efa-goals li::before{content:"→";flex-shrink:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--efa-mint-soft);color:var(--efa-sector-strong);font-size:1.15rem;line-height:1}
 
-/* ---------- Points forts : trio de cartes de la DA (menthe / noir / gris) ---------- */
+/* ---------- 3. Points forts : trio menthe / noir / gris ---------- */
 .efa-trio{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
-@container efa (min-width:900px){ .efa-trio{grid-template-columns:repeat(3,minmax(0,1fr))} }
-.efa-tcard{position:relative;overflow:hidden;border-radius:var(--efa-r-xl);padding:32px 30px 40px;display:flex;flex-direction:column;gap:14px}
+@container efa (min-width:940px){ .efa-trio{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.efa-tcard{position:relative;overflow:hidden;border-radius:var(--efa-r-lg);padding:34px 32px 44px;display:flex;flex-direction:column;gap:14px}
 .efa-tcard > *:not(.efa-stripes){position:relative;z-index:1}
-.efa-tcard .efa-h3{font-weight:400;font-size:1.6rem;line-height:1.12;margin-top:10px}
+.efa-tcard .efa-h3{font-weight:400;font-size:clamp(1.5rem,1.3rem + .6cqi,1.8rem);line-height:1.1;letter-spacing:-.01em;margin-top:14px}
 .efa-tcard p{font-size:1rem;line-height:1.7}
-.efa-tcard--mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 100%);padding-bottom:130px}
-.efa-tcard--mint .efa-h3{color:#08332D}
+.efa-tcard--mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 100%);padding-bottom:140px}
+.efa-tcard--mint .efa-h3,.efa-tcard--grey .efa-h3{color:#08332D}
 .efa-tcard--mint p{color:#1E4741}
 .efa-tcard--dark{background:var(--efa-ink)}
 .efa-tcard--dark .efa-h3{color:var(--efa-white)}
-.efa-tcard--dark p{color:#D3D7D6}
-.efa-tcard--grey{background:var(--efa-grey);padding-bottom:130px}
-.efa-tcard--grey .efa-h3{color:#08332D}
-.efa-ico{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 8px 20px rgba(17,17,17,.06);color:var(--efa-ink)}
+.efa-tcard--dark p{color:var(--efa-on-dark)}
+.efa-tcard--grey{background:var(--efa-grey);padding-bottom:140px}
+.efa-ico{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 8px 20px rgba(17,17,17,.06);color:var(--efa-ink)}
 .efa-tcard--dark .efa-ico{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:var(--efa-white)}
 .efa-ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- Vidéo ---------- */
-.efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-xl);overflow:hidden;background:var(--efa-ink)}
+/* ---------- 4. Vidéo : bande sombre, moment fort de la page ---------- */
+.efa-dark{position:relative;overflow:hidden}
+.efa-dark > *:not(.efa-stripes){position:relative;z-index:1}
+.efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:#000000;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
 .efa-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 
-/* ---------- Compétences : cartes blanches sur gris (comme les témoignages) ---------- */
+/* ---------- 5. Compétences ---------- */
 .efa-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @container efa (min-width:620px){ .efa-cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@container efa (min-width:980px){ .efa-cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
-.efa-card{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:26px 28px;display:flex;flex-direction:column;gap:10px}
-.efa-card .efa-h3{font-size:1.0625rem}
+@container efa (min-width:1000px){ .efa-cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.efa-card{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:28px 30px 30px;display:flex;flex-direction:column;gap:12px;transition:transform .25s ease,box-shadow .25s ease}
+.efa-card:hover{transform:translateY(-3px);box-shadow:0 20px 40px rgba(17,17,17,.07)}
+.efa-card .efa-h3{font-weight:400;font-size:1.375rem;line-height:1.2;letter-spacing:-.01em}
+.efa-card .efa-h3::before{content:"✳";display:block;color:var(--efa-brand);font-size:1.25rem;line-height:1;margin-bottom:16px}
 .efa-card p{font-size:1rem;color:var(--efa-muted)}
 
-/* ---------- Déroulé : trois étapes reliées par des flèches ---------- */
-.efa-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:44px}
-.efa-steps li{position:relative;background:var(--efa-grey);border-radius:var(--efa-r-lg);padding:28px;display:flex;flex-direction:column;gap:14px}
-.efa-step-name{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-size:.9375rem!important;font-weight:500;line-height:1.2;color:var(--efa-ink);background:var(--efa-white);border-radius:var(--efa-pill);padding:8px 16px}
-.efa-step-name::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--efa-sector)}
-.efa-steps li:not(:last-child)::after{content:"→";position:absolute;left:50%;bottom:-38px;transform:translateX(-50%) rotate(90deg);width:32px;height:32px;display:grid;place-items:center;color:var(--efa-sector-strong);font-size:1.1rem}
+/* ---------- 6. Déroulé : progression Bloc 1 → 2 → 3 ---------- */
+.efa-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.efa-steps li{position:relative;padding:0 0 40px 48px;display:flex;flex-direction:column;gap:12px}
+.efa-steps li::before{content:"";position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:50%;background:var(--efa-white);border:3px solid var(--efa-sector);z-index:1}
+.efa-steps li::after{content:"";position:absolute;left:10px;top:32px;bottom:0;width:2px;background:linear-gradient(var(--efa-sector),var(--efa-line))}
+.efa-steps li:last-child{padding-bottom:0}
+.efa-steps li:last-child::before{background:var(--efa-sector)}
+.efa-steps li:last-child::after{content:none}
+.efa .efa-step-name{font-weight:400;font-size:clamp(2rem,1.5rem + 2cqi,3rem);line-height:1;letter-spacing:-.02em;color:var(--efa-sector-strong)}
+.efa-steps p{font-size:1.0625rem}
 @container efa (min-width:860px){
-  .efa-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:40px}
-  .efa-steps li:not(:last-child)::after{left:auto;right:-36px;bottom:auto;top:30px;transform:none}
+  .efa-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
+  .efa-steps li{padding:56px 0 0 0}
+  .efa-steps li::before{top:0;left:0}
+  .efa-steps li::after{left:22px;right:-48px;top:10px;bottom:auto;width:auto;height:2px;background:linear-gradient(90deg,var(--efa-sector),var(--efa-line))}
 }
 
-/* ---------- Débouchés : sélecteur de métiers ---------- */
+/* ---------- 7. Débouchés : sélecteur de métiers ---------- */
+.efa-prose{display:flex;flex-direction:column;gap:1em;max-width:72ch}
+.efa-prose-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@container efa (min-width:860px){ .efa-prose-cols{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
 .efa-jobs{position:relative;display:flex;flex-direction:column;gap:8px}
 .efa-job{background:var(--efa-white);border-radius:var(--efa-r-md)}
-.efa-job > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:12px 18px 12px 22px;border-radius:var(--efa-r-md);font-size:1.0625rem;line-height:1.35;color:var(--efa-ink)}
+.efa-job > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;padding:12px 14px 12px 22px;border-radius:var(--efa-r-md);font-size:1.0625rem;line-height:1.35;color:var(--efa-ink)}
 .efa-job > summary::-webkit-details-marker{display:none}
-.efa-job > summary::after{content:"→";flex-shrink:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--efa-grey);color:var(--efa-sector-strong);transition:transform .2s ease,background .2s ease}
+.efa-job > summary::after{content:"→";flex-shrink:0;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--efa-grey);color:var(--efa-ink);transition:transform .2s ease,background .2s ease,color .2s ease}
 .efa-job[open] > summary{font-weight:500}
-.efa-job[open] > summary::after{transform:rotate(90deg);background:var(--efa-sector-strong);color:var(--efa-white)}
-.efa-job-desc{padding:0 22px 22px}
-.efa-job-desc p{color:var(--efa-text)}
-@container efa (min-width:860px){
-  .efa-jobs{--efa-col:38%;gap:2px;min-height:100%}
+.efa-job[open] > summary::after{transform:rotate(90deg);background:var(--efa-ink);color:var(--efa-brand)}
+.efa-job-desc{padding:0 22px 24px}
+.efa-job-label{display:none}
+@container efa (min-width:900px){
+  .efa-jobs{--efa-col:34%;gap:4px;min-height:100%}
   .efa-job{width:var(--efa-col);background:transparent}
-  .efa-job > summary{min-height:46px;padding:9px 16px;border-radius:var(--efa-pill);font-size:1rem;justify-content:flex-start;gap:10px}
-  .efa-job > summary::after{content:none}
-  .efa-job > summary::before{content:"";width:7px;height:7px;border-radius:50%;background:transparent;flex-shrink:0}
-  .efa-job > summary:hover{background:rgba(255,255,255,.6)}
+  .efa-job > summary{min-height:48px;padding:10px 10px 10px 20px;border-radius:var(--efa-pill);font-size:1rem}
+  .efa-job > summary::after{width:30px;height:30px;background:transparent;opacity:0;transform:translateX(-6px);transition:opacity .2s ease,transform .2s ease}
+  .efa-job > summary:hover{background:rgba(255,255,255,.7)}
+  .efa-job > summary:hover::after{opacity:1;transform:none}
   .efa-job[open] > summary{background:var(--efa-white)}
-  .efa-job[open] > summary::before{background:var(--efa-sector)}
-  .efa-job-desc{position:absolute;top:0;right:0;width:calc(100% - var(--efa-col) - 32px);background:var(--efa-white);border-radius:var(--efa-r-xl);padding:40px 44px;box-shadow:0 20px 45px rgba(17,17,17,.07)}
-  .efa-job-desc p{font-size:1.1875rem;line-height:1.7;color:var(--efa-ink)}
+  .efa-job[open] > summary::after{opacity:1;transform:none;background:var(--efa-ink);color:var(--efa-brand)}
+  .efa-job-desc{position:absolute;top:0;bottom:0;right:0;width:calc(100% - var(--efa-col) - 28px);overflow:hidden;background:var(--efa-ink);border-radius:var(--efa-r-lg);padding:48px 52px;display:flex;flex-direction:column;gap:20px}
+  .efa-job-desc > *:not(.efa-stripes){position:relative;z-index:1}
+  .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2.2cqi,2.8rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400}
+  .efa-job-desc p{font-size:1.25rem;line-height:1.65;color:var(--efa-on-dark);max-width:44ch}
+  .efa-job-desc .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.55),rgba(70,196,188,0))}
 }
+.efa-job-desc .efa-stripes{display:none}
+@container efa (min-width:900px){ .efa-job-desc .efa-stripes{display:block} }
 
-/* ---------- Débouchés académiques ---------- */
-.efa-links{display:flex;flex-direction:column;gap:10px}
-.efa-links a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:10px 12px 10px 26px;border:1px solid var(--efa-line);border-radius:var(--efa-pill);font-size:1.0625rem;line-height:1.35;color:var(--efa-ink);transition:border-color .2s ease}
-.efa-links a::after{content:"→";flex-shrink:0;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--efa-grey);color:var(--efa-ink);transition:background .2s ease,color .2s ease}
-.efa-links a:hover{border-color:var(--efa-ink)}
-.efa-links a:hover::after,.efa-links a:focus-visible::after{background:var(--efa-ink);color:var(--efa-brand)}
+/* ---------- 8. Débouchés académiques ---------- */
+.efa-links{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@container efa (min-width:700px){ .efa-links{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.efa-links a{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:88px;padding:16px 16px 16px 28px;background:var(--efa-grey);border-radius:var(--efa-r-lg);font-size:1.1875rem;line-height:1.3;color:var(--efa-ink);transition:background .2s ease}
+.efa-links a::after{content:"↗";flex-shrink:0;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--efa-white);color:var(--efa-ink);font-size:1.1rem;transition:background .2s ease,color .2s ease,transform .2s ease}
+.efa-links a:hover{background:var(--efa-mint-soft)}
+.efa-links a:hover::after,.efa-links a:focus-visible::after{background:var(--efa-ink);color:var(--efa-brand);transform:rotate(45deg)}
 
 @media (prefers-reduced-motion:reduce){
   .efa *,.efa *::before,.efa *::after{transition:none!important;animation:none!important}
@@ -201,190 +231,191 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
     </ol>
   </nav>
 
-  <section class="efa-sec efa-band efa-band--mint" aria-labelledby="efa-presentation-titre">
-    <div class="efa-split">
-      <h2 class="efa-h2" id="efa-presentation-titre" tabindex="-1">Présentation</h2>
-      <div class="efa-prose">
-        <p class="efa-lead">Au sein de notre Bachelier en Marketing, tu apprendras à élaborer des stratégies performantes en analysant le marché, en définissant des cibles précises et en mettant en œuvre des actions opérationnelles concrètes.</p>
-        <p>Cela inclut une maîtrise avancée de la communication et l’utilisation des outils numériques tant au niveau national qu’international. Tu te prépareras à occuper des postes clés dans le secteur public, au sein de PME ou de multinationales, ou encore à lancer ta propre activité entrepreneuriale.</p>
-      </div>
+  <!-- 1. Présentation -->
+  <section class="efa-sec efa-mint" aria-labelledby="efa-presentation-titre">
+    <h2 class="efa-h2 efa-h2--xl" id="efa-presentation-titre" tabindex="-1">Présentation</h2>
+    <div class="efa-intro-text">
+      <p class="efa-lead">Au sein de notre Bachelier en Marketing, tu apprendras à élaborer des stratégies performantes en analysant le marché, en définissant des cibles précises et en mettant en œuvre des actions opérationnelles concrètes.</p>
+      <p>Cela inclut une maîtrise avancée de la communication et l’utilisation des outils numériques tant au niveau national qu’international. Tu te prépareras à occuper des postes clés dans le secteur public, au sein de PME ou de multinationales, ou encore à lancer ta propre activité entrepreneuriale.</p>
     </div>
     <div class="efa-feature">
-      <div class="efa-stripes" aria-hidden="true"><i style="width:300px;right:-80px;bottom:18%;transform:rotate(-38deg)"></i><i style="width:220px;right:-30px;bottom:-4%;transform:rotate(-38deg)"></i></div>
-      <div>
+      <div class="efa-stripes" aria-hidden="true"><i style="width:320px;right:-90px;top:-10px;transform:rotate(-38deg)"></i><i style="width:240px;right:-20px;top:60px;transform:rotate(-38deg)"></i></div>
+      <div class="efa-feature-head">
         <h3 class="efa-h3">Nouveau programme dès la rentrée 26-27 !</h3>
         <p>Pourquoi faire évoluer notre cursus ? Parce que le marketing évolue, et nous aussi. Le métier de marketeur a profondément changé et les compétences attendues par les entreprises ne sont plus les mêmes qu'en 2020. Notre mission est de te former aux expertises qui font vraiment la différence sur le marché du travail.</p>
       </div>
-      <div>
-        <p class="efa-feature-label">Les "plus" du nouveau programme :</p>
-        <ul class="efa-plus">
-            <li>Parcours IA unique sur 3 ans (Outils IA, Prompt Engineering, IA Agentique).</li>
-            <li>Compétences technologiques essentielles (CRM, Data, Automation).</li>
-            <li>Soft Skills structurés (Communication, collaboration, créativité et esprit critique).</li>
-            <li>Organisation optimisée pour une progression cohérente et efficace.</li>
-            <li>Intitulés modernisés reflétant la réalité actuelle du métier.</li>
-            <li>Validé par les professionnels via un Advisory Board enthousiaste.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="efa-docs">
-        <a class="efa-doc" href="https://www.ephec.be/sites/default/files/2026-06/HE_26-27_Profil%20d%27enseignement_MARKETING_Pr%C3%A9sentation%20pour%20ARES_2026-2027%20%282%29.pdf" target="_blank" rel="noopener">
-          <span class="efa-doc-title">Profil d'enseignement du Bachelier en Marketing</span>
-          <span class="efa-btn">Voir le profil <span class="efa-arrow">→</span></span>
-        </a>
-        <a class="efa-doc" href="https://www.ephec.be/haute-ecole-ephec-ensemble-se-realiser/la-qualite">
-          <span class="efa-doc-title">En savoir plus sur la démarche qualité de ce département</span>
-          <span class="efa-btn">Consulter la démarche <span class="efa-arrow">→</span></span>
-        </a>
-    </div>
-  </section>
-
-  <section class="efa-sec" aria-labelledby="efa-objectifs-titre">
-    <div class="efa-split">
-      <h2 class="efa-h2" id="efa-objectifs-titre" tabindex="-1"><em>Objectifs</em> de la formation</h2>
-      <ul class="efa-arrows">
-          <li>Comprendre de manière approfondie les fondamentaux du marketing et sa mise en œuvre pratique.</li>
-          <li>Prendre des décisions stratégiques basées sur l'analyse de données et les études de marché.</li>
-          <li>Apprendre à maîtriser les outils marketing technologiques pour élaborer des plans d’action efficaces.</li>
-          <li>Développer des compétences transversales : gestion de projets, créativité, communication et esprit critique.</li>
+      <p class="efa-feature-label">Les "plus" du nouveau programme :</p>
+      <ul class="efa-plus">
+        <li>Parcours IA unique sur 3 ans (Outils IA, Prompt Engineering, IA Agentique).</li>
+        <li>Compétences technologiques essentielles (CRM, Data, Automation).</li>
+        <li>Soft Skills structurés (Communication, collaboration, créativité et esprit critique).</li>
+        <li>Organisation optimisée pour une progression cohérente et efficace.</li>
+        <li>Intitulés modernisés reflétant la réalité actuelle du métier.</li>
+        <li>Validé par les professionnels via un Advisory Board enthousiaste.</li>
       </ul>
     </div>
-  </section>
-
-  <section class="efa-sec" aria-labelledby="efa-points-forts-titre">
-    <h2 class="efa-h2" id="efa-points-forts-titre" tabindex="-1">Points <em>forts</em> de la formation</h2>
-    <div class="efa-trio">
-        <div class="efa-tcard efa-tcard--mint">
-          <div class="efa-stripes" aria-hidden="true"><i style="width:60%;left:-6%;bottom:86px;transform:rotate(-6deg)"></i><i style="width:45%;right:-4%;bottom:52px;transform:rotate(-6deg)"></i><i style="width:55%;left:12%;bottom:14px;transform:rotate(-6deg)"></i></div><span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
-          <h3 class="efa-h3">Une expertise digitale et technologique</h3>
-          <p>Notre formation met un accent particulier sur les compétences digitales, indispensables aujourd’hui pour piloter des stratégies omnicanales. Nous intégrons également les principes du développement durable, te permettant d'acquérir des réflexes pour des pratiques responsables et éthiques.</p>
-        </div>
-        <div class="efa-tcard efa-tcard--dark">
-          <span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3.2 2.8 14.8 0 18M12 3c-2.8 3.2-2.8 14.8 0 18"/></svg></span>
-          <h3 class="efa-h3">Ouverture internationale et bidiplomation</h3>
-          <p>Pour renforcer tes compétences linguistiques et interculturelles, nous proposons des cours techniques en langues étrangères et des projets internationaux. Nous offrons des programmes de bidiplomation et tridiplomation en partenariat avec des institutions mondiales, ainsi que des opportunités d'échanges académiques à l'étranger.</p>
-        </div>
-        <div class="efa-tcard efa-tcard--grey">
-          <div class="efa-stripes" aria-hidden="true"><i style="width:180px;left:8%;bottom:10px;transform:rotate(-70deg);transform-origin:left center"></i><i style="width:240px;right:-40px;bottom:40px;transform:rotate(-40deg)"></i><i style="width:160px;right:20%;bottom:-10px;transform:rotate(-40deg)"></i></div><span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span>
-          <h3 class="efa-h3">Immersion professionnelle</h3>
-          <p>Grâce à des partenariats solides (AWEX, BAM, BECI, Hub.Brussels, UBA, etc.), tu seras en contact direct avec le monde de l’entreprise via des conférences d’experts, des visites et des jurys d'évaluation composés de professionnels du secteur.</p>
-        </div>
+    <div class="efa-docs">
+      <a class="efa-doc" href="https://www.ephec.be/sites/default/files/2026-06/HE_26-27_Profil%20d%27enseignement_MARKETING_Pr%C3%A9sentation%20pour%20ARES_2026-2027%20%282%29.pdf" target="_blank" rel="noopener">
+        <span class="efa-doc-title">Profil d'enseignement du Bachelier en Marketing</span>
+        <span class="efa-btn">Voir le profil <span class="efa-arrow">→</span></span>
+      </a>
+      <a class="efa-doc" href="https://www.ephec.be/haute-ecole-ephec-ensemble-se-realiser/la-qualite">
+        <span class="efa-doc-title">En savoir plus sur la démarche qualité de ce département</span>
+        <span class="efa-btn">Consulter la démarche <span class="efa-arrow">→</span></span>
+      </a>
     </div>
   </section>
 
-  <section class="efa-sec" aria-labelledby="efa-video-titre">
+  <!-- 2. Objectifs -->
+  <section class="efa-sec efa-sec--flat" aria-labelledby="efa-objectifs-titre">
+    <h2 class="efa-h2" id="efa-objectifs-titre" tabindex="-1"><em>Objectifs</em> de la formation</h2>
+    <ul class="efa-goals">
+      <li>Comprendre de manière approfondie les fondamentaux du marketing et sa mise en œuvre pratique.</li>
+      <li>Prendre des décisions stratégiques basées sur l'analyse de données et les études de marché.</li>
+      <li>Apprendre à maîtriser les outils marketing technologiques pour élaborer des plans d’action efficaces.</li>
+      <li>Développer des compétences transversales : gestion de projets, créativité, communication et esprit critique.</li>
+    </ul>
+  </section>
+
+  <!-- 3. Points forts -->
+  <section class="efa-sec efa-sec--flat" aria-labelledby="efa-points-forts-titre">
+    <h2 class="efa-h2" id="efa-points-forts-titre" tabindex="-1">Points <em>forts</em> de la formation</h2>
+    <div class="efa-trio">
+      <div class="efa-tcard efa-tcard--mint">
+        <div class="efa-stripes" aria-hidden="true"><i style="width:60%;left:-6%;bottom:92px;transform:rotate(-6deg)"></i><i style="width:45%;right:-4%;bottom:56px;transform:rotate(-6deg)"></i><i style="width:55%;left:12%;bottom:16px;transform:rotate(-6deg)"></i></div><span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+        <h3 class="efa-h3">Une expertise digitale et technologique</h3>
+        <p>Notre formation met un accent particulier sur les compétences digitales, indispensables aujourd’hui pour piloter des stratégies omnicanales. Nous intégrons également les principes du développement durable, te permettant d'acquérir des réflexes pour des pratiques responsables et éthiques.</p>
+      </div>
+      <div class="efa-tcard efa-tcard--dark">
+        <span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3.2 2.8 14.8 0 18M12 3c-2.8 3.2-2.8 14.8 0 18"/></svg></span>
+        <h3 class="efa-h3">Ouverture internationale et bidiplomation</h3>
+        <p>Pour renforcer tes compétences linguistiques et interculturelles, nous proposons des cours techniques en langues étrangères et des projets internationaux. Nous offrons des programmes de bidiplomation et tridiplomation en partenariat avec des institutions mondiales, ainsi que des opportunités d'échanges académiques à l'étranger.</p>
+      </div>
+      <div class="efa-tcard efa-tcard--grey">
+        <div class="efa-stripes" aria-hidden="true"><i style="width:190px;left:8%;bottom:10px;transform:rotate(-70deg);transform-origin:left center"></i><i style="width:250px;right:-40px;bottom:44px;transform:rotate(-40deg)"></i><i style="width:170px;right:22%;bottom:-10px;transform:rotate(-40deg)"></i></div><span class="efa-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span>
+        <h3 class="efa-h3">Immersion professionnelle</h3>
+        <p>Grâce à des partenariats solides (AWEX, BAM, BECI, Hub.Brussels, UBA, etc.), tu seras en contact direct avec le monde de l’entreprise via des conférences d’experts, des visites et des jurys d'évaluation composés de professionnels du secteur.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Vidéo -->
+  <section class="efa-sec efa-dark" aria-labelledby="efa-video-titre">
+    <div class="efa-stripes" aria-hidden="true"><i style="width:420px;right:-120px;top:40px;transform:rotate(-20deg)"></i><i style="width:300px;right:-60px;top:100px;transform:rotate(-20deg)"></i></div>
     <h2 class="efa-h2" id="efa-video-titre" tabindex="-1">Le Bachelier en Marketing <em>en images</em></h2>
     <div class="efa-video">
       <iframe src="https://www.youtube.com/embed/37KSQs5vDvM?si=F5o6wMBQvL1FrJj4" title="Le Bachelier en Marketing en images" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
     </div>
   </section>
 
-  <section class="efa-sec efa-band efa-band--grey" aria-labelledby="efa-competences-titre">
-    <div class="efa-split">
+  <!-- 5. Compétences -->
+  <section class="efa-sec efa-grey" aria-labelledby="efa-competences-titre">
+    <div class="efa-head">
       <h2 class="efa-h2" id="efa-competences-titre" tabindex="-1">Compétences <em>développées</em></h2>
       <p class="efa-lead">Outre l'esprit d'initiative, de réflexion et de curiosité, notre cursus renforce intensément les Soft Skills institutionnels indispensables en entreprise.</p>
     </div>
     <div class="efa-cards">
-        <div class="efa-card"><h3 class="efa-h3">L’Esprit d’initiative</h3><p>Tu développeras un esprit d’entrepreneuriat, de débrouillardise, d’autonomie et responsabilisation dans toutes les tâches que tu seras amené à accomplir.</p></div>
-        <div class="efa-card"><h3 class="efa-h3">L’Esprit de réflexion et d’analyse</h3><p>Toutes tes actions seront menées après analyse et réflexion complète en rapport avec la problématique.</p></div>
-        <div class="efa-card"><h3 class="efa-h3">Créativité &amp; Esprit critique</h3><p>Proposer des solutions innovantes tout en analysant avec discernement les données et les situations.</p></div>
-        <div class="efa-card"><h3 class="efa-h3">Flexibilité &amp; Éthique</h3><p>S'adapter aux évolutions du marché tout en respectant des valeurs d'honnêteté et de respect.</p></div>
-        <div class="efa-card"><h3 class="efa-h3">Communication &amp; Collaboration</h3><p>Travailler en équipe multidisciplinaire et transmettre des messages percutants.</p></div>
-        <div class="efa-card"><h3 class="efa-h3">Leadership</h3><p>Tu seras capable d’inspirer, de convaincre, de donner du sens et de générer des émotions positives.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">L’Esprit d’initiative</h3><p>Tu développeras un esprit d’entrepreneuriat, de débrouillardise, d’autonomie et responsabilisation dans toutes les tâches que tu seras amené à accomplir.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">L’Esprit de réflexion et d’analyse</h3><p>Toutes tes actions seront menées après analyse et réflexion complète en rapport avec la problématique.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">Créativité &amp; Esprit critique</h3><p>Proposer des solutions innovantes tout en analysant avec discernement les données et les situations.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">Flexibilité &amp; Éthique</h3><p>S'adapter aux évolutions du marché tout en respectant des valeurs d'honnêteté et de respect.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">Communication &amp; Collaboration</h3><p>Travailler en équipe multidisciplinaire et transmettre des messages percutants.</p></div>
+      <div class="efa-card"><h3 class="efa-h3">Leadership</h3><p>Tu seras capable d’inspirer, de convaincre, de donner du sens et de générer des émotions positives.</p></div>
     </div>
   </section>
 
-  <section class="efa-sec" aria-labelledby="efa-deroule-titre">
-    <div class="efa-split">
+  <!-- 6. Déroulé -->
+  <section class="efa-sec efa-sec--flat" aria-labelledby="efa-deroule-titre">
+    <div class="efa-head">
       <h2 class="efa-h2" id="efa-deroule-titre" tabindex="-1">Le <em>déroulé</em> de la formation</h2>
       <p>Notre formation en marketing de l'EPHEC offre une approche concrète et une ouverture significative sur le monde professionnel. Son but est de te préparer à exercer le marketing dans différents contextes professionnels, y compris multilingues. Nous mettons régulièrement à jour le programme pour inclure les dernières techniques de marketing, afin de rester en phase avec les besoins actuels du monde du travail.</p>
     </div>
     <ol class="efa-steps">
-        <li><h3 class="efa-step-name">Bloc 1</h3><p>Tu apprendras à lancer un produit innovant sur le marché belge en collaboration avec une entreprise locale. Ce projet mettra l'accent sur les aspects durables, intégrant des pratiques responsables et écologiques dès le début de ta formation.</p></li>
-        <li><h3 class="efa-step-name">Bloc 2</h3><p>Tu apporteras des solutions concrètes à une problématique réelle rencontrée par une entreprise de renom telle que Walibi, Martin’s Hôtel, ING, ou Touring.</p></li>
-        <li><h3 class="efa-step-name">Bloc 3</h3><p>Encadré par des professionnels, tu prendras en charge un projet de A à Z selon le cours à choix que tu auras choisi : Marketing des Arts et de la Culture, Sales Management, Sports Marketing, Digital Communication and Media strategies, Entrepreneuriat et Innovation, International Market Development, (e)-Retail Management.</p></li>
+      <li><h3 class="efa-step-name">Bloc 1</h3><p>Tu apprendras à lancer un produit innovant sur le marché belge en collaboration avec une entreprise locale. Ce projet mettra l'accent sur les aspects durables, intégrant des pratiques responsables et écologiques dès le début de ta formation.</p></li>
+      <li><h3 class="efa-step-name">Bloc 2</h3><p>Tu apporteras des solutions concrètes à une problématique réelle rencontrée par une entreprise de renom telle que Walibi, Martin’s Hôtel, ING, ou Touring.</p></li>
+      <li><h3 class="efa-step-name">Bloc 3</h3><p>Encadré par des professionnels, tu prendras en charge un projet de A à Z selon le cours à choix que tu auras choisi : Marketing des Arts et de la Culture, Sales Management, Sports Marketing, Digital Communication and Media strategies, Entrepreneuriat et Innovation, International Market Development, (e)-Retail Management.</p></li>
     </ol>
   </section>
 
-  <section class="efa-sec efa-band efa-band--grey" aria-labelledby="efa-debouches-pro-titre">
-    <div class="efa-split">
-      <h2 class="efa-h2" id="efa-debouches-pro-titre" tabindex="-1">Les débouchés <em>professionnels</em></h2>
+  <!-- 7. Débouchés professionnels -->
+  <section class="efa-sec efa-grey" aria-labelledby="efa-debouches-pro-titre">
+    <h2 class="efa-h2" id="efa-debouches-pro-titre" tabindex="-1">Les débouchés <em>professionnels</em></h2>
+    <div class="efa-prose-cols">
+      <p class="efa-lead">Les métiers du marketing te permettront de valoriser ton intuition et ta créativité. Cependant, il est essentiel de souligner que le marketing exige une grande rigueur et la maîtrise d'outils analytiques. Tu devras être à l'aise avec les statistiques, les technologies numériques et les données pour élaborer des stratégies efficaces.</p>
       <div class="efa-prose">
-          <p>Les métiers du marketing te permettront de valoriser ton intuition et ta créativité. Cependant, il est essentiel de souligner que le marketing exige une grande rigueur et la maîtrise d'outils analytiques. Tu devras être à l'aise avec les statistiques, les technologies numériques et les données pour élaborer des stratégies efficaces.</p>
-          <p>Ton diplôme te dotera des compétences nécessaires pour créer de la valeur ajoutée dans toutes sortes d’entreprises, qu'elles soient locales, nationales ou internationales, petites ou grandes, et dans tous les secteurs, qu'ils soient à but lucratifs ou non.</p>
-          <p>Tu auras également les connaissances nécessaires pour créer ta propre entreprise si tu envisages de devenir indépendant. De nombreux diplômés en marketing ont d'ailleurs lancé leur propre start-up, avec le soutien des cellules <a class="efa-inline-link" href="https://www.ephec.be/vie-etudiante/ephec-entreprendre">EPHEC ENTREPRENDRE</a>.</p>
+        <p>Ton diplôme te dotera des compétences nécessaires pour créer de la valeur ajoutée dans toutes sortes d’entreprises, qu'elles soient locales, nationales ou internationales, petites ou grandes, et dans tous les secteurs, qu'ils soient à but lucratifs ou non.</p>
+        <p>Tu auras également les connaissances nécessaires pour créer ta propre entreprise si tu envisages de devenir indépendant. De nombreux diplômés en marketing ont d'ailleurs lancé leur propre start-up, avec le soutien des cellules <a class="efa-inline-link" href="https://www.ephec.be/vie-etudiante/ephec-entreprendre">EPHEC ENTREPRENDRE</a>.</p>
       </div>
     </div>
     <div class="efa-jobs">
-        <details class="efa-job" name="efa-metiers" open>
-          <summary>Chef de produit</summary>
-          <div class="efa-job-desc"><p>Un Chef de produit est en charge d’un produit ou d’une ligne de produit de la conception à leur mise à disposition sur le marché. Il coordonne la réalisation et la mise en place du plan marketing, assiste la force de vente...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Chargé d'études Marketing</summary>
-          <div class="efa-job-desc"><p>Le Chargé d’études marketing participe à la mise sur le marché d’un produit ou d’une ligne de produits. Il effectue des analyses de marché qui vont permettre de déceler les attentes de ces clients pour de nouveaux produits ou...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Responsable Marketing</summary>
-          <div class="efa-job-desc"><p>Le responsable Marketing est à la fois un stratège et un manager. Son rôle est d’élaborer des plans marketing et de concevoir des opérations destinées à développer la vente des produits...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Acheteur</summary>
-          <div class="efa-job-desc"><p>L'acheteur est chargé de l'achat des produits nécessaires à l'activité de son entreprise. Il recherche les fournisseurs qui correspondent à ses exigences et négocie avec eux les prix et les délais de livraison...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Marchandiseur</summary>
-          <div class="efa-job-desc"><p>Le marchandiseur est responsable de la mise en valeur d'un espace de vente. Il travaille à la conception des vitrines, des rayons et de l'agencement des produits pour optimiser la visibilité des produits et favoriser au maximum l'acte d'achat...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Category Manager</summary>
-          <div class="efa-job-desc"><p>Il recommande l'ensemble des produits à référencer en magasin sur un rayon en particulier, il est le responsable du chiffre d’affaires et de la rentabilité de cette catégorie de produits. Ce métier est donc un mélange de marketing...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Webmarketer</summary>
-          <div class="efa-job-desc"><p>Il travaille sur l’ensemble de la stratégie marketing d’un site web. Il doit veiller à augmenter le trafic il analyse la clientèle...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Digital brand manager</summary>
-          <div class="efa-job-desc"><p>Le digital brand manager est responsable de la valorisation de la marque et il est en charge...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Responsable e-commerce</summary>
-          <div class="efa-job-desc"><p>Il définit la stratégie marketing et commerciale d’une enseigne sur le web en cohérence avec la stratégie globale et multicanale. Il pilote les projets, coordonne les activités afin d’atteindre les objectifs commerciaux...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Média-planner</summary>
-          <div class="efa-job-desc"><p>Est une sorte de chef d'orchestre dans une campagne de publicité : il détermine quels supports (télévision, radio, web, presse...)...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Vendeur</summary>
-          <div class="efa-job-desc"><p>Il conseille la clientèle et développer des arguments selon les besoins de l’acheteur. Il doit être capable d’aider un client à faire un choix qui corresponde à ses attentes...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Data scientist</summary>
-          <div class="efa-job-desc"><p>Ces nouveaux experts devront exploiter l'énorme quantité de données numériques recueillies par les entreprises en ligne pour concevoir de nouveaux services...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Chef de projet web mobile</summary>
-          <div class="efa-job-desc"><p>Il est responsable de la stratégie Mobile : de plus en plus d'entreprises convertissent leurs offres et leur présence sur les mobiles...</p></div>
-        </details>
-        <details class="efa-job" name="efa-metiers">
-          <summary>Traffic manager</summary>
-          <div class="efa-job-desc"><p>Il est spécialisé dans la publicité et la communication sur internet. Souvent au sein d'une régie publicitaire, il est chargé de créer du trafic sur des sites web, de veiller à la mise en place ainsi qu...</p></div>
-        </details>
+      <details class="efa-job" name="efa-metiers" open>
+        <summary>Chef de produit</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Un Chef de produit est en charge d’un produit ou d’une ligne de produit de la conception à leur mise à disposition sur le marché. Il coordonne la réalisation et la mise en place du plan marketing, assiste la force de vente...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Chargé d'études Marketing</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le Chargé d’études marketing participe à la mise sur le marché d’un produit ou d’une ligne de produits. Il effectue des analyses de marché qui vont permettre de déceler les attentes de ces clients pour de nouveaux produits ou...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Responsable Marketing</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le responsable Marketing est à la fois un stratège et un manager. Son rôle est d’élaborer des plans marketing et de concevoir des opérations destinées à développer la vente des produits...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Acheteur</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>L'acheteur est chargé de l'achat des produits nécessaires à l'activité de son entreprise. Il recherche les fournisseurs qui correspondent à ses exigences et négocie avec eux les prix et les délais de livraison...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Marchandiseur</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le marchandiseur est responsable de la mise en valeur d'un espace de vente. Il travaille à la conception des vitrines, des rayons et de l'agencement des produits pour optimiser la visibilité des produits et favoriser au maximum l'acte d'achat...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Category Manager</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il recommande l'ensemble des produits à référencer en magasin sur un rayon en particulier, il est le responsable du chiffre d’affaires et de la rentabilité de cette catégorie de produits. Ce métier est donc un mélange de marketing...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Webmarketer</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il travaille sur l’ensemble de la stratégie marketing d’un site web. Il doit veiller à augmenter le trafic il analyse la clientèle...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Digital brand manager</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le digital brand manager est responsable de la valorisation de la marque et il est en charge...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Responsable e-commerce</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il définit la stratégie marketing et commerciale d’une enseigne sur le web en cohérence avec la stratégie globale et multicanale. Il pilote les projets, coordonne les activités afin d’atteindre les objectifs commerciaux...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Média-planner</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Est une sorte de chef d'orchestre dans une campagne de publicité : il détermine quels supports (télévision, radio, web, presse...)...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Vendeur</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il conseille la clientèle et développer des arguments selon les besoins de l’acheteur. Il doit être capable d’aider un client à faire un choix qui corresponde à ses attentes...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Data scientist</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Ces nouveaux experts devront exploiter l'énorme quantité de données numériques recueillies par les entreprises en ligne pour concevoir de nouveaux services...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Chef de projet web mobile</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il est responsable de la stratégie Mobile : de plus en plus d'entreprises convertissent leurs offres et leur présence sur les mobiles...</p></div>
+      </details>
+      <details class="efa-job" name="efa-metiers">
+        <summary>Traffic manager</summary>
+        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il est spécialisé dans la publicité et la communication sur internet. Souvent au sein d'une régie publicitaire, il est chargé de créer du trafic sur des sites web, de veiller à la mise en place ainsi qu...</p></div>
+      </details>
     </div>
   </section>
 
-  <section class="efa-sec" aria-labelledby="efa-debouches-acad-titre">
-    <div class="efa-split">
-      <h2 class="efa-h2" id="efa-debouches-acad-titre" tabindex="-1">Les débouchés <em>académiques</em></h2>
-      <ul class="efa-links">
-        <li><a href="https://www.ulb.be/fr/programme/ma-comu" target="_blank" rel="noopener">Master en communication</a></li>
-        <li><a href="https://www.ichec.be/fr/master-en-gestion-de-lentreprise" target="_blank" rel="noopener">Master en gestion de l’entreprise</a></li>
-        <li><a href="https://exed.solvay.edu/fr/formation-continue/marketing-et-ventes/executive-master-in-digital-marketing-and-communication" target="_blank" rel="noopener">Master en marketing digital</a></li>
-        <li><a href="https://www.ichec.be/fr/masters-degree-business-management-international-track" target="_blank" rel="noopener">Master en affaires et en gestion internationale</a></li>
-      </ul>
-    </div>
+  <!-- 8. Débouchés académiques -->
+  <section class="efa-sec efa-sec--flat" aria-labelledby="efa-debouches-acad-titre">
+    <h2 class="efa-h2" id="efa-debouches-acad-titre" tabindex="-1">Les débouchés <em>académiques</em></h2>
+    <ul class="efa-links">
+      <li><a href="https://www.ulb.be/fr/programme/ma-comu" target="_blank" rel="noopener">Master en communication</a></li>
+      <li><a href="https://www.ichec.be/fr/master-en-gestion-de-lentreprise" target="_blank" rel="noopener">Master en gestion de l’entreprise</a></li>
+      <li><a href="https://exed.solvay.edu/fr/formation-continue/marketing-et-ventes/executive-master-in-digital-marketing-and-communication" target="_blank" rel="noopener">Master en marketing digital</a></li>
+      <li><a href="https://www.ichec.be/fr/masters-degree-business-management-international-track" target="_blank" rel="noopener">Master en affaires et en gestion internationale</a></li>
+    </ul>
   </section>
 
 </div>
@@ -397,8 +428,9 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
     if (root.hasAttribute('data-efa-ready')) return;
     root.setAttribute('data-efa-ready', '');
 
-    /* Sommaire : défilement doux sans modifier l'URL, focus sur le titre */
-    root.querySelectorAll('.efa-toc a[href^="#"]').forEach(function (a) {
+    /* Sommaire : défilement doux sans modifier l'URL + section en cours */
+    var links = [].slice.call(root.querySelectorAll('.efa-toc a[href^="#"]'));
+    links.forEach(function (a) {
       a.addEventListener('click', function (e) {
         var t = root.querySelector(a.getAttribute('href'));
         if (!t) return;
@@ -407,13 +439,32 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
         t.focus({ preventScroll: true });
       });
     });
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          links.forEach(function (a) {
+            if (a.getAttribute('href') === '#' + en.target.id) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        });
+      }, { rootMargin: '-25% 0px -70% 0px' });
+      links.forEach(function (a) { var t = root.querySelector(a.getAttribute('href')); if (t) io.observe(t); });
+    }
 
-    /* Métiers : un seul ouvert ; en vue large, un métier reste toujours affiché */
+    /* Métiers : un seul ouvert ; en vue large, un métier reste affiché,
+       et son intitulé est repris (décoratif) en tête de la carte noire */
     var jobs = root.querySelector('.efa-jobs');
     if (jobs) {
       var items = [].slice.call(jobs.querySelectorAll('details'));
       var wide = function () { return items[0].getBoundingClientRect().width < jobs.getBoundingClientRect().width - 1; };
       items.forEach(function (d) {
+        var desc = d.querySelector('.efa-job-desc');
+        var label = document.createElement('span');
+        label.className = 'efa-job-label';
+        label.setAttribute('aria-hidden', 'true');
+        label.textContent = d.querySelector('summary').textContent;
+        desc.insertBefore(label, desc.firstChild);
         d.querySelector('summary').addEventListener('click', function (e) { if (d.open && wide()) e.preventDefault(); });
         d.addEventListener('toggle', function () {
           if (d.open) items.forEach(function (o) { if (o !== d && o.open) o.open = false; });
