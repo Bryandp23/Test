@@ -24,9 +24,8 @@
   --efa-sticky-offset:140px;    /* hauteur des éléments collants Drupal (header + onglets) */
   --efa-stripe:#46C4BC;         /* couleur des bandes diagonales */
   --efa-r-xl:32px; --efa-r-lg:24px; --efa-r-md:18px; --efa-pill:999px;
-  --efa-pad:clamp(22px,5cqi,72px);
+  --efa-pad:clamp(22px,5vw,72px);
 
-  container:efa / inline-size;
   box-sizing:border-box;
   width:100%;
   display:flex;
@@ -64,16 +63,16 @@
 .efa :where(h2)[tabindex="-1"]:focus{outline:none}
 
 /* ---------- Typographie : une échelle, trois niveaux ---------- */
-.efa-h2{font-weight:400;font-size:clamp(2.1rem,1.4rem + 3cqi,3.5rem);line-height:1.04;letter-spacing:-.025em;color:var(--efa-ink);text-wrap:balance;scroll-margin-top:var(--efa-sticky-offset);max-width:18ch}
+.efa-h2{font-weight:400;font-size:clamp(2.1rem,1.4rem + 3vw,3.5rem);line-height:1.04;letter-spacing:-.025em;color:var(--efa-ink);text-wrap:balance;scroll-margin-top:var(--efa-sticky-offset);max-width:18ch}
 .efa-h2 em{font-style:normal;color:var(--efa-brand-text)}
-.efa-h2--xl{font-size:clamp(2.6rem,1.6rem + 5cqi,5.2rem);max-width:none}
+.efa-h2--xl{font-size:clamp(2.6rem,1.6rem + 5vw,5.2rem);max-width:none}
 .efa-h3{font-weight:500;font-size:1.1875rem;line-height:1.3;color:var(--efa-ink)}
 .efa p{font-size:1.0625rem;line-height:1.75}
-.efa .efa-lead{font-size:clamp(1.2rem,1.05rem + .8cqi,1.5rem);line-height:1.5;color:var(--efa-ink);letter-spacing:-.005em}
+.efa .efa-lead{font-size:clamp(1.2rem,1.05rem + .8vw,1.5rem);line-height:1.5;color:var(--efa-ink);letter-spacing:-.005em}
 .efa-inline-link{color:var(--efa-sector-strong)!important;text-decoration:underline!important;text-underline-offset:3px;font-weight:500}
 
 /* ---------- Sections ---------- */
-.efa-sec{display:flex;flex-direction:column;gap:clamp(28px,4cqi,48px);padding:clamp(40px,6cqi,80px) var(--efa-pad);border-radius:var(--efa-r-xl);scroll-margin-top:var(--efa-sticky-offset)}
+.efa-sec{display:flex;flex-direction:column;gap:clamp(28px,4vw,48px);padding:clamp(40px,6vw,80px) var(--efa-pad);border-radius:var(--efa-r-xl);scroll-margin-top:var(--efa-sticky-offset)}
 .efa-sec--flat{padding-inline:0}
 .efa-mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 50%,var(--efa-white) 100%)}
 .efa-grey{background:var(--efa-grey)}
@@ -81,20 +80,24 @@
 .efa-dark .efa-h2{color:var(--efa-white)}
 .efa-dark .efa-h2 em{color:var(--efa-brand)}
 .efa-head{display:flex;flex-direction:column;gap:18px}
-@container efa (min-width:860px){
+@media (min-width:940px){
   .efa-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:start}
   .efa-head > p{padding-bottom:6px}
 }
 
 /* ---------- Sommaire : pastilles de la sous-navigation ---------- */
-.efa-toc{display:flex;background:var(--efa-white);border:1px solid var(--efa-line);border-radius:var(--efa-pill);padding:6px;overflow-x:auto;scrollbar-width:none}
-.efa-toc::-webkit-scrollbar{display:none}
-.efa-toc ol{display:flex;gap:2px;flex-wrap:nowrap}
-.efa-toc a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-height:44px;padding:8px 18px;border-radius:var(--efa-pill);font-size:.9375rem;color:var(--efa-text);transition:background .2s ease,color .2s ease}
-.efa-toc a::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--efa-line);transition:background .2s ease}
+.efa-toc{position:relative;background:var(--efa-white);border:1px solid var(--efa-line);border-radius:var(--efa-r-lg);padding:6px}
+.efa-toc ol{display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.efa-toc ol::-webkit-scrollbar{display:none}
+.efa-toc li{scroll-snap-align:start}
+.efa-toc a{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-height:44px;padding:8px 16px;border-radius:var(--efa-pill);font-size:.9375rem;color:var(--efa-text);transition:background .2s ease,color .2s ease}
+.efa-toc a::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--efa-line);flex-shrink:0;transition:background .2s ease}
 .efa-toc a:hover,.efa-toc a[aria-current="true"]{background:var(--efa-grey);color:var(--efa-ink)}
 .efa-toc a:hover::before,.efa-toc a[aria-current="true"]::before{background:var(--efa-sector)}
-@container efa (min-width:1180px){ .efa-toc{border-radius:var(--efa-r-lg)} .efa-toc ol{flex-wrap:wrap} }
+@media (min-width:768px){
+  .efa-toc{padding:8px}
+  .efa-toc ol{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none}
+}
 
 /* ---------- Bouton pilule de la DA ---------- */
 .efa-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:12px 26px;border-radius:var(--efa-pill);background:var(--efa-ink);color:var(--efa-white);font-size:.8125rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
@@ -103,18 +106,18 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 
 /* ---------- 1. Présentation : ouverture éditoriale ---------- */
 .efa-intro-text{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
-@container efa (min-width:860px){ .efa-intro-text{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
+@media (min-width:940px){ .efa-intro-text{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
 
-.efa-feature{position:relative;overflow:hidden;background:var(--efa-sector-strong);color:var(--efa-white);border-radius:var(--efa-r-lg);padding:clamp(28px,5cqi,56px);display:flex;flex-direction:column;gap:32px}
+.efa-feature{position:relative;overflow:hidden;background:var(--efa-sector-strong);color:var(--efa-white);border-radius:var(--efa-r-lg);padding:clamp(28px,5vw,56px);display:flex;flex-direction:column;gap:32px}
 .efa-feature > *:not(.efa-stripes){position:relative;z-index:1}
 .efa-feature-head{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
-@container efa (min-width:860px){ .efa-feature-head{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px} }
-.efa-feature .efa-h3{color:var(--efa-white);font-weight:400;font-size:clamp(1.75rem,1.3rem + 1.8cqi,2.6rem);line-height:1.08;letter-spacing:-.015em}
+@media (min-width:940px){ .efa-feature-head{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px} }
+.efa-feature .efa-h3{color:var(--efa-white);font-weight:400;font-size:clamp(1.75rem,1.3rem + 1.8vw,2.6rem);line-height:1.08;letter-spacing:-.015em}
 .efa-feature p{color:var(--efa-white)}
 .efa-feature-label{font-weight:500;padding-top:24px!important;border-top:1px solid rgba(255,255,255,.24)}
 .efa-plus{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:-16px!important}
-@container efa (min-width:600px){ .efa-plus{grid-template-columns:repeat(2,minmax(0,1fr))} .efa-plus li{flex-direction:column;gap:10px;padding:20px 22px} }
-@container efa (min-width:980px){ .efa-plus{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (min-width:680px){ .efa-plus{grid-template-columns:repeat(2,minmax(0,1fr))} .efa-plus li{flex-direction:column;gap:10px;padding:20px 22px} }
+@media (min-width:1060px){ .efa-plus{grid-template-columns:repeat(3,minmax(0,1fr))} }
 .efa-plus li{display:flex;flex-direction:row;gap:14px;padding:14px 16px;border-radius:var(--efa-r-md);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:var(--efa-white);font-size:1rem;line-height:1.5}
 .efa-plus li::before{content:"✳";flex-shrink:0;color:var(--efa-brand);font-size:1.35rem;line-height:1.1}
 
@@ -123,23 +126,23 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-feature .efa-stripes i,.efa-dark .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 40%,transparent),transparent)}
 
 .efa-docs{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-@container efa (min-width:640px){ .efa-docs{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:720px){ .efa-docs{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .efa-doc{display:flex;flex-direction:column;justify-content:space-between;gap:24px;background:var(--efa-white);border-radius:var(--efa-r-lg);padding:28px 30px;box-shadow:0 1px 0 var(--efa-line);transition:box-shadow .25s ease,transform .25s ease}
 .efa-doc:hover{box-shadow:0 22px 44px rgba(17,17,17,.09);transform:translateY(-2px)}
 .efa-doc-title{font-size:1.25rem;line-height:1.3;font-weight:400;color:var(--efa-ink);letter-spacing:-.005em}
 
 /* ---------- 2. Objectifs : grille 2 × 2 ---------- */
 .efa-goals{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-@container efa (min-width:700px){ .efa-goals{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:780px){ .efa-goals{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .efa-goals li{display:flex;gap:18px;align-items:flex-start;padding:24px 26px;border:1px solid var(--efa-line);border-radius:var(--efa-r-lg);font-size:1.125rem;line-height:1.55;color:var(--efa-ink)}
 .efa-goals li::before{content:"→";flex-shrink:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--efa-mint-soft);color:var(--efa-sector-strong);font-size:1.15rem;line-height:1}
 
 /* ---------- 3. Points forts : trio menthe / noir / gris ---------- */
 .efa-trio{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
-@container efa (min-width:940px){ .efa-trio{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (min-width:1020px){ .efa-trio{grid-template-columns:repeat(3,minmax(0,1fr))} }
 .efa-tcard{position:relative;overflow:hidden;border-radius:var(--efa-r-lg);padding:34px 32px 44px;display:flex;flex-direction:column;gap:14px}
 .efa-tcard > *:not(.efa-stripes){position:relative;z-index:1}
-.efa-tcard .efa-h3{font-weight:400;font-size:clamp(1.5rem,1.3rem + .6cqi,1.8rem);line-height:1.1;letter-spacing:-.01em;margin-top:14px}
+.efa-tcard .efa-h3{font-weight:400;font-size:clamp(1.5rem,1.3rem + .6vw,1.8rem);line-height:1.1;letter-spacing:-.01em;margin-top:14px}
 .efa-tcard p{font-size:1rem;line-height:1.7}
 .efa-tcard--mint{background:linear-gradient(180deg,var(--efa-mint) 0%,var(--efa-mint-soft) 100%);padding-bottom:140px}
 .efa-tcard--mint .efa-h3,.efa-tcard--grey .efa-h3{color:#08332D}
@@ -161,35 +164,45 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 
 /* ---------- 5. Compétences ---------- */
 .efa-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-@container efa (min-width:620px){ .efa-cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
-@container efa (min-width:1000px){ .efa-cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (min-width:700px){ .efa-cards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:1080px){ .efa-cards{grid-template-columns:repeat(3,minmax(0,1fr))} }
 .efa-card{background:var(--efa-white);border-radius:var(--efa-r-lg);padding:28px 30px 30px;display:flex;flex-direction:column;gap:12px;transition:transform .25s ease,box-shadow .25s ease}
 .efa-card:hover{transform:translateY(-3px);box-shadow:0 20px 40px rgba(17,17,17,.07)}
 .efa-card .efa-h3{font-weight:400;font-size:1.375rem;line-height:1.2;letter-spacing:-.01em}
 .efa-card .efa-h3::before{content:"✳";display:block;color:var(--efa-brand);font-size:1.25rem;line-height:1;margin-bottom:16px}
 .efa-card p{font-size:1rem;color:var(--efa-muted)}
 
-/* ---------- 6. Déroulé : progression Bloc 1 → 2 → 3 ---------- */
-.efa-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
-.efa-steps li{position:relative;padding:0 0 40px 48px;display:flex;flex-direction:column;gap:12px}
-.efa-steps li::before{content:"";position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:50%;background:var(--efa-white);border:3px solid var(--efa-sector);z-index:1}
-.efa-steps li::after{content:"";position:absolute;left:10px;top:32px;bottom:0;width:2px;background:linear-gradient(var(--efa-sector),var(--efa-line))}
-.efa-steps li:last-child{padding-bottom:0}
-.efa-steps li:last-child::before{background:var(--efa-sector)}
-.efa-steps li:last-child::after{content:none}
-.efa .efa-step-name{font-weight:400;font-size:clamp(2rem,1.5rem + 2cqi,3rem);line-height:1;letter-spacing:-.02em;color:var(--efa-sector-strong)}
-.efa-steps p{font-size:1.0625rem}
-@container efa (min-width:860px){
-  .efa-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
-  .efa-steps li{padding:56px 0 0 0}
-  .efa-steps li::before{top:0;left:0}
-  .efa-steps li::after{left:22px;right:-48px;top:10px;bottom:auto;width:auto;height:2px;background:linear-gradient(90deg,var(--efa-sector),var(--efa-line))}
+/* ---------- 6. Déroulé : une montée en trois marches ----------
+   La couleur s'intensifie et la barre se remplit de bloc en bloc ;
+   sur grand écran, les cartes montent comme un escalier. */
+.efa-steps{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:end}
+.efa-steps li{position:relative;border-radius:var(--efa-r-lg);padding:30px 30px 32px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.efa-steps li::before,.efa-steps li::after{content:"";position:absolute;top:0;left:0;height:6px}
+.efa-steps li::before{right:0;background:rgba(17,17,17,.08)}
+.efa-steps li::after{background:var(--efa-sector-strong)}
+.efa-steps li:nth-child(1){background:var(--efa-mint-soft)}
+.efa-steps li:nth-child(1)::after{width:33.34%}
+.efa-steps li:nth-child(2){background:var(--efa-mint)}
+.efa-steps li:nth-child(2)::after{width:66.67%}
+.efa-steps li:nth-child(3){background:var(--efa-sector-strong)}
+.efa-steps li:nth-child(3)::before{background:rgba(255,255,255,.22)}
+.efa-steps li:nth-child(3)::after{width:100%;background:var(--efa-brand)}
+.efa .efa-step-name{font-weight:400;font-size:clamp(2.2rem,1.6rem + 2vw,3.2rem);line-height:1;letter-spacing:-.025em;color:var(--efa-ink);margin-top:8px}
+.efa-steps p{font-size:1.0625rem;color:#1E4741}
+.efa-steps li:nth-child(3) .efa-step-name{color:var(--efa-white)}
+.efa-steps li:nth-child(3) p{color:var(--efa-white)}
+@media (min-width:940px){
+  .efa-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .efa-steps li{padding:36px 34px 40px}
+  .efa-steps li:nth-child(1){min-height:340px}
+  .efa-steps li:nth-child(2){min-height:400px}
+  .efa-steps li:nth-child(3){min-height:460px}
 }
 
 /* ---------- 7. Débouchés : sélecteur de métiers ---------- */
 .efa-prose{display:flex;flex-direction:column;gap:1em;max-width:72ch}
 .efa-prose-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
-@container efa (min-width:860px){ .efa-prose-cols{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
+@media (min-width:940px){ .efa-prose-cols{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
 /* Base (mobile, et sans JavaScript) : accordéon en cartes blanches */
 .efa-jobs{display:flex;flex-direction:column;gap:8px}
 .efa-jobs-chips,.efa-jobs-nav,.efa-job-label,.efa-jobs-stage > .efa-stripes{display:none}
@@ -203,7 +216,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-job-desc{padding:0 22px 24px}
 
 /* Vue large (avec JavaScript) : pastilles + carte noire à hauteur du contenu */
-@container efa (min-width:860px){
+@media (min-width:940px){
   .efa-jobs.is-enhanced{gap:20px}
   .efa-jobs.is-enhanced .efa-jobs-chips{display:flex;flex-wrap:wrap;gap:8px}
   .efa-jobs-chips button{cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 18px;border:0;border-radius:var(--efa-pill);background:var(--efa-white);color:var(--efa-ink);font-size:.9375rem;line-height:1.2;transition:background .2s ease,color .2s ease}
@@ -222,7 +235,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
   .efa-jobs.is-enhanced .efa-job > summary{display:none}
   .efa-jobs.is-enhanced .efa-job-desc{padding:0;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:48px;align-items:start}
   .efa-jobs.is-enhanced .efa-job-desc.is-in{animation:efa-in .35s ease}
-  .efa-jobs.is-enhanced .efa-job-desc .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2cqi,2.7rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400;text-wrap:balance}
+  .efa-jobs.is-enhanced .efa-job-desc .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2vw,2.7rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400;text-wrap:balance}
   .efa-jobs.is-enhanced .efa-job-desc p{font-size:1.1875rem;line-height:1.65;color:var(--efa-on-dark)}
   .efa-jobs.is-enhanced .efa-jobs-nav{position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.14)}
   .efa-jobs-count{font-size:.875rem;letter-spacing:.1em;color:var(--efa-on-dark);font-variant-numeric:tabular-nums;margin-right:auto}
@@ -235,7 +248,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 
 /* ---------- 8. Débouchés académiques ---------- */
 .efa-links{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-@container efa (min-width:700px){ .efa-links{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:780px){ .efa-links{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .efa-links a{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:88px;padding:16px 16px 16px 28px;background:var(--efa-grey);border-radius:var(--efa-r-lg);font-size:1.1875rem;line-height:1.3;color:var(--efa-ink);transition:background .2s ease}
 .efa-links a::after{content:"↗";flex-shrink:0;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--efa-white);color:var(--efa-ink);font-size:1.1rem;transition:background .2s ease,color .2s ease,transform .2s ease}
 .efa-links a:hover{background:var(--efa-mint-soft)}
