@@ -19,8 +19,10 @@
 .efa[data-sector="education"]{--efa-sector:#E6534E;--efa-sector-strong:#B9312C;}
 .efa[data-sector="sante"]{--efa-sector:#65A858;--efa-sector-strong:#3F7534;}
 .efa[data-sector="tech"]{--efa-sector:#0284C7;--efa-sector-strong:#0369A1;}
-.efa[data-tint="secteur"]{--efa-mint:color-mix(in srgb,var(--efa-sector) 34%,#FFFFFF);--efa-mint-soft:color-mix(in srgb,var(--efa-sector) 8%,#FFFFFF);--efa-brand:color-mix(in srgb,var(--efa-sector) 55%,#FFFFFF);--efa-brand-text:var(--efa-sector-strong);--efa-stripe:var(--efa-sector);}
-.efa[data-tint="secteur"] .efa-feature{--efa-stripe:color-mix(in srgb,var(--efa-sector) 40%,#FFFFFF);}
+/* Teinte « secteur » : dégradés, bandes, ✳ et mots-clés dans la couleur du secteur.
+   Activée par data-tint="secteur" OU par la classe efa--teinte-secteur (si Drupal retire les attributs data). */
+.efa[data-tint="secteur"],.efa.efa--teinte-secteur{--efa-mint:color-mix(in srgb,var(--efa-sector) 34%,#FFFFFF);--efa-mint-soft:color-mix(in srgb,var(--efa-sector) 8%,#FFFFFF);--efa-brand:color-mix(in srgb,var(--efa-sector) 55%,#FFFFFF);--efa-brand-text:var(--efa-sector-strong);--efa-stripe:var(--efa-sector);}
+.efa[data-tint="secteur"] .efa-feature,.efa.efa--teinte-secteur .efa-feature{--efa-stripe:color-mix(in srgb,var(--efa-sector) 40%,#FFFFFF);}
 .efa *,.efa *::before,.efa *::after{box-sizing:border-box;}
 .efa,.efa *{font-family:inherit!important;}
 .efa :where(h2,h3,p,ul,ol,li){margin:0;padding:0;}
@@ -187,7 +189,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 @media (min-width:1080px){.efa-cards{grid-template-columns:repeat(3,minmax(0,1fr));}
 }
 </style>
-<div data-sector="business" data-eb-root="" data-secteur="transversal" class="efa">
+<div data-sector="business" data-tint="secteur" data-eb-root="" data-secteur="transversal" class="efa efa--teinte-secteur">
   <!-- 1. Présentation -->
   <section aria-labelledby="efa-presentation-titre" data-eb-block="ref" class="efa-sec efa-mint">
     <h2 id="efa-presentation-titre" tabindex="-1" class="efa-h2 efa-h2--xl">Présentation</h2>
