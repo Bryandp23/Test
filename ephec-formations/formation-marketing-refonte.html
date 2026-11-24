@@ -141,10 +141,11 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-tcard--dark .efa-ico{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:var(--efa-white)}
 .efa-ico svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- 4. Vidéo : bande sombre, moment fort de la page ---------- */
-.efa-dark{position:relative;overflow:hidden}
-.efa-dark > *:not(.efa-stripes){position:relative;z-index:1}
-.efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:#000000;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+/* ---------- 4. Vidéo : bande menthe, moment fort de la page ---------- */
+.efa-video-band{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--efa-mint) 0%,var(--efa-mint-soft) 70%)}
+.efa-video-band > *:not(.efa-stripes){position:relative;z-index:1}
+.efa-video-band .efa-stripes i{background:linear-gradient(90deg,rgba(70,196,188,.75),rgba(70,196,188,0))}
+.efa-video{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:var(--efa-r-lg);overflow:hidden;background:#000000;box-shadow:0 24px 60px rgba(8,51,45,.18)}
 .efa-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 
 /* ---------- 5. Compétences ---------- */
@@ -300,7 +301,7 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
   </section>
 
   <!-- 4. Vidéo -->
-  <section class="efa-sec efa-dark" aria-labelledby="efa-video-titre">
+  <section class="efa-sec efa-video-band" aria-labelledby="efa-video-titre">
     <div class="efa-stripes" aria-hidden="true"><i style="width:420px;right:-120px;top:40px;transform:rotate(-20deg)"></i><i style="width:300px;right:-60px;top:100px;transform:rotate(-20deg)"></i></div>
     <h2 class="efa-h2" id="efa-video-titre" tabindex="-1">Le Bachelier en Marketing <em>en images</em></h2>
     <div class="efa-video">
