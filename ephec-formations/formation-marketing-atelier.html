@@ -151,7 +151,11 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-faq summary::after{content:"+";flex-shrink:0;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--efa-grey);color:var(--efa-ink);font-size:1.4rem;line-height:1;transition:transform .2s ease,background .2s ease,color .2s ease;}
 .efa-faq details[open] summary::after{transform:rotate(45deg);background:var(--efa-ink);color:var(--efa-brand);}
 .efa-faq-answer{padding:0 26px 24px;max-width:75ch;}
-.efa-faq-answer p + p{margin-top:12px;}
+.efa-faq-answer > * + *{margin-top:12px !important;}
+.efa-faq-answer ul{display:grid;gap:8px;}
+.efa-faq-answer li{position:relative;padding-left:28px;font-size:1.0625rem;line-height:1.7;}
+.efa-faq-answer li::before{content:"→";position:absolute;left:0;top:0;color:var(--efa-sector-strong);}
+.efa-faq-answer strong{font-weight:500;color:var(--efa-ink);}
 @media (prefers-reduced-motion:reduce){.efa *,.efa *::before,.efa *::after{transition:none!important;animation:none!important;}
 }
 @media (min-width:680px){.efa-plus{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -427,6 +431,63 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
       <li><a href="https://exed.solvay.edu/fr/formation-continue/marketing-et-ventes/executive-master-in-digital-marketing-and-communication" target="_blank" rel="noopener">Master en marketing digital</a></li>
       <li><a href="https://www.ichec.be/fr/masters-degree-business-management-international-track" target="_blank" rel="noopener">Master en affaires et en gestion internationale</a></li>
     </ul>
+  </section>
+  <!-- 9. FAQ — pour ajouter une question : copier un bloc <details> … </details> et le coller à la suite -->
+  <section aria-labelledby="efa-faq-titre" data-eb-block="ref" class="efa-sec efa-sec--flat">
+    <h2 id="efa-faq-titre" tabindex="-1" class="efa-h2">FAQ / <em>Questions pratiques</em></h2>
+    <div class="efa-faq">
+      <details>
+        <summary>Faut-il effectuer des stages pendant les études ?</summary>
+        <div class="efa-faq-answer">
+          <p>Oui, deux stages obligatoires sont prévus :</p>
+          <ul>
+            <li><strong>Bloc 1 :</strong> découverte du monde de l’entreprise et des fonctions commerciales et marketing. L’étudiant recherche son stage de manière autonome.</li>
+            <li><strong>Bloc 3 :</strong> mise en pratique des connaissances et compétences acquises durant la formation.</li>
+          </ul>
+          <p>Une cellule stage accompagne les étudiants dans leurs recherches en bloc 3, grâce à une base de données d’entreprises nationales et internationales.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Existe-t-il des prérequis en langues lorsqu’on s’inscrit en marketing, notamment si l’on n’a eu que deux heures de néerlandais ou d’anglais en secondaire ?</summary>
+        <div class="efa-faq-answer">
+          <p>Non, aucun prérequis linguistique n’est imposé. Les cours débutent toutefois au niveau A2 du CECRL, avec un objectif B1 à la fin du bloc 1. Une préparation préalable est recommandée en cas de difficultés.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Que proposez-vous en matière de remédiation en langues ?</summary>
+        <div class="efa-faq-answer">
+          <p>Le département n’organise pas de remédiation spécifique. Le Service d’Aide à la Réussite propose néanmoins du tutorat et des tables de conversation. La participation active aux cours est également encouragée.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Si je suis quasiment bilingue, dois-je suivre les cours de néerlandais ou d’anglais ?</summary>
+        <div class="efa-faq-answer">
+          <p>Un test de dispense est organisé à la rentrée. Sa réussite permet d’être dispensé du cours et de l’examen correspondant.</p>
+        </div>
+      </details>
+      <details>
+        <summary>En quoi consistent la bidiplomation et la tridiplomation ?</summary>
+        <div class="efa-faq-answer">
+          <p>Ces programmes permettent d’obtenir deux ou trois diplômes :</p>
+          <ul>
+            <li><strong>Bidiplomation :</strong> bloc 3 dans un établissement partenaire en Flandre, en France ou en Irlande.</li>
+            <li><strong>Tridiplomation :</strong> bloc 1 à l’EPHEC, bloc 2 à VIVES (Courtrai), bloc 3 à IBA (Kolding, Danemark).</li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Quelle place occupe le digital dans la formation ?</summary>
+        <div class="efa-faq-answer">
+          <p>Le numérique est intégré transversalement aux enseignements marketing dès le bloc 1. Un cours spécifique de marketing digital est également organisé en bloc 2.</p>
+        </div>
+      </details>
+      <details>
+        <summary>En quoi consiste le travail de fin d’études (TFE) ?</summary>
+        <div class="efa-faq-answer">
+          <p>Le TFE consiste à résoudre de manière autonome une problématique réelle de l’entreprise de stage et à formuler des recommandations marketing opérationnelles.</p>
+        </div>
+      </details>
+    </div>
   </section>
 </div>
 <script>
