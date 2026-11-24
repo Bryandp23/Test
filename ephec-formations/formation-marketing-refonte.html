@@ -190,7 +190,10 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-prose{display:flex;flex-direction:column;gap:1em;max-width:72ch}
 .efa-prose-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
 @container efa (min-width:860px){ .efa-prose-cols{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px} }
-.efa-jobs{position:relative;display:flex;flex-direction:column;gap:8px}
+/* Base (mobile, et sans JavaScript) : accordéon en cartes blanches */
+.efa-jobs{display:flex;flex-direction:column;gap:8px}
+.efa-jobs-chips,.efa-jobs-nav,.efa-job-label,.efa-jobs-stage > .efa-stripes{display:none}
+.efa-jobs-list{display:flex;flex-direction:column;gap:8px}
 .efa-job{background:var(--efa-white);border-radius:var(--efa-r-md)}
 .efa-job > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:58px;padding:12px 14px 12px 22px;border-radius:var(--efa-r-md);font-size:1.0625rem;line-height:1.35;color:var(--efa-ink)}
 .efa-job > summary::-webkit-details-marker{display:none}
@@ -198,24 +201,37 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
 .efa-job[open] > summary{font-weight:500}
 .efa-job[open] > summary::after{transform:rotate(90deg);background:var(--efa-ink);color:var(--efa-brand)}
 .efa-job-desc{padding:0 22px 24px}
-.efa-job-label{display:none}
-@container efa (min-width:900px){
-  .efa-jobs{--efa-col:34%;gap:4px;min-height:100%}
-  .efa-job{width:var(--efa-col);background:transparent}
-  .efa-job > summary{min-height:48px;padding:10px 10px 10px 20px;border-radius:var(--efa-pill);font-size:1rem}
-  .efa-job > summary::after{width:30px;height:30px;background:transparent;opacity:0;transform:translateX(-6px);transition:opacity .2s ease,transform .2s ease}
-  .efa-job > summary:hover{background:rgba(255,255,255,.7)}
-  .efa-job > summary:hover::after{opacity:1;transform:none}
-  .efa-job[open] > summary{background:var(--efa-white)}
-  .efa-job[open] > summary::after{opacity:1;transform:none;background:var(--efa-ink);color:var(--efa-brand)}
-  .efa-job-desc{position:absolute;top:0;bottom:0;right:0;width:calc(100% - var(--efa-col) - 28px);overflow:hidden;background:var(--efa-ink);border-radius:var(--efa-r-lg);padding:48px 52px;display:flex;flex-direction:column;gap:20px}
-  .efa-job-desc > *:not(.efa-stripes){position:relative;z-index:1}
-  .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2.2cqi,2.8rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400}
-  .efa-job-desc p{font-size:1.25rem;line-height:1.65;color:var(--efa-on-dark);max-width:44ch}
-  .efa-job-desc .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 55%,transparent),transparent)}
+
+/* Vue large (avec JavaScript) : pastilles + carte noire à hauteur du contenu */
+@container efa (min-width:860px){
+  .efa-jobs.is-enhanced{gap:20px}
+  .efa-jobs.is-enhanced .efa-jobs-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .efa-jobs-chips button{cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 18px;border:0;border-radius:var(--efa-pill);background:var(--efa-white);color:var(--efa-ink);font-size:.9375rem;line-height:1.2;transition:background .2s ease,color .2s ease}
+  .efa-jobs-chips button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--efa-line);transition:background .2s ease}
+  .efa-jobs-chips button:hover{background:var(--efa-mint-soft)}
+  .efa-jobs-chips button:hover::before{background:var(--efa-sector)}
+  .efa-jobs-chips button[aria-pressed="true"]{background:var(--efa-ink);color:var(--efa-white)}
+  .efa-jobs-chips button[aria-pressed="true"]::before{background:var(--efa-brand)}
+
+  .efa-jobs.is-enhanced .efa-jobs-stage{position:relative;overflow:hidden;background:var(--efa-ink);border-radius:var(--efa-r-lg);padding:44px 52px 36px}
+  .efa-jobs.is-enhanced .efa-jobs-stage > .efa-stripes{display:block}
+  .efa-jobs-stage > .efa-stripes i{background:linear-gradient(90deg,color-mix(in srgb,var(--efa-stripe) 50%,transparent),transparent)}
+  .efa-jobs.is-enhanced .efa-jobs-list{position:relative;z-index:1;display:block}
+  .efa-jobs.is-enhanced .efa-job{background:transparent}
+  .efa-jobs.is-enhanced .efa-job:not([open]){display:none}
+  .efa-jobs.is-enhanced .efa-job > summary{display:none}
+  .efa-jobs.is-enhanced .efa-job-desc{padding:0;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:48px;align-items:start}
+  .efa-jobs.is-enhanced .efa-job-desc.is-in{animation:efa-in .35s ease}
+  .efa-jobs.is-enhanced .efa-job-desc .efa-job-label{display:block;font-size:clamp(1.9rem,1.2rem + 2cqi,2.7rem);line-height:1.05;letter-spacing:-.02em;color:var(--efa-white);font-weight:400;text-wrap:balance}
+  .efa-jobs.is-enhanced .efa-job-desc p{font-size:1.1875rem;line-height:1.65;color:var(--efa-on-dark)}
+  .efa-jobs.is-enhanced .efa-jobs-nav{position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.14)}
+  .efa-jobs-count{font-size:.875rem;letter-spacing:.1em;color:var(--efa-on-dark);font-variant-numeric:tabular-nums;margin-right:auto}
+  .efa-jobs-count b{color:var(--efa-white);font-weight:500}
+  .efa-jobs-nav button{cursor:pointer;width:46px;height:46px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:var(--efa-white);font-size:1.1rem;transition:background .2s ease,color .2s ease}
+  .efa-jobs-nav button:hover{background:var(--efa-white);color:var(--efa-ink)}
+  .efa-jobs-nav [data-dir="-1"]{transform:scaleX(-1)}
 }
-.efa-job-desc .efa-stripes{display:none}
-@container efa (min-width:900px){ .efa-job-desc .efa-stripes{display:block} }
+@keyframes efa-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ---------- 8. Débouchés académiques ---------- */
 .efa-links{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
@@ -362,59 +378,59 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
     <div class="efa-jobs">
       <details class="efa-job" name="efa-metiers" open>
         <summary>Chef de produit</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Un Chef de produit est en charge d’un produit ou d’une ligne de produit de la conception à leur mise à disposition sur le marché. Il coordonne la réalisation et la mise en place du plan marketing, assiste la force de vente...</p></div>
+        <div class="efa-job-desc"><p>Un Chef de produit est en charge d’un produit ou d’une ligne de produit de la conception à leur mise à disposition sur le marché. Il coordonne la réalisation et la mise en place du plan marketing, assiste la force de vente...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Chargé d'études Marketing</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le Chargé d’études marketing participe à la mise sur le marché d’un produit ou d’une ligne de produits. Il effectue des analyses de marché qui vont permettre de déceler les attentes de ces clients pour de nouveaux produits ou...</p></div>
+        <div class="efa-job-desc"><p>Le Chargé d’études marketing participe à la mise sur le marché d’un produit ou d’une ligne de produits. Il effectue des analyses de marché qui vont permettre de déceler les attentes de ces clients pour de nouveaux produits ou...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Responsable Marketing</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le responsable Marketing est à la fois un stratège et un manager. Son rôle est d’élaborer des plans marketing et de concevoir des opérations destinées à développer la vente des produits...</p></div>
+        <div class="efa-job-desc"><p>Le responsable Marketing est à la fois un stratège et un manager. Son rôle est d’élaborer des plans marketing et de concevoir des opérations destinées à développer la vente des produits...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Acheteur</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>L'acheteur est chargé de l'achat des produits nécessaires à l'activité de son entreprise. Il recherche les fournisseurs qui correspondent à ses exigences et négocie avec eux les prix et les délais de livraison...</p></div>
+        <div class="efa-job-desc"><p>L'acheteur est chargé de l'achat des produits nécessaires à l'activité de son entreprise. Il recherche les fournisseurs qui correspondent à ses exigences et négocie avec eux les prix et les délais de livraison...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Marchandiseur</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le marchandiseur est responsable de la mise en valeur d'un espace de vente. Il travaille à la conception des vitrines, des rayons et de l'agencement des produits pour optimiser la visibilité des produits et favoriser au maximum l'acte d'achat...</p></div>
+        <div class="efa-job-desc"><p>Le marchandiseur est responsable de la mise en valeur d'un espace de vente. Il travaille à la conception des vitrines, des rayons et de l'agencement des produits pour optimiser la visibilité des produits et favoriser au maximum l'acte d'achat...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Category Manager</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il recommande l'ensemble des produits à référencer en magasin sur un rayon en particulier, il est le responsable du chiffre d’affaires et de la rentabilité de cette catégorie de produits. Ce métier est donc un mélange de marketing...</p></div>
+        <div class="efa-job-desc"><p>Il recommande l'ensemble des produits à référencer en magasin sur un rayon en particulier, il est le responsable du chiffre d’affaires et de la rentabilité de cette catégorie de produits. Ce métier est donc un mélange de marketing...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Webmarketer</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il travaille sur l’ensemble de la stratégie marketing d’un site web. Il doit veiller à augmenter le trafic il analyse la clientèle...</p></div>
+        <div class="efa-job-desc"><p>Il travaille sur l’ensemble de la stratégie marketing d’un site web. Il doit veiller à augmenter le trafic il analyse la clientèle...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Digital brand manager</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Le digital brand manager est responsable de la valorisation de la marque et il est en charge...</p></div>
+        <div class="efa-job-desc"><p>Le digital brand manager est responsable de la valorisation de la marque et il est en charge...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Responsable e-commerce</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il définit la stratégie marketing et commerciale d’une enseigne sur le web en cohérence avec la stratégie globale et multicanale. Il pilote les projets, coordonne les activités afin d’atteindre les objectifs commerciaux...</p></div>
+        <div class="efa-job-desc"><p>Il définit la stratégie marketing et commerciale d’une enseigne sur le web en cohérence avec la stratégie globale et multicanale. Il pilote les projets, coordonne les activités afin d’atteindre les objectifs commerciaux...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Média-planner</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Est une sorte de chef d'orchestre dans une campagne de publicité : il détermine quels supports (télévision, radio, web, presse...)...</p></div>
+        <div class="efa-job-desc"><p>Est une sorte de chef d'orchestre dans une campagne de publicité : il détermine quels supports (télévision, radio, web, presse...)...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Vendeur</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il conseille la clientèle et développer des arguments selon les besoins de l’acheteur. Il doit être capable d’aider un client à faire un choix qui corresponde à ses attentes...</p></div>
+        <div class="efa-job-desc"><p>Il conseille la clientèle et développer des arguments selon les besoins de l’acheteur. Il doit être capable d’aider un client à faire un choix qui corresponde à ses attentes...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Data scientist</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Ces nouveaux experts devront exploiter l'énorme quantité de données numériques recueillies par les entreprises en ligne pour concevoir de nouveaux services...</p></div>
+        <div class="efa-job-desc"><p>Ces nouveaux experts devront exploiter l'énorme quantité de données numériques recueillies par les entreprises en ligne pour concevoir de nouveaux services...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Chef de projet web mobile</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il est responsable de la stratégie Mobile : de plus en plus d'entreprises convertissent leurs offres et leur présence sur les mobiles...</p></div>
+        <div class="efa-job-desc"><p>Il est responsable de la stratégie Mobile : de plus en plus d'entreprises convertissent leurs offres et leur présence sur les mobiles...</p></div>
       </details>
       <details class="efa-job" name="efa-metiers">
         <summary>Traffic manager</summary>
-        <div class="efa-job-desc"><div class="efa-stripes" aria-hidden="true"><i style="width:340px;right:-90px;bottom:70px;transform:rotate(-32deg)"></i><i style="width:260px;right:-40px;bottom:10px;transform:rotate(-32deg)"></i></div><p>Il est spécialisé dans la publicité et la communication sur internet. Souvent au sein d'une régie publicitaire, il est chargé de créer du trafic sur des sites web, de veiller à la mise en place ainsi qu...</p></div>
+        <div class="efa-job-desc"><p>Il est spécialisé dans la publicité et la communication sur internet. Souvent au sein d'une régie publicitaire, il est chargé de créer du trafic sur des sites web, de veiller à la mise en place ainsi qu...</p></div>
       </details>
     </div>
   </section>
@@ -464,24 +480,66 @@ a:hover > .efa-btn .efa-arrow,a:focus-visible > .efa-btn .efa-arrow{transform:tr
       links.forEach(function (a) { var t = root.querySelector(a.getAttribute('href')); if (t) io.observe(t); });
     }
 
-    /* Métiers : un seul ouvert ; en vue large, un métier reste affiché,
-       et son intitulé est repris (décoratif) en tête de la carte noire */
+    /* Métiers.
+       - Sans JS / mobile : accordéon natif (un seul ouvert).
+       - Vue large : pastilles + carte noire. Les éléments existants sont déplacés,
+         pas dupliqués ; seul l'intitulé est repris en tête de la carte (la ligne
+         <summary> correspondante est alors masquée). */
     var jobs = root.querySelector('.efa-jobs');
     if (jobs) {
       var items = [].slice.call(jobs.querySelectorAll('details'));
-      var wide = function () { return items[0].getBoundingClientRect().width < jobs.getBoundingClientRect().width - 1; };
-      items.forEach(function (d) {
+      var list = document.createElement('div'); list.className = 'efa-jobs-list';
+      var stage = document.createElement('div'); stage.className = 'efa-jobs-stage';
+      stage.innerHTML = '<div class="efa-stripes" aria-hidden="true"><i style="width:360px;right:-100px;bottom:40px;transform:rotate(-24deg)"></i><i style="width:260px;right:-50px;bottom:-6px;transform:rotate(-24deg)"></i></div>';
+      var chips = document.createElement('div'); chips.className = 'efa-jobs-chips';
+      chips.setAttribute('role', 'group'); chips.setAttribute('aria-label', 'Choisir un métier');
+      var nav = document.createElement('div'); nav.className = 'efa-jobs-nav';
+      nav.innerHTML = '<span class="efa-jobs-count" aria-hidden="true"><b>01</b> / ' + String(items.length).padStart(2, '0') + '</span>' +
+        '<button type="button" data-dir="-1" aria-label="Métier précédent">→</button>' +
+        '<button type="button" data-dir="1" aria-label="Métier suivant">→</button>';
+      var count = nav.querySelector('b');
+      var current = 0;
+
+      var show = function (i, fromChip) {
+        current = (i + items.length) % items.length;
+        items.forEach(function (d, k) { d.open = (k === current); });
+        [].forEach.call(chips.children, function (b, k) { b.setAttribute('aria-pressed', k === current ? 'true' : 'false'); });
+        count.textContent = String(current + 1).padStart(2, '0');
+        var desc = items[current].querySelector('.efa-job-desc');
+        desc.classList.remove('is-in'); void desc.offsetWidth; desc.classList.add('is-in');
+        if (fromChip !== true) chips.children[current].focus({ preventScroll: true });
+      };
+
+      items.forEach(function (d, k) {
+        var name = d.querySelector('summary').textContent;
         var desc = d.querySelector('.efa-job-desc');
-        var label = document.createElement('span');
+        var label = document.createElement('p');
         label.className = 'efa-job-label';
-        label.setAttribute('aria-hidden', 'true');
-        label.textContent = d.querySelector('summary').textContent;
+        label.textContent = name;
         desc.insertBefore(label, desc.firstChild);
-        d.querySelector('summary').addEventListener('click', function (e) { if (d.open && wide()) e.preventDefault(); });
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = name;
+        b.addEventListener('click', function () { show(k, true); });
+        chips.appendChild(b);
         d.addEventListener('toggle', function () {
           if (d.open) items.forEach(function (o) { if (o !== d && o.open) o.open = false; });
         });
+        list.appendChild(d);
       });
+      chips.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); show(current + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); show(current - 1); }
+      });
+      nav.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (b) show(current + Number(b.getAttribute('data-dir')), true);
+      });
+      stage.appendChild(list);
+      stage.appendChild(nav);
+      jobs.appendChild(chips);
+      jobs.appendChild(stage);
+      jobs.classList.add('is-enhanced');
+      var start = items.findIndex(function (d) { return d.open; });
+      show(start < 0 ? 0 : start, true);
     }
   }
   function run(ctx) { (ctx && ctx.querySelectorAll ? ctx : document).querySelectorAll('.efa').forEach(init); }
